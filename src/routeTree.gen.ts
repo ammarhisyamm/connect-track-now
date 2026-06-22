@@ -9,38 +9,176 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProgramRouteImport } from './routes/program'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as KontakRouteImport } from './routes/kontak'
+import { Route as AktivitasRouteImport } from './routes/aktivitas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AktivitasIndexRouteImport } from './routes/aktivitas.index'
+import { Route as AktivitasBuatRouteImport } from './routes/aktivitas.buat'
+import { Route as AktivitasIdRouteImport } from './routes/aktivitas.$id'
 
+const ProgramRoute = ProgramRouteImport.update({
+  id: '/program',
+  path: '/program',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontakRoute = KontakRouteImport.update({
+  id: '/kontak',
+  path: '/kontak',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AktivitasRoute = AktivitasRouteImport.update({
+  id: '/aktivitas',
+  path: '/aktivitas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AktivitasIndexRoute = AktivitasIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AktivitasRoute,
+} as any)
+const AktivitasBuatRoute = AktivitasBuatRouteImport.update({
+  id: '/buat',
+  path: '/buat',
+  getParentRoute: () => AktivitasRoute,
+} as any)
+const AktivitasIdRoute = AktivitasIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AktivitasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aktivitas': typeof AktivitasRouteWithChildren
+  '/kontak': typeof KontakRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/program': typeof ProgramRoute
+  '/aktivitas/$id': typeof AktivitasIdRoute
+  '/aktivitas/buat': typeof AktivitasBuatRoute
+  '/aktivitas/': typeof AktivitasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/kontak': typeof KontakRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/program': typeof ProgramRoute
+  '/aktivitas/$id': typeof AktivitasIdRoute
+  '/aktivitas/buat': typeof AktivitasBuatRoute
+  '/aktivitas': typeof AktivitasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aktivitas': typeof AktivitasRouteWithChildren
+  '/kontak': typeof KontakRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/program': typeof ProgramRoute
+  '/aktivitas/$id': typeof AktivitasIdRoute
+  '/aktivitas/buat': typeof AktivitasBuatRoute
+  '/aktivitas/': typeof AktivitasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/aktivitas'
+    | '/kontak'
+    | '/login'
+    | '/profile'
+    | '/program'
+    | '/aktivitas/$id'
+    | '/aktivitas/buat'
+    | '/aktivitas/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/kontak'
+    | '/login'
+    | '/profile'
+    | '/program'
+    | '/aktivitas/$id'
+    | '/aktivitas/buat'
+    | '/aktivitas'
+  id:
+    | '__root__'
+    | '/'
+    | '/aktivitas'
+    | '/kontak'
+    | '/login'
+    | '/profile'
+    | '/program'
+    | '/aktivitas/$id'
+    | '/aktivitas/buat'
+    | '/aktivitas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AktivitasRoute: typeof AktivitasRouteWithChildren
+  KontakRoute: typeof KontakRoute
+  LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
+  ProgramRoute: typeof ProgramRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/program': {
+      id: '/program'
+      path: '/program'
+      fullPath: '/program'
+      preLoaderRoute: typeof ProgramRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontak': {
+      id: '/kontak'
+      path: '/kontak'
+      fullPath: '/kontak'
+      preLoaderRoute: typeof KontakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aktivitas': {
+      id: '/aktivitas'
+      path: '/aktivitas'
+      fullPath: '/aktivitas'
+      preLoaderRoute: typeof AktivitasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +186,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/aktivitas/': {
+      id: '/aktivitas/'
+      path: '/'
+      fullPath: '/aktivitas/'
+      preLoaderRoute: typeof AktivitasIndexRouteImport
+      parentRoute: typeof AktivitasRoute
+    }
+    '/aktivitas/buat': {
+      id: '/aktivitas/buat'
+      path: '/buat'
+      fullPath: '/aktivitas/buat'
+      preLoaderRoute: typeof AktivitasBuatRouteImport
+      parentRoute: typeof AktivitasRoute
+    }
+    '/aktivitas/$id': {
+      id: '/aktivitas/$id'
+      path: '/$id'
+      fullPath: '/aktivitas/$id'
+      preLoaderRoute: typeof AktivitasIdRouteImport
+      parentRoute: typeof AktivitasRoute
+    }
   }
 }
 
+interface AktivitasRouteChildren {
+  AktivitasIdRoute: typeof AktivitasIdRoute
+  AktivitasBuatRoute: typeof AktivitasBuatRoute
+  AktivitasIndexRoute: typeof AktivitasIndexRoute
+}
+
+const AktivitasRouteChildren: AktivitasRouteChildren = {
+  AktivitasIdRoute: AktivitasIdRoute,
+  AktivitasBuatRoute: AktivitasBuatRoute,
+  AktivitasIndexRoute: AktivitasIndexRoute,
+}
+
+const AktivitasRouteWithChildren = AktivitasRoute._addFileChildren(
+  AktivitasRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AktivitasRoute: AktivitasRouteWithChildren,
+  KontakRoute: KontakRoute,
+  LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
+  ProgramRoute: ProgramRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
