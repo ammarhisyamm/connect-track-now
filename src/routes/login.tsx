@@ -14,7 +14,7 @@ function LoginPage() {
 
   return (
     <MobileShell hideNav>
-      <div className="flex flex-1 flex-col bg-[var(--gradient-brand)] text-brand-foreground">
+      <div className="flex flex-1 flex-col text-brand-foreground" style={{ background: "var(--gradient-brand)" }}>
         <div className="flex flex-1 flex-col justify-end px-6 pb-8 pt-20">
           <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent text-2xl font-black text-accent-foreground">
             S

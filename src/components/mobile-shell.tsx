@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 const tabs = [
   { to: "/", label: "Home", icon: Home },
   { to: "/aktivitas", label: "Aktivitas", icon: ListChecks },
-  { to: "/kontak", label: "Kontak", icon: Users, gap: true },
+  { to: "/kontak", label: "Kontak", icon: Users },
   { to: "/program", label: "Program", icon: CalendarRange },
   { to: "/profile", label: "Profil", icon: User },
 ] as const;
@@ -15,7 +15,7 @@ export function MobileShell({ children, hideNav = false }: { children: ReactNode
 
   return (
     <div className="mobile-shell relative">
-      <div className={`flex-1 ${hideNav ? "" : "pb-24"}`}>{children}</div>
+      <div className={`flex flex-1 flex-col ${hideNav ? "" : "pb-24"}`}>{children}</div>
       {!hideNav && (
         <>
           <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-[440px] -translate-x-1/2 border-t border-border bg-card/95 backdrop-blur">
@@ -25,19 +25,15 @@ export function MobileShell({ children, hideNav = false }: { children: ReactNode
                 const active = t.to === "/" ? pathname === "/" : pathname.startsWith(t.to);
                 return (
                   <li key={t.to} className="flex justify-center">
-                    {"gap" in t && t.gap ? (
-                      <span className="w-12" />
-                    ) : (
-                      <Link
-                        to={t.to}
-                        className={`flex w-full flex-col items-center gap-1 rounded-xl py-1.5 text-[11px] font-medium transition-colors ${
-                          active ? "text-brand" : "text-muted-foreground"
-                        }`}
-                      >
-                        <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 1.8} />
-                        <span>{t.label}</span>
-                      </Link>
-                    )}
+                    <Link
+                      to={t.to}
+                      className={`flex w-full flex-col items-center gap-1 rounded-xl py-1.5 text-[10px] font-medium transition-colors ${
+                        active ? "text-brand" : "text-muted-foreground"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 1.8} />
+                      <span>{t.label}</span>
+                    </Link>
                   </li>
                 );
               })}
@@ -45,7 +41,8 @@ export function MobileShell({ children, hideNav = false }: { children: ReactNode
           </nav>
           <Link
             to="/aktivitas/buat"
-            className="fixed bottom-7 left-1/2 z-50 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-[var(--gradient-accent)] text-accent-foreground shadow-lg shadow-amber-500/30 ring-4 ring-card transition-transform active:scale-95"
+            className="fixed bottom-12 left-1/2 z-50 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full text-accent-foreground shadow-lg shadow-amber-500/40 ring-4 ring-card transition-transform active:scale-95"
+            style={{ background: "var(--gradient-accent)" }}
             aria-label="Buat aktivitas"
           >
             <Plus className="h-7 w-7" strokeWidth={2.6} />
@@ -68,7 +65,10 @@ export function ScreenHeader({
   back?: string;
 }) {
   return (
-    <header className="bg-[var(--gradient-brand)] px-5 pb-6 pt-12 text-brand-foreground">
+    <header
+      className="px-5 pb-6 pt-12 text-brand-foreground"
+      style={{ background: "var(--gradient-brand)" }}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           {back && (

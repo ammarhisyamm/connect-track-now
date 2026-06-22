@@ -17,7 +17,7 @@ function Home() {
   return (
     <MobileShell>
       {/* Header */}
-      <header className="bg-[var(--gradient-brand)] px-5 pb-24 pt-12 text-brand-foreground">
+      <header className="px-5 pb-24 pt-12 text-brand-foreground" style={{ background: "var(--gradient-brand)" }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-base font-semibold ring-2 ring-white/20">
