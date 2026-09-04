@@ -92,8 +92,8 @@ export const profile: SalesProfile = {
 };
 
 export const targets = {
-  leads: { today: { current: 90, target: 100 }, week: { current: 38, target: 80 }, month: { current: 132, target: 200 } },
-  closingLeads: { today: { current: 12, target: 24 }, week: { current: 18, target: 35 }, month: { current: 76, target: 140 } },
+  leads: { today: { current: 90, target: 100 }, week: { current: 240, target: 500 }, month: { current: 880, target: 2000 } },
+  closingLeads: { today: { current: 12, target: 24 }, week: { current: 42, target: 120 }, month: { current: 165, target: 480 } },
 };
 
 export const activities: Activity[] = [
@@ -101,8 +101,8 @@ export const activities: Activity[] = [
     id: "a1",
     type: "Canvassing",
     ptm: "Luar PTM",
-    locationName: "Pasar Badung",
-    address: "Jl. Gajah Mada, Denpasar",
+    locationName: "Pasar Rawamangun",
+    address: "Jl. Balai Pustaka Timur No. 1, Rawamangun",
     kelurahan: "Rawamangun",
     wilayah: "Kec. Pulogadung, Jakarta Timur, DKI Jakarta, 13220",
     date: new Date().toISOString(),
@@ -119,8 +119,8 @@ export const activities: Activity[] = [
     id: "a2",
     type: "Open Booth",
     ptm: "Dalam PTM",
-    locationName: "Mall Bali Galeria",
-    address: "Jl. Bypass Ngurah Rai, Kuta",
+    locationName: "Mall Kelapa Gading",
+    address: "Jl. Boulevard Raya, Kelapa Gading",
     kelurahan: "Kelapa Gading",
     wilayah: "Kec. Kelapa Gading, Jakarta Utara, DKI Jakarta, 14240",
     date: new Date().toISOString(),
@@ -155,8 +155,8 @@ export const activities: Activity[] = [
     id: "a4",
     type: "Sosialisasi",
     ptm: "Dalam PTM",
-    locationName: "Kantor Kecamatan Denpasar Barat",
-    address: "Jl. Gunung Agung, Denpasar",
+    locationName: "Balai Warga Kemayoran",
+    address: "Jl. Kemayoran Gempol, Kemayoran",
     kelurahan: "Kemayoran",
     wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620",
     date: new Date(Date.now() - 86400000).toISOString(),
@@ -174,8 +174,8 @@ export const activities: Activity[] = [
     id: "a5",
     type: "Market ke instansi",
     ptm: "Luar PTM",
-    locationName: "RS Sanglah",
-    address: "Jl. Diponegoro, Denpasar",
+    locationName: "RSUD Jatinegara",
+    address: "Jl. Jatinegara Barat No. 142, Jatinegara",
     kelurahan: "Jatinegara",
     wilayah: "Kec. Jatinegara, Jakarta Timur, DKI Jakarta, 13310",
     date: new Date(Date.now() - 86400000 * 2).toISOString(),
@@ -192,7 +192,7 @@ export const activities: Activity[] = [
 ];
 
 export const contacts: Contact[] = [
-  { id: "c1", name: "Agustinus Nugroho Setiyani", phone: "+6281234567890", status: "Hot", source: "Market ke instansi", lastContact: "Hari ini", hasGold: true, interested: true, note: "Tertarik gadai 10gr, follow up besok", job: "Karyawan Swasta", gender: "Laki-Laki", address: "Jln Matsuda Kirana Kelapa Gading", kelurahan: "Kemayoran", wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620" },
+  { id: "c1", name: "Agustinus Nugroho Setiyani", phone: "+6281234567890", status: "Hot", source: "Market ke instansi", lastContact: "Hari ini", hasGold: true, interested: true, note: "Tertarik gadai 10gr, follow up besok", job: "Karyawan Swasta", gender: "Laki-Laki", address: "Jl. Kemayoran Gempol No. 12", kelurahan: "Kemayoran", wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620" },
   { id: "c2", name: "Made Wirawan", phone: "+6281298765432", status: "Warm", source: "Open Booth", lastContact: "2 hari lalu", hasGold: true, interested: false, job: "Wiraswasta", kelurahan: "Rawamangun", wilayah: "Kec. Pulogadung, Jakarta Timur, DKI Jakarta, 13220" },
   { id: "c3", name: "Putu Ayu Lestari", phone: "+6285712340987", status: "Closing", source: "Canvassing", lastContact: "Kemarin", hasGold: true, interested: true, note: "Sudah closing 5gr", job: "Karyawan Swasta", kelurahan: "Kemayoran", wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620" },
   { id: "c4", name: "Bagus Santoso", phone: "+6282111223344", status: "Cold", source: "Canvassing", lastContact: "1 minggu lalu", hasGold: false, interested: false, job: "Pelajar / Mahasiswa", kelurahan: "Jatinegara", wilayah: "Kec. Jatinegara, Jakarta Timur, DKI Jakarta, 13310" },
@@ -204,8 +204,8 @@ export const programs: Program[] = [
   {
     id: "p1",
     name: "Gebyar Emas Akhir Bulan",
-    date: "2026-06-28",
-    endDate: "2026-06-30",
+    date: new Date().toISOString(),
+    endDate: new Date(Date.now() + 86400000 * 2).toISOString(),
     location: "Kemayoran, Jakarta Pusat",
     targetLeads: 10,
     targetClosing: 5,
@@ -216,8 +216,8 @@ export const programs: Program[] = [
   {
     id: "p2",
     name: "Open Booth Mall Galeria",
-    date: "2026-07-05",
-    endDate: "2026-07-07",
+    date: new Date(Date.now() + 86400000 * 7).toISOString(),
+    endDate: new Date(Date.now() + 86400000 * 9).toISOString(),
     location: "Mall Bali Galeria",
     targetLeads: 60,
     targetClosing: 25,
@@ -228,8 +228,8 @@ export const programs: Program[] = [
   {
     id: "p3",
     name: "Sosialisasi RT/RW Renon",
-    date: "2026-05-12",
-    endDate: "2026-05-20",
+    date: new Date(Date.now() - 86400000 * 30).toISOString(),
+    endDate: new Date(Date.now() - 86400000 * 22).toISOString(),
     location: "Renon",
     targetLeads: 40,
     targetClosing: 15,
@@ -260,7 +260,7 @@ export interface ProgramHero {
 
 export const programHero: ProgramHero = {
   name: "Race Off November",
-  period: "20-30 Juni",
+  period: "20-30 November",
   rank: 3,
   score: 13,
   predikat: "Memuaskan",
@@ -291,11 +291,11 @@ export interface LeadDistribution {
 }
 
 export const LEAD_DISTRIBUTION: LeadDistribution[] = [
-  { label: "Canvassing Hot", pct: 32.5, leads: 232, closing: 21, color: "#2953A4" },
-  { label: "Sosialisasi", pct: 30, leads: 232, closing: 21, color: "#F59E0B" },
-  { label: "Open Booth", pct: 20, leads: 232, closing: 21, color: "#E5484D" },
-  { label: "Event", pct: 12.5, leads: 232, closing: 21, color: "#22A06B" },
-  { label: "Market ke Instansi", pct: 5, leads: 232, closing: 21, color: "#8E44AD" },
+  { label: "Canvassing Hot", pct: 32.5, leads: 139, closing: 21, color: "#2953A4" },
+  { label: "Sosialisasi", pct: 30, leads: 129, closing: 20, color: "#F59E0B" },
+  { label: "Open Booth", pct: 20, leads: 86, closing: 16, color: "#E5484D" },
+  { label: "Event", pct: 12.5, leads: 54, closing: 13, color: "#22A06B" },
+  { label: "Market ke Instansi", pct: 5, leads: 21, closing: 10, color: "#8E44AD" },
 ];
 
 export const LEAD_TOTAL = { leads: 429, closing: 80 };
