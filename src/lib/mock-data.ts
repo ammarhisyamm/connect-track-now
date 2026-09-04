@@ -15,12 +15,17 @@ export interface Activity {
   ptm: "Dalam PTM" | "Luar PTM";
   locationName: string;
   address: string;
+  kelurahan?: string;
+  wilayah?: string; // Kecamatan, Kabupaten, Provinsi, Kode Pos
   date: string; // ISO
   timeRange: string; // e.g. "09:00 - 10:00"
+  startTime?: string; // "HH:MM"
+  endTime?: string; // "HH:MM"
   status: ActivityStatus;
   checkInTime?: string;
   checkOutTime?: string;
   leadsCount: number;
+  leadsTarget: number;
   closingCount: number;
   photoUrl?: string;
   shareCode?: string;
@@ -91,11 +96,16 @@ export const activities: Activity[] = [
     ptm: "Luar PTM",
     locationName: "Pasar Badung",
     address: "Jl. Gajah Mada, Denpasar",
+    kelurahan: "Rawamangun",
+    wilayah: "Kec. Pulogadung, Jakarta Timur, DKI Jakarta, 13220",
     date: new Date().toISOString(),
     timeRange: "08:00 - 10:00",
+    startTime: "08:00",
+    endTime: "10:00",
     status: "checked_in",
     checkInTime: "08:12",
     leadsCount: 4,
+    leadsTarget: 10,
     closingCount: 1,
   },
   {
@@ -105,10 +115,15 @@ export const activities: Activity[] = [
     ptm: "Dalam PTM",
     locationName: "Mall Bali Galeria",
     address: "Jl. Bypass Ngurah Rai, Kuta",
+    kelurahan: "Kelapa Gading",
+    wilayah: "Kec. Kelapa Gading, Jakarta Utara, DKI Jakarta, 14240",
     date: new Date().toISOString(),
     timeRange: "11:00 - 14:00",
+    startTime: "11:00",
+    endTime: "14:00",
     status: "planned",
     leadsCount: 0,
+    leadsTarget: 10,
     closingCount: 0,
   },
   {
@@ -120,8 +135,11 @@ export const activities: Activity[] = [
     address: "Online — link dibagikan ke nasabah",
     date: new Date().toISOString(),
     timeRange: "15:00 - 18:00",
+    startTime: "15:00",
+    endTime: "18:00",
     status: "planned",
     leadsCount: 0,
+    leadsTarget: 10,
     closingCount: 0,
     shareCode: "EVT-A3-8K2P",
     linkViews: 0,
@@ -133,12 +151,17 @@ export const activities: Activity[] = [
     ptm: "Dalam PTM",
     locationName: "Kantor Kecamatan Denpasar Barat",
     address: "Jl. Gunung Agung, Denpasar",
+    kelurahan: "Kemayoran",
+    wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620",
     date: new Date(Date.now() - 86400000).toISOString(),
     timeRange: "09:00 - 11:00",
+    startTime: "09:00",
+    endTime: "11:00",
     status: "completed",
     checkInTime: "09:05",
     checkOutTime: "11:24",
-    leadsCount: 7,
+    leadsCount: 10,
+    leadsTarget: 10,
     closingCount: 3,
   },
   {
@@ -148,12 +171,17 @@ export const activities: Activity[] = [
     ptm: "Luar PTM",
     locationName: "RS Sanglah",
     address: "Jl. Diponegoro, Denpasar",
+    kelurahan: "Jatinegara",
+    wilayah: "Kec. Jatinegara, Jakarta Timur, DKI Jakarta, 13310",
     date: new Date(Date.now() - 86400000 * 2).toISOString(),
     timeRange: "13:00 - 15:00",
+    startTime: "13:00",
+    endTime: "15:00",
     status: "completed",
     checkInTime: "13:01",
     checkOutTime: "15:10",
     leadsCount: 5,
+    leadsTarget: 10,
     closingCount: 2,
   },
 ];
@@ -239,3 +267,47 @@ export const MODE_META = {
     desc: "Kunjungan langsung — wajib check-in GPS di lokasi",
   },
 } as const;
+
+export const STATUS_META: Record<ActivityStatus, { label: string; className: string }> = {
+  planned: { label: "Segera", className: "text-amber-500" },
+  checked_in: { label: "Berjalan", className: "text-green-500" },
+  completed: { label: "Berakhir", className: "text-slate-400" },
+};
+
+const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"] as const;
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+/** "Sabtu, 28/06/2026" */
+export const formatTanggalSingkat = (iso: string) => {
+  const d = new Date(iso);
+  return `${HARI[d.getDay()]}, ${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`;
+};
+
+/** "Sabtu, 28/06/2026 | 10:00 - 11:00 WIB" */
+export const formatJadwal = (a: Pick<Activity, "date" | "timeRange" | "startTime" | "endTime">) => {
+  const range = a.startTime && a.endTime ? `${a.startTime} - ${a.endTime}` : a.timeRange;
+  return `${formatTanggalSingkat(a.date)} | ${range} WIB`;
+};
+
+const BULAN_EN = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+] as const;
+
+/** ["January 2026", ... "December 2026"] */
+export const monthOptions = (year = 2026) => BULAN_EN.map((m) => `${m} ${year}`);
+
+/** "January 2026" -> { month: 0, year: 2026 } */
+export const parseMonthOption = (opt: string) => {
+  const [m, y] = opt.split(" ");
+  return { month: BULAN_EN.indexOf(m as (typeof BULAN_EN)[number]), year: Number(y) };
+};
+
+export const KELURAHAN_WILAYAH: Record<string, string> = {
+  Rawamangun: "Kec. Pulogadung, Jakarta Timur, DKI Jakarta, 13220",
+  Kemayoran: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620",
+  "Kelapa Gading": "Kec. Kelapa Gading, Jakarta Utara, DKI Jakarta, 14240",
+  Jatinegara: "Kec. Jatinegara, Jakarta Timur, DKI Jakarta, 13310",
+  Kebayoran: "Kec. Kebayoran Baru, Jakarta Selatan, DKI Jakarta, 12110",
+};

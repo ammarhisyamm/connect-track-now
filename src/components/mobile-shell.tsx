@@ -10,7 +10,7 @@ const tabs = [
   { to: "/profile", label: "Profil", icon: User },
 ] as const;
 
-export function MobileShell({ children, hideNav = false }: { children: ReactNode; hideNav?: boolean }) {
+export function MobileShell({ children, hideNav = false, hideFab = false }: { children: ReactNode; hideNav?: boolean; hideFab?: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -39,6 +39,7 @@ export function MobileShell({ children, hideNav = false }: { children: ReactNode
               })}
             </ul>
           </nav>
+          {!hideFab && (
           <Link
             to="/aktivitas/buat"
             className="fixed bottom-12 left-1/2 z-50 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full text-accent-foreground shadow-lg shadow-amber-500/40 ring-4 ring-card transition-transform active:scale-95"
@@ -47,7 +48,7 @@ export function MobileShell({ children, hideNav = false }: { children: ReactNode
           >
             <Plus className="h-7 w-7" strokeWidth={2.6} />
           </Link>
-        </>
+          )}        </>
       )}
     </div>
   );
