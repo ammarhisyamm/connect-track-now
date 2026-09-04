@@ -15,6 +15,7 @@ import { Route as KontakRouteImport } from './routes/kontak'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgramRouteImport } from './routes/program'
+import { Route as UbahPasswordRouteImport } from './routes/ubah-password'
 import { Route as AktivitasIndexRouteImport } from './routes/aktivitas.index'
 import { Route as AktivitasIdRouteImport } from './routes/aktivitas.$id'
 import { Route as AktivitasBuatRouteImport } from './routes/aktivitas.buat'
@@ -50,6 +51,11 @@ const ProgramRoute = ProgramRouteImport.update({
   path: '/program',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UbahPasswordRoute = UbahPasswordRouteImport.update({
+  id: '/ubah-password',
+  path: '/ubah-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AktivitasIndexRoute = AktivitasIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/program': typeof ProgramRoute
+  '/ubah-password': typeof UbahPasswordRoute
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/program': typeof ProgramRoute
+  '/ubah-password': typeof UbahPasswordRoute
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/program': typeof ProgramRoute
+  '/ubah-password': typeof UbahPasswordRoute
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/program'
+    | '/ubah-password'
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/program'
+    | '/ubah-password'
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/program'
+    | '/ubah-password'
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   ProgramRoute: typeof ProgramRoute
+  UbahPasswordRoute: typeof UbahPasswordRoute
   IsiIdRoute: typeof IsiIdRoute
 }
 
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/program'
       fullPath: '/program'
       preLoaderRoute: typeof ProgramRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ubah-password': {
+      id: '/ubah-password'
+      path: '/ubah-password'
+      fullPath: '/ubah-password'
+      preLoaderRoute: typeof UbahPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/aktivitas/': {
@@ -253,6 +273,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   ProgramRoute: ProgramRoute,
+  UbahPasswordRoute: UbahPasswordRoute,
   IsiIdRoute: IsiIdRoute,
 }
 export const routeTree = rootRouteImport

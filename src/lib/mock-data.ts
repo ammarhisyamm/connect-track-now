@@ -66,6 +66,9 @@ export interface SalesProfile {
   name: string;
   nip: string;
   branch: string;
+  phone: string;
+  region: string;
+  unit: string;
   avatarUrl: string;
   grade: "Trainee" | "Silver" | "Gold" | "Platinum";
   gradeProgress: number; // 0-100
@@ -79,6 +82,9 @@ export const profile: SalesProfile = {
   name: "Rizky Pratama",
   nip: "PG-098231",
   branch: "Cabang Denpasar",
+  phone: "088802877548",
+  region: "Gadai MAS Jatim",
+  unit: "MAS Surabaya",
   avatarUrl: "",
   grade: "Gold",
   gradeProgress: 72,
@@ -281,6 +287,33 @@ export const programHero: ProgramHero = {
     { rank: 10, name: "Agus Setiawan", branch: "MAS Bima", company: "PT.Gadai Mas NTB", score: 6 },
   ],
 };
+
+export interface LeadDistribution {
+  label: string;
+  pct: number;
+  leads: number;
+  closing: number;
+  color: string;
+}
+
+export const LEAD_DISTRIBUTION: LeadDistribution[] = [
+  { label: "Canvassing Hot", pct: 32.5, leads: 232, closing: 21, color: "#2953A4" },
+  { label: "Sosialisasi", pct: 32.5, leads: 232, closing: 21, color: "#F59E0B" },
+  { label: "Open Booth", pct: 20, leads: 232, closing: 21, color: "#E5484D" },
+  { label: "Event", pct: 12.5, leads: 232, closing: 21, color: "#22A06B" },
+  { label: "Market ke Instansi", pct: 5, leads: 232, closing: 21, color: "#8E44AD" },
+];
+
+export const LEAD_TOTAL = { leads: 429, closing: 80 };
+
+export const QUADRANT_DESC: Record<string, { leads: string; aktivitas: string }> = {
+  I: { leads: "Leads rendah", aktivitas: "aktivitas rendah" },
+  II: { leads: "Leads tinggi", aktivitas: "aktivitas rendah" },
+  III: { leads: "Leads rendah", aktivitas: "aktivitas tinggi" },
+  IV: { leads: "Leads tinggi", aktivitas: "aktivitas tinggi" },
+};
+
+export const GRADES = ["Trainee", "Silver", "Gold", "Platinum"] as const;
 
 export const leadsByStatus = [
   { label: "Canvassing Hot", value: 232, color: "oklch(0.6 0.22 25)" },
