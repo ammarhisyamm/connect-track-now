@@ -6,9 +6,12 @@ export type LeadStatus = "Hot" | "Warm" | "Cold" | "Closing";
 
 export type ActivityStatus = "planned" | "checked_in" | "completed";
 
+export type ActivityMode = "online" | "lapangan";
+
 export interface Activity {
   id: string;
   type: ActivityType;
+  mode: ActivityMode;
   ptm: "Dalam PTM" | "Luar PTM";
   locationName: string;
   address: string;
@@ -20,6 +23,8 @@ export interface Activity {
   leadsCount: number;
   closingCount: number;
   photoUrl?: string;
+  shareCode?: string;
+  linkViews?: number;
 }
 
 export interface Contact {
@@ -82,6 +87,7 @@ export const activities: Activity[] = [
   {
     id: "a1",
     type: "Canvassing",
+    mode: "lapangan",
     ptm: "Luar PTM",
     locationName: "Pasar Badung",
     address: "Jl. Gajah Mada, Denpasar",
@@ -95,6 +101,7 @@ export const activities: Activity[] = [
   {
     id: "a2",
     type: "Open Booth",
+    mode: "lapangan",
     ptm: "Dalam PTM",
     locationName: "Mall Bali Galeria",
     address: "Jl. Bypass Ngurah Rai, Kuta",
@@ -107,18 +114,22 @@ export const activities: Activity[] = [
   {
     id: "a3",
     type: "Event",
-    ptm: "Luar PTM",
-    locationName: "Lapangan Renon",
-    address: "Jl. Raya Puputan, Renon",
+    mode: "online",
+    ptm: "Dalam PTM",
+    locationName: "Live IG: Edukasi Gadai Emas",
+    address: "Online — link dibagikan ke nasabah",
     date: new Date().toISOString(),
     timeRange: "15:00 - 18:00",
     status: "planned",
     leadsCount: 0,
     closingCount: 0,
+    shareCode: "EVT-A3-8K2P",
+    linkViews: 0,
   },
   {
     id: "a4",
     type: "Sosialisasi",
+    mode: "lapangan",
     ptm: "Dalam PTM",
     locationName: "Kantor Kecamatan Denpasar Barat",
     address: "Jl. Gunung Agung, Denpasar",
@@ -133,6 +144,7 @@ export const activities: Activity[] = [
   {
     id: "a5",
     type: "Market ke instansi",
+    mode: "lapangan",
     ptm: "Luar PTM",
     locationName: "RS Sanglah",
     address: "Jl. Diponegoro, Denpasar",
@@ -206,3 +218,24 @@ export const leadsByStatus = [
 
 export const formatRupiah = (n: number) =>
   new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
+
+export const getShareCode = (a: Pick<Activity, "id" | "shareCode">) =>
+  a.shareCode ?? `CT-${a.id.toUpperCase()}-2026`;
+
+export const getShareLink = (a: Pick<Activity, "id" | "shareCode">) =>
+  typeof window !== "undefined"
+    ? `${window.location.origin}/isi/${a.id}?k=${getShareCode(a)}`
+    : `/isi/${a.id}?k=${getShareCode(a)}`;
+
+export const MODE_META = {
+  online: {
+    label: "Online",
+    badge: "🌐 Online",
+    desc: "Tanpa ke lokasi — bagikan link, nasabah isi sendiri",
+  },
+  lapangan: {
+    label: "Lapangan",
+    badge: "📍 Lapangan",
+    desc: "Kunjungan langsung — wajib check-in GPS di lokasi",
+  },
+} as const;

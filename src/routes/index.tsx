@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
-import { activities, profile, targets, formatRupiah, programs } from "@/lib/mock-data";
-import { Bell, Wallet, Sparkles, MapPin, Clock, LogIn, LogOut, ChevronRight, TrendingUp, Award } from "lucide-react";
+import { activities, profile, targets, formatRupiah, programs, MODE_META } from "@/lib/mock-data";
+import { Bell, Wallet, Sparkles, MapPin, Clock, LogIn, LogOut, ChevronRight, TrendingUp, Award, Globe, Footprints } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -137,9 +137,13 @@ function Home() {
               >
                 <StatusPill status={a.status} />
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     <span className="rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-brand">{a.type}</span>
-                    <span className="text-[10px] text-muted-foreground">{a.ptm}</span>
+                    <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${a.mode === "online" ? "bg-brand/10 text-brand" : "bg-secondary text-muted-foreground"}`}>
+                      {a.mode === "online" ? <Globe className="h-3 w-3" /> : <Footprints className="h-3 w-3" />}
+                      {MODE_META[a.mode].label}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">{a.mode === "lapangan" ? a.ptm : "Link"}</span>
                   </div>
                   <p className="mt-1 truncate text-sm font-semibold">{a.locationName}</p>
                   <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">

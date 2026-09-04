@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell, ScreenHeader } from "@/components/mobile-shell";
-import { activities } from "@/lib/mock-data";
+import { activities, MODE_META } from "@/lib/mock-data";
 import { useState } from "react";
-import { Clock, MapPin, ChevronRight, Filter } from "lucide-react";
+import { Clock, MapPin, ChevronRight, Filter, Globe, Footprints } from "lucide-react";
 
 export const Route = createFileRoute("/aktivitas/")({
   head: () => ({ meta: [{ title: "Aktivitas" }] }),
@@ -63,11 +63,19 @@ function ActivityList() {
                 </span>
               </div>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <span className="rounded-md bg-brand/10 px-1.5 py-0.5 text-[10px] font-semibold text-brand">
                     {a.type}
                   </span>
-                  <span className="text-[10px] text-muted-foreground">{a.ptm}</span>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${
+                      a.mode === "online" ? "bg-brand/10 text-brand" : "bg-secondary text-muted-foreground"
+                    }`}
+                  >
+                    {a.mode === "online" ? <Globe className="h-3 w-3" /> : <Footprints className="h-3 w-3" />}
+                    {MODE_META[a.mode].label}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">{a.mode === "lapangan" ? a.ptm : "Link aktif"}</span>
                 </div>
                 <p className="mt-1 truncate text-sm font-semibold">{a.locationName}</p>
                 <div className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground">
