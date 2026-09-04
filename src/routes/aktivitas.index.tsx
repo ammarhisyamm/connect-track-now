@@ -6,7 +6,6 @@ import {
   monthOptions,
   parseMonthOption,
   STATUS_META,
-  getShareLink,
   type ActivityStatus,
 } from "@/lib/mock-data";
 import { useMemo, useState } from "react";
@@ -14,8 +13,6 @@ import {
   ChevronRight,
   CircleCheck,
   Crosshair,
-  Link2,
-  Check,
   LogOut,
   MapPin,
   Plus,
@@ -34,7 +31,6 @@ function ActivityList() {
   const [dari, setDari] = useState(MONTHS[0]);
   const [ke, setKe] = useState(MONTHS[MONTHS.length - 1]);
   const [statusById, setStatusById] = useState<Record<string, ActivityStatus>>({});
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const d = parseMonthOption(dari);
@@ -50,17 +46,6 @@ function ActivityList() {
       return true;
     });
   }, [tab, dari, ke, statusById]);
-
-  const copyLink = async (id: string, shareCode?: string) => {
-    const link = getShareLink({ id, shareCode } as { id: string; shareCode?: string });
-    try {
-      await navigator.clipboard.writeText(window.location.origin + link);
-    } catch {
-      /* abaikan */
-    }
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 1500);
-  };
 
   return (
     <MobileShell hideFab>
@@ -123,7 +108,6 @@ function ActivityList() {
           {filtered.map((a) => {
             const status = statusById[a.id] ?? a.status;
             const meta = STATUS_META[status];
-            const isOnline = a.mode === "online";
             return (
               <div key={a.id} className="rounded-xl border border-slate-200 bg-white p-4">
                 <div className="flex items-center justify-between gap-2">
@@ -138,10 +122,7 @@ function ActivityList() {
                 >
                   <div className="min-w-0">
                     <p className="truncate text-[16px] font-bold text-slate-900">{a.locationName}</p>
-                    <p className="mt-0.5 truncate text-[13px] text-slate-500">
-                      {a.address}
-                      {isOnline && <span className="ml-1.5 text-[11px] font-semibold text-[#2953A4]">· Online</span>}
-                    </p>
+                    <p className="mt-0.5 truncate text-[13px] text-slate-500">{a.address}</p>
                   </div>
                   <ChevronRight className="h-5 w-5 flex-shrink-0 text-[#2953A4]" />
                 </Link>
@@ -154,14 +135,6 @@ function ActivityList() {
                     <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-[12px] font-medium text-slate-500">
                       <CircleCheck className="h-3.5 w-3.5" /> Finished {a.checkOutTime ?? ""}
                     </span>
-                  ) : isOnline ? (
-                    <button
-                      onClick={() => copyLink(a.id, a.shareCode)}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-3.5 py-2 text-[12px] font-semibold text-white"
-                    >
-                      {copiedId === a.id ? <Check className="h-3.5 w-3.5" /> : <Link2 className="h-3.5 w-3.5" />}
-                      {copiedId === a.id ? "Tersalin" : "Bagikan Link"}
-                    </button>
                   ) : status === "checked_in" ? (
                     <button
                       onClick={() => setStatusById((s) => ({ ...s, [a.id]: "completed" }))}

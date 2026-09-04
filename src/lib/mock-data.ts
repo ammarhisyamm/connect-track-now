@@ -6,12 +6,9 @@ export type LeadStatus = "Hot" | "Warm" | "Cold" | "Closing";
 
 export type ActivityStatus = "planned" | "checked_in" | "completed";
 
-export type ActivityMode = "online" | "lapangan";
-
 export interface Activity {
   id: string;
   type: ActivityType;
-  mode: ActivityMode;
   ptm: "Dalam PTM" | "Luar PTM";
   locationName: string;
   address: string;
@@ -103,7 +100,6 @@ export const activities: Activity[] = [
   {
     id: "a1",
     type: "Canvassing",
-    mode: "lapangan",
     ptm: "Luar PTM",
     locationName: "Pasar Badung",
     address: "Jl. Gajah Mada, Denpasar",
@@ -122,7 +118,6 @@ export const activities: Activity[] = [
   {
     id: "a2",
     type: "Open Booth",
-    mode: "lapangan",
     ptm: "Dalam PTM",
     locationName: "Mall Bali Galeria",
     address: "Jl. Bypass Ngurah Rai, Kuta",
@@ -140,10 +135,11 @@ export const activities: Activity[] = [
   {
     id: "a3",
     type: "Event",
-    mode: "online",
     ptm: "Dalam PTM",
-    locationName: "Live IG: Edukasi Gadai Emas",
-    address: "Online — link dibagikan ke nasabah",
+    locationName: "Aula Serbaguna Renon",
+    address: "Jl. Raya Puputan, Renon",
+    kelurahan: "Renon",
+    wilayah: "Kec. Denpasar Selatan, Kota Denpasar, Bali, 80226",
     date: new Date().toISOString(),
     timeRange: "15:00 - 18:00",
     startTime: "15:00",
@@ -158,7 +154,6 @@ export const activities: Activity[] = [
   {
     id: "a4",
     type: "Sosialisasi",
-    mode: "lapangan",
     ptm: "Dalam PTM",
     locationName: "Kantor Kecamatan Denpasar Barat",
     address: "Jl. Gunung Agung, Denpasar",
@@ -178,7 +173,6 @@ export const activities: Activity[] = [
   {
     id: "a5",
     type: "Market ke instansi",
-    mode: "lapangan",
     ptm: "Luar PTM",
     locationName: "RS Sanglah",
     address: "Jl. Diponegoro, Denpasar",
@@ -336,19 +330,6 @@ export const getShareLink = (a: Pick<Activity, "id" | "shareCode">) =>
     ? `${window.location.origin}/isi/${a.id}?k=${getShareCode(a)}`
     : `/isi/${a.id}?k=${getShareCode(a)}`;
 
-export const MODE_META = {
-  online: {
-    label: "Online",
-    badge: "🌐 Online",
-    desc: "Tanpa ke lokasi — bagikan link, nasabah isi sendiri",
-  },
-  lapangan: {
-    label: "Lapangan",
-    badge: "📍 Lapangan",
-    desc: "Kunjungan langsung — wajib check-in GPS di lokasi",
-  },
-} as const;
-
 export const STATUS_META: Record<ActivityStatus, { label: string; className: string }> = {
   planned: { label: "Segera", className: "text-amber-500" },
   checked_in: { label: "Berjalan", className: "text-green-500" },
@@ -403,6 +384,7 @@ export const KELURAHAN_WILAYAH: Record<string, string> = {
   "Kelapa Gading": "Kec. Kelapa Gading, Jakarta Utara, DKI Jakarta, 14240",
   Jatinegara: "Kec. Jatinegara, Jakarta Timur, DKI Jakarta, 13310",
   Kebayoran: "Kec. Kebayoran Baru, Jakarta Selatan, DKI Jakarta, 12110",
+  Renon: "Kec. Denpasar Selatan, Kota Denpasar, Bali, 80226",
 };
 
 export const PEKERJAAN_PROMAS = [

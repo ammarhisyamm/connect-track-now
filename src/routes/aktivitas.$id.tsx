@@ -54,7 +54,6 @@ export const Route = createFileRoute("/aktivitas/$id")({
 
 function ActivityDetail() {
   const activity = Route.useLoaderData();
-  const isOnline = activity.mode === "online";
 
   const [checkedIn, setCheckedIn] = useState(activity.status === "checked_in");
   const [isDone, setIsDone] = useState(activity.status === "completed");
@@ -88,8 +87,7 @@ function ActivityDetail() {
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <div className="flex items-center justify-between gap-2">
             <p className="text-[12px] font-medium" style={{ color: PRIMARY }}>
-              {formatTanggalPanjang(activity.date, isOnline ? undefined : startTime)}
-              {isOnline && <span className="ml-1 font-semibold">· Online</span>}
+              {formatTanggalPanjang(activity.date, startTime)}
             </p>
             <p className={`flex-shrink-0 text-[12px] font-medium ${meta.className}`}>{meta.label}</p>
           </div>
@@ -100,14 +98,7 @@ function ActivityDetail() {
           </p>
         </div>
 
-        {isOnline ? (
-          <ShareLinkCard
-            activityId={activity.id}
-            shareCode={activity.shareCode}
-            views={activity.linkViews ?? 0}
-            leadsCount={activity.leadsCount}
-          />
-        ) : isDone ? (
+        {isDone ? (
           <div className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-400">
               <Check className="h-7 w-7 text-white" strokeWidth={3} />
@@ -118,6 +109,7 @@ function ActivityDetail() {
             </span>
           </div>
         ) : checkedIn ? (
+          <>
           <div className="rounded-xl border border-slate-200 bg-white p-4">
             <div className="relative overflow-hidden rounded-lg bg-slate-100">
               {photoUrl ? (
@@ -153,6 +145,13 @@ function ActivityDetail() {
               </button>
             )}
           </div>
+          <ShareLinkCard
+            activityId={activity.id}
+            shareCode={activity.shareCode}
+            views={activity.linkViews ?? 0}
+            leadsCount={activity.leadsCount}
+          />
+          </>
         ) : (
           <div className="rounded-xl border border-slate-200 bg-white px-4 py-10 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#2953A4]/10">
@@ -207,11 +206,6 @@ function ActivityDetail() {
               </div>
             ))}
           </div>
-          {isOnline && (
-            <p className="mt-3 text-center text-[12px] text-slate-400">
-              Leads dari link masuk otomatis — tak perlu input manual.
-            </p>
-          )}
         </div>
       </div>
 
@@ -646,6 +640,10 @@ function ShareLinkCard({ activityId, shareCode, views, leadsCount }: { activityI
           Aktif
         </span>
       </div>
+      <p className="-mt-1 text-[12px] leading-relaxed text-slate-500">
+        Aktivitas sedang berjalan — bagikan link ini ke nasabah. Mereka isi data sendiri,
+        otomatis tercatat sebagai leads.
+      </p>
       <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
         <p className="flex-1 truncate text-[12px] text-slate-600">{fullLink}</p>
         <button

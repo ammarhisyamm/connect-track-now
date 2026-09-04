@@ -3,7 +3,6 @@ import { MobileShell } from "@/components/mobile-shell";
 import {
   activities,
   formatTanggalPanjang,
-  getShareLink,
   profile,
   programs,
   targets,
@@ -14,12 +13,10 @@ import {
   Banknote,
   Bell,
   CalendarX2,
-  Check,
   ChevronRight,
   CircleCheck,
   ClipboardList,
   Crosshair,
-  Link2,
   LogOut,
   MapPin,
   Plus,
@@ -43,18 +40,6 @@ type Range = "today" | "week" | "month";
 function Home() {
   const [range, setRange] = useState<Range>("today");
   const [statusById, setStatusById] = useState<Record<string, ActivityStatus>>({});
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  const copyLink = async (id: string, shareCode?: string) => {
-    const link = getShareLink({ id, shareCode } as { id: string; shareCode?: string });
-    try {
-      await navigator.clipboard.writeText(window.location.origin + link);
-    } catch {
-      /* abaikan */
-    }
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 1500);
-  };
 
   const todayActivities = activities.filter(
     (a) => new Date(a.date).toDateString() === new Date().toDateString()
@@ -214,14 +199,6 @@ function Home() {
                         <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-[12px] font-medium text-slate-500">
                           <CircleCheck className="h-3.5 w-3.5" /> Finished {a.checkOutTime ?? ""}
                         </span>
-                      ) : a.mode === "online" ? (
-                        <button
-                          onClick={() => copyLink(a.id, a.shareCode)}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-3.5 py-2 text-[12px] font-semibold text-white"
-                        >
-                          {copiedId === a.id ? <Check className="h-3.5 w-3.5" /> : <Link2 className="h-3.5 w-3.5" />}
-                          {copiedId === a.id ? "Tersalin" : "Bagikan Link"}
-                        </button>
                       ) : status === "checked_in" ? (
                         <button
                           onClick={() => setStatusById((s) => ({ ...s, [a.id]: "completed" }))}
