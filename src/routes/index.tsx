@@ -1,221 +1,280 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
-import { activities, profile, targets, formatRupiah, programs, MODE_META } from "@/lib/mock-data";
-import { Bell, Wallet, Sparkles, MapPin, Clock, LogIn, LogOut, ChevronRight, TrendingUp, Award, Globe, Footprints } from "lucide-react";
+import {
+  activities,
+  formatTanggalPanjang,
+  profile,
+  programs,
+  targets,
+  type ActivityStatus,
+} from "@/lib/mock-data";
 import { useState } from "react";
+import {
+  Banknote,
+  Bell,
+  CalendarX2,
+  ChevronRight,
+  CircleCheck,
+  ClipboardList,
+  Crosshair,
+  LogOut,
+  MapPin,
+  Plus,
+  UserRound,
+  Wallet,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Beranda — Sales Tracking" }] }),
   component: Home,
 });
 
+const PRIMARY = "#2953A4";
+const rp = (n: number) =>
+  new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 })
+    .format(n)
+    .replace("Rp", "Rp");
+
+type Range = "today" | "week" | "month";
+
 function Home() {
-  const [range, setRange] = useState<"today" | "week" | "month">("today");
-  const todayActivities = activities.filter((a) => new Date(a.date).toDateString() === new Date().toDateString());
+  const [range, setRange] = useState<Range>("today");
+  const [statusById, setStatusById] = useState<Record<string, ActivityStatus>>({});
+
+  const todayActivities = activities.filter(
+    (a) => new Date(a.date).toDateString() === new Date().toDateString()
+  );
   const ongoingProgram = programs.find((p) => p.status === "Berlangsung");
 
+  const lead = targets.leads[range];
+  const closing = targets.closingLeads[range];
+
   return (
-    <MobileShell>
-      {/* Header */}
-      <header className="px-5 pb-24 pt-12 text-brand-foreground" style={{ background: "var(--gradient-brand)" }}>
-        <div className="flex items-center justify-between">
+    <MobileShell hideFab>
+      <header className="relative overflow-hidden px-5 pb-14 pt-12 text-white" style={{ background: "var(--gradient-brand)" }}>
+        <div className="relative z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-base font-semibold ring-2 ring-white/20">
-              {profile.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
-            </div>
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/25">
+              <UserRound className="h-7 w-7 text-white" />
+            </span>
             <div>
-              <p className="text-xs text-brand-foreground/70">Selamat datang,</p>
-              <p className="text-sm font-semibold">{profile.name}</p>
+              <p className="text-[13px] text-white/75">Selamat datang</p>
+              <p className="text-[17px] font-bold">Sales Gadai Mas</p>
             </div>
           </div>
-          <Link to="/profile" className="relative rounded-full bg-white/10 p-2">
+          <Link to="/profile" className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-700">
             <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent" />
           </Link>
         </div>
-      </header>
 
-      <div className="-mt-20 space-y-5 px-5">
-        {/* Booking card */}
-        <div className="soft-card grid grid-cols-2 divide-x divide-border p-4">
+        <div className="relative z-10 mt-4 grid grid-cols-2 divide-x divide-slate-200 rounded-xl bg-white p-4 text-slate-900">
           <div className="pr-3">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Wallet className="h-3.5 w-3.5" /> Booking
-            </div>
-            <p className="mt-1 text-base font-bold text-foreground">
-              {formatRupiah(profile.booking)}
-              <span className="text-xs font-medium text-muted-foreground"> / {formatRupiah(profile.bookingEstimate)}</span>
+            <p className="flex items-center gap-1.5 text-[13px] text-slate-500">
+              <Wallet className="h-4 w-4 text-[#2953A4]" /> Booking (Amount)
             </p>
-            <p className="mt-0.5 text-[10px] text-muted-foreground">Estimasi saldo</p>
+            <p className="mt-1.5 text-[17px] font-bold">
+              {rp(profile.booking)} <span className="font-normal text-slate-400">/</span>
+            </p>
+            <p className="text-[13px] text-slate-400">{rp(profile.bookingEstimate)}</p>
           </div>
           <div className="pl-3">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5" /> Estimasi Insentif
-            </div>
-            <p className="mt-1 text-base font-bold text-foreground">{formatRupiah(profile.estimasiInsentif)}</p>
-            <p className="mt-0.5 text-[10px] text-muted-foreground">Periode berjalan</p>
+            <p className="flex items-center gap-1.5 text-[13px] text-slate-500">
+              <Banknote className="h-4 w-4 text-[#2953A4]" /> Estimasi Insentif
+            </p>
+            <p className="mt-1.5 text-[17px] font-bold">{rp(profile.estimasiInsentif)}</p>
           </div>
         </div>
 
-        {/* Check in/out */}
-        <CheckInCard />
+        <svg className="absolute bottom-0 left-0 h-[70px] w-full" viewBox="0 0 440 70" preserveAspectRatio="none">
+          <path d="M0,38 C110,72 230,72 440,14 L440,70 L0,70 Z" fill="#8fa3d9" opacity="0.5" />
+          <path d="M0,48 C130,78 260,76 440,28 L440,70 L0,70 Z" fill="#c3d0f0" opacity="0.75" />
+          <path d="M0,56 C140,82 280,80 440,40 L440,70 L0,70 Z" fill="#eef2fd" />
+        </svg>
+      </header>
 
-        {/* Targets */}
+      <div className="space-y-6 bg-white px-5 pb-8 pt-5">
         <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Target Leads & Closing Leads</h2>
-          </div>
-          <div className="mb-3 inline-flex rounded-full bg-secondary p-1 text-xs">
-            {(["today", "week", "month"] as const).map((r) => (
+          <h2 className="text-[17px] font-bold text-slate-900">Target Leads dan Closing</h2>
+          <div className="mt-2.5 flex gap-2">
+            {([["today", "Hari ini"], ["week", "Minggu ini"], ["month", "Bulan ini"]] as const).map(([r, label]) => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
-                className={`rounded-full px-3 py-1.5 font-medium transition-colors ${
-                  range === r ? "bg-brand text-brand-foreground" : "text-muted-foreground"
+                className={`rounded-full border px-4 py-2 text-[13px] font-medium ${
+                  range === r
+                    ? "border-[#2953A4] bg-[#2953A4] text-white"
+                    : "border-slate-200 bg-white text-slate-500"
                 }`}
               >
-                {r === "today" ? "Hari Ini" : r === "week" ? "Minggu Ini" : "Bulan Ini"}
+                {label}
               </button>
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <TargetCard label="Leads" current={targets.leads[range].current} target={targets.leads[range].target} tone="brand" />
-            <TargetCard
-              label="Closing Leads"
-              current={targets.closingLeads[range].current}
-              target={targets.closingLeads[range].target}
-              tone="accent"
-            />
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
+            <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">
-            Target diatur oleh tim bisnis untuk setiap sales.
-          </p>
         </section>
 
-        {/* Program berlangsung */}
-        {ongoingProgram && (
-          <section>
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Program Berlangsung</h2>
-              <Link to="/program" className="text-xs font-medium text-brand">Lihat semua</Link>
-            </div>
-            <Link to="/program" className="soft-card flex items-start gap-3 p-4">
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-accent/30 text-accent-foreground">
-                <Award className="h-6 w-6" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[11px] font-medium text-warning-foreground">{new Date(ongoingProgram.date).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long" })}</p>
-                <p className="text-sm font-semibold">{ongoingProgram.name}</p>
-                <div className="mt-1.5 flex items-center gap-3 text-[11px] text-muted-foreground">
-                  <span>🎯 {ongoingProgram.currentLeads}/{ongoingProgram.targetLeads} Leads</span>
-                  <span>📍 {ongoingProgram.location}</span>
-                </div>
-              </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        <section>
+          <div className="mb-2.5 flex items-center justify-between">
+            <h2 className="text-[17px] font-bold text-slate-900">Program Berlangsung</h2>
+            <Link to="/program" className="inline-flex items-center gap-0.5 text-[13px] font-medium text-slate-500">
+              Lihat Semua <ChevronRight className="h-4 w-4" />
             </Link>
-          </section>
-        )}
-
-        {/* Today's activities */}
-        <section className="pb-6">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Aktivitas Hari Ini</h2>
-            <Link to="/aktivitas" className="text-xs font-medium text-brand">Lihat semua</Link>
           </div>
-          <div className="space-y-2.5">
-            {todayActivities.length === 0 && (
-              <div className="soft-card p-6 text-center text-sm text-muted-foreground">
-                Belum ada aktivitas hari ini
+          {ongoingProgram ? (
+            <Link to="/program" className="block rounded-xl border border-slate-200 bg-white p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[13px] font-semibold" style={{ color: PRIMARY }}>
+                  {formatTanggalPanjang(ongoingProgram.date)}
+                </p>
+                <ChevronRight className="h-5 w-5 flex-shrink-0" style={{ color: PRIMARY }} />
               </div>
-            )}
-            {todayActivities.map((a) => (
-              <Link
-                key={a.id}
-                to="/aktivitas/$id"
-                params={{ id: a.id }}
-                className="soft-card flex items-center gap-3 p-3.5"
-              >
-                <StatusPill status={a.status} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-brand">{a.type}</span>
-                    <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${a.mode === "online" ? "bg-brand/10 text-brand" : "bg-secondary text-muted-foreground"}`}>
-                      {a.mode === "online" ? <Globe className="h-3 w-3" /> : <Footprints className="h-3 w-3" />}
-                      {MODE_META[a.mode].label}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">{a.mode === "lapangan" ? a.ptm : "Link"}</span>
-                  </div>
-                  <p className="mt-1 truncate text-sm font-semibold">{a.locationName}</p>
-                  <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">
-                    <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" />{a.timeRange}</span>
-                    <span className="inline-flex items-center gap-1 truncate"><MapPin className="h-3 w-3 flex-shrink-0" />{a.address.split(",")[0]}</span>
-                  </div>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
-            ))}
+              <p className="mt-1 text-[17px] font-bold text-slate-900">{ongoingProgram.name}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-slate-500">
+                <span className="inline-flex items-center gap-1.5">
+                  <Crosshair className="h-4 w-4 text-[#2953A4]" />
+                  {ongoingProgram.currentLeads}/{ongoingProgram.targetLeads} Leads
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-4 w-4 text-[#2953A4]" />
+                  {ongoingProgram.location}
+                </span>
+              </div>
+            </Link>
+          ) : (
+            <EmptyState
+              icon={<CalendarX2 className="h-12 w-12 text-slate-400" />}
+              title="Belum Ada Program Berlangsung"
+              desc="Program yang tersedia akan muncul disini"
+            />
+          )}
+        </section>
+
+        <section>
+          <div className="mb-2.5 flex items-center justify-between">
+            <h2 className="text-[17px] font-bold text-slate-900">Aktivitas Hari Ini</h2>
+            <Link to="/aktivitas" className="inline-flex items-center gap-0.5 text-[13px] font-medium text-slate-500">
+              Lihat Semua <ChevronRight className="h-4 w-4" />
+            </Link>
           </div>
+          {todayActivities.length === 0 ? (
+            <>
+              <EmptyState
+                icon={<ClipboardList className="h-12 w-12 text-slate-400" />}
+                title="Belum Ada Aktivitas Hari ini"
+                desc="Aktivitas yang tersedia akan muncul disini"
+              />
+              <div className="mt-3 flex justify-center">
+                <TambahButton />
+              </div>
+            </>
+          ) : (
+            <div className="space-y-3">
+              {todayActivities.map((a) => {
+                const status = statusById[a.id] ?? a.status;
+                return (
+                  <div key={a.id} className="rounded-xl border border-slate-200 bg-white p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[13px] text-slate-500">
+                        {a.startTime ?? a.timeRange.split(" - ")[0]} WIB
+                      </p>
+                      <StatusText status={status} />
+                    </div>
+                    <div className="my-2.5 border-t border-slate-100" />
+                    <Link to="/aktivitas/$id" params={{ id: a.id }} className="flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-[16px] font-bold text-slate-900">{a.locationName}</p>
+                        <p className="mt-0.5 truncate text-[13px] text-slate-500">{a.address}</p>
+                      </div>
+                      <ChevronRight className="h-5 w-5 flex-shrink-0" style={{ color: PRIMARY }} />
+                    </Link>
+                    <div className="mt-3 flex items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-2.5">
+                      <span className="inline-flex items-center gap-1.5 text-[13px] text-slate-500">
+                        <Crosshair className="h-4 w-4 text-[#2953A4]" />
+                        {a.leadsCount}/{a.leadsTarget} Leads
+                      </span>
+                      {status === "completed" ? (
+                        <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-[12px] font-medium text-slate-500">
+                          <CircleCheck className="h-3.5 w-3.5" /> Finished {a.checkOutTime ?? ""}
+                        </span>
+                      ) : status === "checked_in" ? (
+                        <button
+                          onClick={() => setStatusById((s) => ({ ...s, [a.id]: "completed" }))}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3.5 py-2 text-[12px] font-semibold text-white"
+                        >
+                          <LogOut className="h-3.5 w-3.5" /> Check Out {a.checkInTime ?? ""}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setStatusById((s) => ({ ...s, [a.id]: "checked_in" }))}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-4 py-2 text-[12px] font-semibold text-white"
+                        >
+                          <MapPin className="h-3.5 w-3.5" /> Check In
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              <div className="flex justify-center pt-1">
+                <TambahButton />
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </MobileShell>
   );
 }
 
-function TargetCard({ label, current, target, tone }: { label: string; current: number; target: number; tone: "brand" | "accent" }) {
+function TargetCard({ icon, label, current, target }: { icon: React.ReactNode; label: string; current: number; target: number }) {
   const pct = Math.min(100, Math.round((current / target) * 100));
   return (
-    <div className="soft-card p-4">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <TrendingUp className="h-3.5 w-3.5" /> {label}
-      </div>
-      <p className="mt-1.5 text-2xl font-bold text-foreground">
-        {current}
-        <span className="text-sm font-medium text-muted-foreground"> / {target}</span>
+    <div className="rounded-xl border border-slate-200 bg-white p-3.5">
+      <p className="flex items-center gap-1.5 text-[14px] text-slate-700">
+        {icon} {label}
       </p>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-secondary">
-        <div
-          className={`h-full rounded-full ${tone === "brand" ? "bg-brand" : "bg-[var(--gradient-accent)]"}`}
-          style={{ width: `${pct}%` }}
-        />
+      <p className="mt-1.5 text-[20px] font-bold text-slate-900">
+        {current}
+        <span className="text-[14px] font-normal text-slate-400">/{target}</span>
+      </p>
+      <div className="mt-2 flex items-center gap-2">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+          <div className="h-full rounded-full bg-[#2953A4]" style={{ width: `${pct}%` }} />
+        </div>
+        <span className="text-[12px] text-slate-500">{pct}%</span>
       </div>
-      <p className="mt-1 text-[10px] text-muted-foreground">{pct}% tercapai</p>
     </div>
   );
 }
 
-function CheckInCard() {
-  const [checkedIn, setCheckedIn] = useState(false);
+function StatusText({ status }: { status: ActivityStatus }) {
+  if (status === "completed") return <span className="text-[13px] text-slate-400">Berakhir</span>;
+  if (status === "checked_in") return <span className="text-[13px] font-medium text-green-500">Berjalan</span>;
+  return <span className="text-[13px] font-medium text-amber-500">Segera</span>;
+}
+
+function EmptyState({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="soft-card flex items-center justify-between p-4">
-      <div>
-        <p className="text-xs text-muted-foreground">Status absensi</p>
-        <p className="text-sm font-semibold">
-          {checkedIn ? "Sudah Check-in 08:12" : "Belum check-in"}
-        </p>
-        <p className="text-[11px] text-muted-foreground">📍 Lokasi: Denpasar</p>
-      </div>
-      <button
-        onClick={() => setCheckedIn(!checkedIn)}
-        className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
-          checkedIn ? "bg-destructive text-destructive-foreground" : "bg-brand text-brand-foreground"
-        }`}
-      >
-        {checkedIn ? <><LogOut className="h-3.5 w-3.5" /> Check Out</> : <><LogIn className="h-3.5 w-3.5" /> Check In</>}
-      </button>
+    <div className="py-6 text-center">
+      <span className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-slate-100">
+        {icon}
+      </span>
+      <p className="mt-4 text-[17px] font-bold text-slate-900">{title}</p>
+      <p className="mt-1 text-[13px] text-slate-500">{desc}</p>
     </div>
   );
 }
 
-function StatusPill({ status }: { status: "planned" | "checked_in" | "completed" }) {
-  const map = {
-    planned: { bg: "bg-secondary", text: "text-brand", label: "Plan" },
-    checked_in: { bg: "bg-warning/20", text: "text-warning-foreground", label: "Live" },
-    completed: { bg: "bg-success/15", text: "text-success", label: "Done" },
-  } as const;
-  const s = map[status];
+function TambahButton() {
   return (
-    <div className={`flex h-12 w-12 flex-shrink-0 flex-col items-center justify-center rounded-xl ${s.bg} ${s.text}`}>
-      <span className="text-[10px] font-bold uppercase">{s.label}</span>
-    </div>
+    <Link
+      to="/aktivitas/buat"
+      className="inline-flex items-center gap-1.5 rounded-lg border border-[#2953A4] bg-white px-4 py-2 text-[14px] font-medium text-[#2953A4]"
+    >
+      <Plus className="h-4 w-4" /> Tambah Aktivitas
+    </Link>
   );
 }

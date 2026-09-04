@@ -95,8 +95,8 @@ export const profile: SalesProfile = {
 };
 
 export const targets = {
-  leads: { today: { current: 6, target: 12 }, week: { current: 38, target: 80 }, month: { current: 132, target: 200 } },
-  closingLeads: { today: { current: 2, target: 5 }, week: { current: 18, target: 35 }, month: { current: 76, target: 140 } },
+  leads: { today: { current: 90, target: 100 }, week: { current: 38, target: 80 }, month: { current: 132, target: 200 } },
+  closingLeads: { today: { current: 12, target: 24 }, week: { current: 18, target: 35 }, month: { current: 76, target: 140 } },
 };
 
 export const activities: Activity[] = [
@@ -210,13 +210,13 @@ export const programs: Program[] = [
   {
     id: "p1",
     name: "Gebyar Emas Akhir Bulan",
-    date: "2026-06-20",
+    date: "2026-06-28",
     endDate: "2026-06-30",
-    location: "Denpasar",
-    targetLeads: 100,
-    targetClosing: 50,
-    currentLeads: 62,
-    currentClosing: 21,
+    location: "Kemayoran, Jakarta Pusat",
+    targetLeads: 10,
+    targetClosing: 5,
+    currentLeads: 0,
+    currentClosing: 0,
     status: "Berlangsung",
   },
   {
