@@ -42,6 +42,11 @@ export interface Contact {
   hasGold: boolean;
   interested: boolean;
   note?: string;
+  gender?: "Laki-Laki" | "Perempuan";
+  address?: string;
+  kelurahan?: string;
+  wilayah?: string;
+  job?: string;
 }
 
 export interface Program {
@@ -290,6 +295,18 @@ export const formatJadwal = (a: Pick<Activity, "date" | "timeRange" | "startTime
   return `${formatTanggalSingkat(a.date)} | ${range} WIB`;
 };
 
+const BULAN_ID = [
+  "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+  "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+] as const;
+
+/** "Sabtu, 28 Juni 2026 | 08:00" */
+export const formatTanggalPanjang = (iso: string, time?: string) => {
+  const d = new Date(iso);
+  const tgl = `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN_ID[d.getMonth()]} ${d.getFullYear()}`;
+  return time ? `${tgl} | ${time}` : tgl;
+};
+
 const BULAN_EN = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -311,3 +328,54 @@ export const KELURAHAN_WILAYAH: Record<string, string> = {
   Jatinegara: "Kec. Jatinegara, Jakarta Timur, DKI Jakarta, 13310",
   Kebayoran: "Kec. Kebayoran Baru, Jakarta Selatan, DKI Jakarta, 12110",
 };
+
+export const PEKERJAAN_PROMAS = [
+  "Karyawan Swasta",
+  "Wiraswasta",
+  "PNS",
+  "Ibu Rumah Tangga",
+  "Pelajar / Mahasiswa",
+  "Lainnya",
+] as const;
+
+export const STATUS_NASABAH: { value: LeadStatus; desc: string }[] = [
+  { value: "Hot", desc: "Punya emas & berniat gadai" },
+  { value: "Warm", desc: "Punya emas, belum berniat" },
+  { value: "Cold", desc: "Belum punya emas & belum berniat" },
+  { value: "Closing", desc: "Siap closing" },
+];
+
+export interface WaTemplate {
+  id: "default" | "followup" | "closing";
+  title: string;
+  body: string;
+}
+
+export const WA_TEMPLATES: WaTemplate[] = [
+  {
+    id: "default",
+    title: "Template Default",
+    body: "Halo Kak {{nama_customer}} 👋\nSaya {{nama_sales}} dari Gadai MAS.\nTerkait event {{nama_event}} pada {{tanggal_event}}, berikut detail kupon aktif Kakak:\nKode Kupon: {{kode_kupon}}\n\nApakah Kakak bersedia saya hubungi untuk info lebih lanjut?",
+  },
+  {
+    id: "followup",
+    title: "Template Follow Up",
+    body: "Halo Kak {{nama_customer}},\nIni {{nama_sales}} dari Gadai MAS.\nMengingatkan kembali terkait penawaran di event {{nama_event}}.\nApakah Kakak sudah sempat mempertimbangkan untuk proses gadai?\nSaya siap membantu ya 😊",
+  },
+  {
+    id: "closing",
+    title: "Template Setelah Closing",
+    body: "Terima kasih Kak {{nama_customer}} 🙏\nAtas kepercayaannya menggunakan layanan Gadai MAS melalui event {{nama_event}}.\nJika ada pertanyaan atau butuh bantuan lainnya, silakan hubungi saya ya.\nSemoga harinya menyenangkan! 😊",
+  },
+];
+
+export const fillWaTemplate = (
+  tpl: string,
+  vars: { nama_customer: string; nama_sales: string; nama_event: string; tanggal_event: string; kode_kupon: string },
+) =>
+  tpl
+    .replaceAll("{{nama_customer}}", vars.nama_customer)
+    .replaceAll("{{nama_sales}}", vars.nama_sales)
+    .replaceAll("{{nama_event}}", vars.nama_event)
+    .replaceAll("{{tanggal_event}}", vars.tanggal_event)
+    .replaceAll("{{kode_kupon}}", vars.kode_kupon);

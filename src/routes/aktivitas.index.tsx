@@ -77,7 +77,7 @@ function ActivityList() {
               onClick={() => setTab(t)}
               className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${
                 tab === t
-                  ? "border-blue-700 bg-blue-700 text-white"
+                  ? "border-[#2953A4] bg-[#2953A4] text-white"
                   : "border-slate-200 bg-white text-slate-500"
               }`}
             >
@@ -86,7 +86,7 @@ function ActivityList() {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 rounded-xl bg-blue-50 p-3">
+        <div className="grid grid-cols-2 gap-3 rounded-xl bg-[#2953A4]/10 p-3">
           <label className="block">
             <span className="mb-1 block text-[13px] text-slate-700">Dari Bulan</span>
             <span className="relative block">
@@ -127,7 +127,7 @@ function ActivityList() {
             return (
               <div key={a.id} className="rounded-xl border border-slate-200 bg-white p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-[12px] font-medium text-blue-700">{formatJadwal(a)}</p>
+                  <p className="text-[12px] font-medium text-[#2953A4]">{formatJadwal(a)}</p>
                   <p className={`flex-shrink-0 text-[12px] font-medium ${meta.className}`}>{meta.label}</p>
                 </div>
                 <div className="my-2.5 border-t border-slate-100" />
@@ -140,14 +140,14 @@ function ActivityList() {
                     <p className="truncate text-[16px] font-bold text-slate-900">{a.locationName}</p>
                     <p className="mt-0.5 truncate text-[13px] text-slate-500">
                       {a.address}
-                      {isOnline && <span className="ml-1.5 text-[11px] font-semibold text-blue-700">· Online</span>}
+                      {isOnline && <span className="ml-1.5 text-[11px] font-semibold text-[#2953A4]">· Online</span>}
                     </p>
                   </div>
-                  <ChevronRight className="h-5 w-5 flex-shrink-0 text-blue-700" />
+                  <ChevronRight className="h-5 w-5 flex-shrink-0 text-[#2953A4]" />
                 </Link>
                 <div className="mt-3 flex items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-2.5">
                   <span className="inline-flex items-center gap-1.5 text-[13px] text-slate-500">
-                    <Crosshair className="h-4 w-4 text-blue-900" />
+                    <Crosshair className="h-4 w-4 text-[#2953A4]" />
                     {a.leadsCount}/{a.leadsTarget} Leads
                   </span>
                   {status === "completed" ? (
@@ -157,7 +157,7 @@ function ActivityList() {
                   ) : isOnline ? (
                     <button
                       onClick={() => copyLink(a.id, a.shareCode)}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-[12px] font-semibold text-white"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-3.5 py-2 text-[12px] font-semibold text-white"
                     >
                       {copiedId === a.id ? <Check className="h-3.5 w-3.5" /> : <Link2 className="h-3.5 w-3.5" />}
                       {copiedId === a.id ? "Tersalin" : "Bagikan Link"}
@@ -172,7 +172,7 @@ function ActivityList() {
                   ) : (
                     <button
                       onClick={() => setStatusById((s) => ({ ...s, [a.id]: "checked_in" }))}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-4 py-2 text-[12px] font-semibold text-white"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-4 py-2 text-[12px] font-semibold text-white"
                     >
                       <MapPin className="h-3.5 w-3.5" /> Check In
                     </button>
@@ -191,7 +191,7 @@ function ActivityList() {
         <div className="flex justify-center pt-1">
           <Link
             to="/aktivitas/buat"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-blue-700 bg-white px-4 py-2 text-[14px] font-medium text-blue-700"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[#2953A4] bg-white px-4 py-2 text-[14px] font-medium text-[#2953A4]"
           >
             <Plus className="h-4 w-4" /> Tambah Aktivitas
           </Link>

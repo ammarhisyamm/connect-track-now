@@ -106,7 +106,7 @@ function CreateActivity() {
                     onClick={() => setChannel(c)}
                     className={`rounded-full border px-3.5 py-2 text-[13px] font-medium ${
                       channel === c
-                        ? "border-blue-700 bg-blue-700 text-white"
+                        ? "border-[#2953A4] bg-[#2953A4] text-white"
                         : "border-slate-200 bg-white text-slate-500"
                     }`}
                   >
@@ -115,7 +115,7 @@ function CreateActivity() {
                 ))}
               </div>
             </Field>
-            <p className="rounded-lg bg-blue-50 px-3.5 py-2.5 text-[12px] leading-relaxed text-blue-700">
+            <p className="rounded-lg bg-[#2953A4]/10 px-3.5 py-2.5 text-[12px] leading-relaxed text-[#2953A4]">
               Setelah disimpan, kamu dapat link unik untuk dibagikan ke nasabah. Tanpa check-in GPS.
             </p>
           </>
@@ -134,10 +134,10 @@ function CreateActivity() {
                   >
                     <span
                       className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 ${
-                        ptm === p ? "border-blue-700" : "border-slate-300"
+                        ptm === p ? "border-[#2953A4]" : "border-slate-300"
                       }`}
                     >
-                      {ptm === p && <span className="h-2.5 w-2.5 rounded-full bg-blue-700" />}
+                      {ptm === p && <span className="h-2.5 w-2.5 rounded-full bg-[#2953A4]" />}
                     </span>
                     {p}
                   </button>
@@ -227,7 +227,7 @@ function CreateActivity() {
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-blue-700 py-3.5 text-[15px] font-semibold text-white active:scale-[0.99]"
+          className="w-full rounded-lg bg-[#2953A4] py-3.5 text-[15px] font-semibold text-white active:scale-[0.99]"
         >
           {isOnline ? "Simpan & Bagikan Link" : "Simpan Aktivitas"}
         </button>
@@ -245,10 +245,10 @@ function ModeRadio({ active, onClick, title, desc }: { active: boolean; onClick:
     >
       <span
         className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 ${
-          active ? "border-blue-700" : "border-slate-300"
+          active ? "border-[#2953A4]" : "border-slate-300"
         }`}
       >
-        {active && <span className="h-2.5 w-2.5 rounded-full bg-blue-700" />}
+        {active && <span className="h-2.5 w-2.5 rounded-full bg-[#2953A4]" />}
       </span>
       <span>
         <span className={`block text-[14px] font-medium ${active ? "text-slate-800" : "text-slate-400"}`}>{title}</span>
