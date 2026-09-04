@@ -192,12 +192,12 @@ export const activities: Activity[] = [
 ];
 
 export const contacts: Contact[] = [
-  { id: "c1", name: "Siti Sarah", phone: "+6281234567890", status: "Hot", source: "Canvassing", lastContact: "Hari ini", hasGold: true, interested: true, note: "Tertarik gadai 10gr, follow up besok" },
-  { id: "c2", name: "Made Wirawan", phone: "+6281298765432", status: "Warm", source: "Open Booth", lastContact: "2 hari lalu", hasGold: true, interested: false },
-  { id: "c3", name: "Putu Ayu Lestari", phone: "+6285712340987", status: "Closing", source: "Event", lastContact: "Kemarin", hasGold: true, interested: true, note: "Sudah closing 5gr" },
-  { id: "c4", name: "Bagus Santoso", phone: "+6282111223344", status: "Cold", source: "Canvassing", lastContact: "1 minggu lalu", hasGold: false, interested: false },
-  { id: "c5", name: "Ni Luh Diah", phone: "+6287722334411", status: "Warm", source: "Sosialisasi", lastContact: "3 hari lalu", hasGold: true, interested: true, note: "Minta dijelaskan ulang skema bunga" },
-  { id: "c6", name: "Komang Arta", phone: "+6281355667788", status: "Hot", source: "Market ke instansi", lastContact: "Hari ini", hasGold: true, interested: true },
+  { id: "c1", name: "Agustinus Nugroho Setiyani", phone: "+6281234567890", status: "Hot", source: "Market ke instansi", lastContact: "Hari ini", hasGold: true, interested: true, note: "Tertarik gadai 10gr, follow up besok", job: "Karyawan Swasta", gender: "Laki-Laki", address: "Jln Matsuda Kirana Kelapa Gading", kelurahan: "Kemayoran", wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620" },
+  { id: "c2", name: "Made Wirawan", phone: "+6281298765432", status: "Warm", source: "Open Booth", lastContact: "2 hari lalu", hasGold: true, interested: false, job: "Wiraswasta", kelurahan: "Rawamangun", wilayah: "Kec. Pulogadung, Jakarta Timur, DKI Jakarta, 13220" },
+  { id: "c3", name: "Putu Ayu Lestari", phone: "+6285712340987", status: "Closing", source: "Canvassing", lastContact: "Kemarin", hasGold: true, interested: true, note: "Sudah closing 5gr", job: "Karyawan Swasta", kelurahan: "Kemayoran", wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620" },
+  { id: "c4", name: "Bagus Santoso", phone: "+6282111223344", status: "Cold", source: "Canvassing", lastContact: "1 minggu lalu", hasGold: false, interested: false, job: "Pelajar / Mahasiswa", kelurahan: "Jatinegara", wilayah: "Kec. Jatinegara, Jakarta Timur, DKI Jakarta, 13310" },
+  { id: "c5", name: "Ni Luh Diah", phone: "+6287722334411", status: "Warm", source: "Sosialisasi", lastContact: "3 hari lalu", hasGold: true, interested: true, note: "Minta dijelaskan ulang skema bunga", job: "Ibu Rumah Tangga", kelurahan: "Kelapa Gading", wilayah: "Kec. Kelapa Gading, Jakarta Utara, DKI Jakarta, 14240" },
+  { id: "c6", name: "Komang Arta", phone: "+6281355667788", status: "Hot", source: "Market ke instansi", lastContact: "Hari ini", hasGold: true, interested: true, job: "PNS", kelurahan: "Kemayoran", wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620" },
 ];
 
 export const programs: Program[] = [
@@ -238,6 +238,49 @@ export const programs: Program[] = [
     status: "Berakhir",
   },
 ];
+
+export interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  branch: string;
+  company: string;
+  score: number;
+  isSelf?: boolean;
+}
+
+export interface ProgramHero {
+  name: string;
+  period: string;
+  rank: number;
+  score: number;
+  predikat: string;
+  metrics: { label: string; desc: string; value: number }[];
+  leaderboard: LeaderboardEntry[];
+}
+
+export const programHero: ProgramHero = {
+  name: "Race Off November",
+  period: "20-30 Juni",
+  rank: 3,
+  score: 13,
+  predikat: "Memuaskan",
+  metrics: [
+    { label: "Lash", desc: "Kontribusi Transaksi", value: 12 },
+    { label: "Leads", desc: "Calon nasabah masuk", value: 24 },
+  ],
+  leaderboard: [
+    { rank: 1, name: "Miftahul Jannah", branch: "MAS Monta", company: "PT.Gadai Mas NTB", score: 14 },
+    { rank: 2, name: "Miftahul Jannah", branch: "MAS Monta", company: "PT.Gadai Mas NTB", score: 14 },
+    { rank: 3, name: "Rizky Pratama", branch: "Cabang Denpasar", company: "PT.Gadai Mas Bali", score: 13, isSelf: true },
+    { rank: 4, name: "Siti Sarah", branch: "MAS Kuta", company: "PT.Gadai Mas Bali", score: 12 },
+    { rank: 5, name: "Made Wirawan", branch: "MAS Gianyar", company: "PT.Gadai Mas Bali", score: 11 },
+    { rank: 6, name: "Putu Ayu Lestari", branch: "MAS Tabanan", company: "PT.Gadai Mas Bali", score: 10 },
+    { rank: 7, name: "Bagus Santoso", branch: "MAS Mataram", company: "PT.Gadai Mas NTB", score: 9 },
+    { rank: 8, name: "Ni Luh Diah", branch: "MAS Singaraja", company: "PT.Gadai Mas Bali", score: 8 },
+    { rank: 9, name: "Komang Arta", branch: "MAS Klungkung", company: "PT.Gadai Mas Bali", score: 7 },
+    { rank: 10, name: "Agus Setiawan", branch: "MAS Bima", company: "PT.Gadai Mas NTB", score: 6 },
+  ],
+};
 
 export const leadsByStatus = [
   { label: "Canvassing Hot", value: 232, color: "oklch(0.6 0.22 25)" },

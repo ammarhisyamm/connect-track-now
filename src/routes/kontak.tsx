@@ -1,15 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MobileShell, ScreenHeader } from "@/components/mobile-shell";
+import { MobileShell } from "@/components/mobile-shell";
 import { contacts } from "@/lib/mock-data";
-import { Phone, MessageCircle, Search, Bell } from "lucide-react";
+import { MapPin, MessageCircle, Phone, Search, UserRound } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/kontak")({
-  head: () => ({ meta: [{ title: "Daftar Kontak" }] }),
+  head: () => ({ meta: [{ title: "Kontak" }] }),
   component: ContactsPage,
 });
 
 const TABS = ["Semua", "Belum Closing", "Closing"] as const;
+
+const STATUS_COLOR: Record<string, string> = {
+  Hot: "text-red-500",
+  Warm: "text-amber-500",
+  Cold: "text-slate-400",
+  Closing: "text-green-500",
+};
+
+function shortLocation(c: { kelurahan?: string; wilayah?: string; address?: string }) {
+  if (c.kelurahan && c.wilayah) {
+    const parts = c.wilayah.split(",").map((s) => s.trim());
+    const city = parts[1] ?? parts[0];
+    return `${c.kelurahan}, ${city}`;
+  }
+  return c.address ?? "-";
+}
 
 function ContactsPage() {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Semua");
@@ -22,41 +38,47 @@ function ContactsPage() {
     return true;
   });
 
-  const needsFollowUp = contacts.filter((c) => c.status !== "Closing").length;
+  const closingCount = contacts.filter((c) => c.status === "Closing").length;
 
   return (
-    <MobileShell>
-      <ScreenHeader
-        title="Daftar Kontak"
-        subtitle={`${needsFollowUp} leads perlu di-follow up`}
-      />
-      <div className="-mt-3 px-5">
-        <div className="soft-card flex items-center gap-2 px-3 py-2.5">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Cari nama kontak…"
-            className="flex-1 bg-transparent text-sm outline-none"
-          />
+    <MobileShell hideFab>
+      <div className="bg-white px-5 pb-2 pt-12">
+        <h1 className="text-[22px] font-bold text-slate-900">Kontak</h1>
+      </div>
+
+      <div className="space-y-4 bg-white px-5 pb-8 pt-3">
+        <div className="rounded-xl border border-slate-200 p-2">
+          <div className="flex items-center gap-2 rounded-lg border border-slate-200 px-3.5 py-2.5">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Cari nama kontak"
+              className="flex-1 bg-transparent text-[14px] text-slate-800 outline-none placeholder:text-slate-400"
+            />
+            <Search className="h-4.5 w-4.5 text-slate-400" />
+          </div>
         </div>
 
-        {needsFollowUp > 0 && (
-          <div className="mt-4 flex items-center gap-3 rounded-2xl bg-accent/30 p-3 text-accent-foreground">
-            <Bell className="h-4 w-4" />
-            <p className="text-xs font-medium">
-              Ada {needsFollowUp} leads yang belum closing — yuk follow up!
-            </p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-xl bg-[#2953A4]/10 p-3.5">
+            <p className="text-[14px] text-slate-600">Total Kontak</p>
+            <p className="mt-1 text-[18px] font-semibold text-slate-900">{contacts.length}</p>
           </div>
-        )}
+          <div className="rounded-xl bg-[#2953A4]/10 p-3.5">
+            <p className="text-[14px] text-slate-600">Closing Kontak</p>
+            <p className="mt-1 text-[18px] font-semibold text-slate-900">{closingCount}</p>
+          </div>
+        </div>
 
-        <div className="mt-4 inline-flex rounded-full bg-secondary p-1 text-xs">
+        <div className="flex gap-2">
           {TABS.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`rounded-full px-3 py-1.5 font-medium transition-colors ${
-                tab === t ? "bg-brand text-brand-foreground" : "text-muted-foreground"
+              className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${
+                tab === t
+                  ? "border-[#2953A4] bg-[#2953A4] text-white"
+                  : "border-slate-200 bg-white text-slate-500"
               }`}
             >
               {t}
@@ -64,58 +86,55 @@ function ContactsPage() {
           ))}
         </div>
 
-        <div className="mt-4 space-y-2.5">
+        <div className="space-y-3">
           {filtered.map((c) => (
-            <div key={c.id} className="soft-card p-4">
-              <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-bold text-brand">
-                  {c.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+            <div key={c.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+              <div className="p-4 pb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-[16px] font-bold text-slate-900">{c.name}</p>
+                  <span className={`flex-shrink-0 text-[14px] font-medium ${STATUS_COLOR[c.status] ?? "text-slate-400"}`}>
+                    {c.status}
+                  </span>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="truncate text-sm font-semibold">{c.name}</p>
-                    <StatusBadge status={c.status} />
-                  </div>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">
-                    {c.source} · {c.lastContact}
+                <p className="mt-0.5 text-[13px] text-slate-500">{c.job ?? "-"}</p>
+
+                <div className="mt-3 rounded-lg border border-slate-200 p-3">
+                  <p className="flex items-center gap-1.5 text-[13px] text-slate-500">
+                    <UserRound className="h-4 w-4" /> Sumber Kontak
                   </p>
-                  {c.note && (
-                    <p className="mt-1.5 rounded-lg bg-secondary/60 px-2 py-1.5 text-[11px] text-muted-foreground">
-                      💬 {c.note}
-                    </p>
-                  )}
-                  <div className="mt-3 flex gap-2">
-                    <a
-                      href={`tel:${c.phone}`}
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-brand/10 py-2 text-xs font-semibold text-brand"
-                    >
-                      <Phone className="h-3.5 w-3.5" /> Telepon
-                    </a>
-                    <a
-                      href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-success/15 py-2 text-xs font-semibold text-success"
-                    >
-                      <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
-                    </a>
-                  </div>
+                  <p className="mt-1 text-[15px] font-bold text-slate-900">{c.source}</p>
                 </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-2.5">
+                  <a
+                    href={`tel:${c.phone}`}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#2953A4]/10 py-2.5 text-[14px] font-medium text-[#2953A4]"
+                  >
+                    <Phone className="h-4 w-4" /> Telepon
+                  </a>
+                  <a
+                    href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full bg-green-50 py-2.5 text-[14px] font-medium text-green-600"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Whatsapp
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 bg-[#2953A4]/10 px-4 py-2.5 text-[13px] font-medium text-[#2953A4]">
+                <MapPin className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{shortLocation(c)}</span>
               </div>
             </div>
           ))}
+          {filtered.length === 0 && (
+            <div className="rounded-xl border border-slate-200 p-8 text-center text-sm text-slate-400">
+              Tidak ada kontak.
+            </div>
+          )}
         </div>
       </div>
     </MobileShell>
   );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    Hot: "bg-destructive/15 text-destructive",
-    Warm: "bg-warning/20 text-warning-foreground",
-    Cold: "bg-secondary text-muted-foreground",
-    Closing: "bg-success/15 text-success",
-  };
-  return <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${map[status]}`}>{status}</span>;
 }
