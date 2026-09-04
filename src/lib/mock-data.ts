@@ -298,7 +298,7 @@ export interface LeadDistribution {
 
 export const LEAD_DISTRIBUTION: LeadDistribution[] = [
   { label: "Canvassing Hot", pct: 32.5, leads: 232, closing: 21, color: "#2953A4" },
-  { label: "Sosialisasi", pct: 32.5, leads: 232, closing: 21, color: "#F59E0B" },
+  { label: "Sosialisasi", pct: 30, leads: 232, closing: 21, color: "#F59E0B" },
   { label: "Open Booth", pct: 20, leads: 232, closing: 21, color: "#E5484D" },
   { label: "Event", pct: 12.5, leads: 232, closing: 21, color: "#22A06B" },
   { label: "Market ke Instansi", pct: 5, leads: 232, closing: 21, color: "#8E44AD" },

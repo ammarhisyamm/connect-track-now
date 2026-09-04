@@ -222,32 +222,37 @@ function Donut() {
   const size = 220;
   const r = 78;
   const c = 2 * Math.PI * r;
+  const gap = 3; // px putih antar segmen ala chart standar
   const total = LEAD_DISTRIBUTION.reduce((s, l) => s + l.pct, 0);
   let acc = 0;
   const segs = LEAD_DISTRIBUTION.map((l) => {
     const frac = l.pct / total;
-    const seg = { ...l, dash: frac * c, offset: -acc * c, mid: (acc + frac / 2) * 2 * Math.PI };
+    const start = acc;
     acc += frac;
-    return seg;
+    return { ...l, frac, start, mid: (start + frac / 2) * 2 * Math.PI };
   });
 
   return (
     <div className="mt-2 flex justify-center">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
-          {segs.map((s) => (
-            <circle
-              key={s.label}
-              cx={size / 2}
-              cy={size / 2}
-              r={r}
-              fill="none"
-              stroke={s.color}
-              strokeWidth={34}
-              strokeDasharray={`${s.dash} ${c - s.dash}`}
-              strokeDashoffset={s.offset}
-            />
-          ))}
+          {segs.map((s) => {
+            const len = Math.max(s.frac * c - gap, 0.5);
+            return (
+              <circle
+                key={s.label}
+                cx={size / 2}
+                cy={size / 2}
+                r={r}
+                fill="none"
+                stroke={s.color}
+                strokeWidth={34}
+                strokeLinecap="butt"
+                strokeDasharray={`${len} ${c - len}`}
+                strokeDashoffset={-s.start * c + gap / 2}
+              />
+            );
+          })}
         </g>
         {segs
           .filter((s) => s.pct >= 8)
@@ -269,6 +274,12 @@ function Donut() {
               </text>
             );
           })}
+        <text x={size / 2} y={size / 2 - 8} textAnchor="middle" fill="#0f172a" fontSize={22} fontWeight={800}>
+          {LEAD_TOTAL.leads}
+        </text>
+        <text x={size / 2} y={size / 2 + 14} textAnchor="middle" fill="#64748b" fontSize={12}>
+          Leads
+        </text>
       </svg>
     </div>
   );
