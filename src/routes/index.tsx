@@ -64,7 +64,7 @@ function Home() {
 
   return (
     <MobileShell hideFab>
-      <header className="relative overflow-hidden px-5 pb-14 pt-12 text-white" style={{ background: "var(--gradient-brand)" }}>
+      <header className="relative overflow-hidden px-5 pb-20 pt-12 text-white" style={{ background: "var(--gradient-brand)" }}>
         <div className="relative z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/25">
