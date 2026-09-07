@@ -75,7 +75,7 @@ function Home() {
               <p className="text-[17px] font-bold">Sales Gadai Mas</p>
             </div>
           </div>
-          <Link to="/profile" className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-700">
+          <Link to="/notifikasi" className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-700">
             <Bell className="h-5 w-5" />
           </Link>
         </div>

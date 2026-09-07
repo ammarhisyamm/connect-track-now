@@ -319,6 +319,69 @@ export const leadsByStatus = [
   { label: "Lainnya", value: 28, color: "oklch(0.7 0.04 260)" },
 ];
 
+export interface NotificationBody {
+  t: string;
+  b?: boolean;
+}
+
+export interface NotificationItem {
+  id: string;
+  icon: "megaphone" | "globe" | "clipboard" | "gift";
+  title: string;
+  body: NotificationBody[];
+  date: string;
+  unread: boolean;
+}
+
+export const notifications: NotificationItem[] = [
+  {
+    id: "n1",
+    icon: "megaphone",
+    title: "Webinar Pengenalan Gadai MAS Melalui Media Digital",
+    body: [{ t: "Event akan berlangsung pada hari ini 14 Desember 2021 pukul 08.30-selesai." }],
+    date: "5 November 2025, 11:15",
+    unread: false,
+  },
+  {
+    id: "n2",
+    icon: "globe",
+    title: "Target Bulan Ini Sudah Ditentukan!",
+    body: [
+      { t: "Kamu mendapatkan target " },
+      { t: "50 leads", b: true },
+      { t: " yang harus dicapai bulan ini." },
+    ],
+    date: "1 November 2025, 11:15",
+    unread: true,
+  },
+  {
+    id: "n3",
+    icon: "clipboard",
+    title: "Belum Capai Target, Ayo Kejar Lagi!",
+    body: [
+      { t: "Saat ini progresmu baru " },
+      { t: "20", b: true },
+      { t: " dari " },
+      { t: "50", b: true },
+      { t: " leads. Masih ada waktu untuk mengejar! Tingkatkan follow-up dan manfaatkan database." },
+    ],
+    date: "15 November 2025, 11:15",
+    unread: false,
+  },
+  {
+    id: "n4",
+    icon: "gift",
+    title: "Selamat! Targetmu Telah Tercapai!",
+    body: [
+      { t: "Kamu sudah mencapai " },
+      { t: "55", b: true },
+      { t: " leads bulan ini, melampaui target! Pertahankan performamu." },
+    ],
+    date: "30 November 2025, 11:15",
+    unread: false,
+  },
+];
+
 export const formatRupiah = (n: number) =>
   new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
 

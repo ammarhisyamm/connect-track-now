@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AktivitasRouteImport } from './routes/aktivitas'
 import { Route as KontakRouteImport } from './routes/kontak'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as NotifikasiRouteImport } from './routes/notifikasi'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgramRouteImport } from './routes/program'
 import { Route as UbahPasswordRouteImport } from './routes/ubah-password'
@@ -40,6 +41,11 @@ const KontakRoute = KontakRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotifikasiRoute = NotifikasiRouteImport.update({
+  id: '/notifikasi',
+  path: '/notifikasi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/aktivitas': typeof AktivitasRouteWithChildren
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
+  '/notifikasi': typeof NotifikasiRoute
   '/profile': typeof ProfileRoute
   '/program': typeof ProgramRoute
   '/ubah-password': typeof UbahPasswordRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
+  '/notifikasi': typeof NotifikasiRoute
   '/profile': typeof ProfileRoute
   '/program': typeof ProgramRoute
   '/ubah-password': typeof UbahPasswordRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/aktivitas': typeof AktivitasRouteWithChildren
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
+  '/notifikasi': typeof NotifikasiRoute
   '/profile': typeof ProfileRoute
   '/program': typeof ProgramRoute
   '/ubah-password': typeof UbahPasswordRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/aktivitas'
     | '/kontak'
     | '/login'
+    | '/notifikasi'
     | '/profile'
     | '/program'
     | '/ubah-password'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/'
     | '/kontak'
     | '/login'
+    | '/notifikasi'
     | '/profile'
     | '/program'
     | '/ubah-password'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/aktivitas'
     | '/kontak'
     | '/login'
+    | '/notifikasi'
     | '/profile'
     | '/program'
     | '/ubah-password'
@@ -174,6 +186,7 @@ export interface RootRouteChildren {
   AktivitasRoute: typeof AktivitasRouteWithChildren
   KontakRoute: typeof KontakRoute
   LoginRoute: typeof LoginRoute
+  NotifikasiRoute: typeof NotifikasiRoute
   ProfileRoute: typeof ProfileRoute
   ProgramRoute: typeof ProgramRoute
   UbahPasswordRoute: typeof UbahPasswordRoute
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifikasi': {
+      id: '/notifikasi'
+      path: '/notifikasi'
+      fullPath: '/notifikasi'
+      preLoaderRoute: typeof NotifikasiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -291,6 +311,7 @@ const rootRouteChildren: RootRouteChildren = {
   AktivitasRoute: AktivitasRouteWithChildren,
   KontakRoute: KontakRoute,
   LoginRoute: LoginRoute,
+  NotifikasiRoute: NotifikasiRoute,
   ProfileRoute: ProfileRoute,
   ProgramRoute: ProgramRoute,
   UbahPasswordRoute: UbahPasswordRoute,
