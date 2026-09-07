@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { activities, formatTanggalPanjang, profile } from "@/lib/mock-data";
+import { useActivity } from "@/lib/activity-store";
 import { useState } from "react";
 import { CheckCircle2, Clock3, Link2, Lock, ShieldCheck } from "lucide-react";
 
@@ -17,6 +18,10 @@ export const Route = createFileRoute("/isi/$id")({
 
 function PublicLeadForm() {
   const activity = Route.useLoaderData();
+  // Status realtime dari store (localStorage) — ikut check-in sales,
+  // bukan status statis. SSR: fallback data statis.
+  const stored = useActivity(activity.id);
+  const effective = stored ?? activity;
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [hasGold, setHasGold] = useState<"ya" | "tidak" | "">("");
@@ -41,7 +46,7 @@ function PublicLeadForm() {
     );
   }
 
-  if (activity.status === "planned") {
+  if (effective.status === "planned") {
     return (
       <MobileShell hideNav>
         <div className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center">
@@ -58,7 +63,7 @@ function PublicLeadForm() {
     );
   }
 
-  if (activity.status === "completed") {
+  if (effective.status === "completed") {
     return (
       <MobileShell hideNav>
         <div className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center">

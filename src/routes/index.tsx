@@ -2,13 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { CameraModal } from "@/components/camera-modal";
 import {
-  activities,
   formatTanggalPanjang,
   profile,
   programs,
   targets,
   type ActivityStatus,
 } from "@/lib/mock-data";
+import { nowHHMM, updateActivity, useActivities } from "@/lib/activity-store";
 import { useState } from "react";
 import {
   Banknote,
@@ -40,15 +40,21 @@ type Range = "today" | "week" | "month";
 
 function Home() {
   const [range, setRange] = useState<Range>("today");
-  const [statusById, setStatusById] = useState<Record<string, ActivityStatus>>({});
   const [checkinId, setCheckinId] = useState<string | null>(null);
 
-  const confirmCheckin = () => {
-    if (checkinId) setStatusById((s) => ({ ...s, [checkinId]: "checked_in" }));
+  const confirmCheckin = (url?: string) => {
+    if (checkinId) {
+      updateActivity(checkinId, {
+        status: "checked_in",
+        checkInTime: nowHHMM(),
+        ...(url ? { photoUrl: url } : {}),
+      });
+    }
     setCheckinId(null);
   };
 
-  const todayActivities = activities.filter(
+  const allActivities = useActivities();
+  const todayActivities = allActivities.filter(
     (a) => new Date(a.date).toDateString() === new Date().toDateString()
   );
   const ongoingProgram = programs.find((p) => p.status === "Berlangsung");
@@ -180,7 +186,7 @@ function Home() {
           ) : (
             <div className="space-y-3">
               {todayActivities.map((a) => {
-                const status = statusById[a.id] ?? a.status;
+                const status = a.status;
                 return (
                   <div key={a.id} className="rounded-xl border border-slate-200 bg-white p-4">
                     <div className="flex items-center justify-between gap-2">
@@ -208,7 +214,7 @@ function Home() {
                         </span>
                       ) : status === "checked_in" ? (
                         <button
-                          onClick={() => setStatusById((s) => ({ ...s, [a.id]: "completed" }))}
+                          onClick={() => updateActivity(a.id, { status: "completed", checkOutTime: nowHHMM() })}
                           className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3.5 py-2 text-[12px] font-semibold text-white"
                         >
                           <LogOut className="h-3.5 w-3.5" /> Check Out {a.checkInTime ?? ""}

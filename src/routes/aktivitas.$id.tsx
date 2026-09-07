@@ -13,6 +13,7 @@ import {
   type Contact,
 } from "@/lib/mock-data";
 import { useLeads } from "@/lib/leads-store";
+import { nowHHMM, updateActivity, useActivity } from "@/lib/activity-store";
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -50,10 +51,12 @@ export const Route = createFileRoute("/aktivitas/$id")({
 function ActivityDetail() {
   const activity = Route.useLoaderData();
 
-  const [checkedIn, setCheckedIn] = useState(activity.status === "checked_in");
-  const [isDone, setIsDone] = useState(activity.status === "completed");
-  const [photoUrl, setPhotoUrl] = useState<string | undefined>(activity.photoUrl);
-  const [checkInAt, setCheckInAt] = useState<string | undefined>(activity.checkInTime);
+  const stored = useActivity(activity.id);
+  const current = stored ?? activity;
+  const checkedIn = current.status === "checked_in";
+  const isDone = current.status === "completed";
+  const photoUrl = current.photoUrl;
+  const checkInAt = current.checkInTime;
   const [cameraOpen, setCameraOpen] = useState(false);
   const [cameraMode, setCameraMode] = useState<"checkin" | "photo">("photo");
 
@@ -65,13 +68,7 @@ function ActivityDetail() {
   const startTime = activity.startTime ?? activity.timeRange.split(" - ")[0];
 
   const checkout = () => {
-    setCheckedIn(false);
-    setIsDone(true);
-  };
-
-  const nowHHMM = () => {
-    const d = new Date();
-    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    updateActivity(activity.id, { status: "completed", checkOutTime: nowHHMM() });
   };
 
   const openCamera = (m: "checkin" | "photo") => {
@@ -80,18 +77,16 @@ function ActivityDetail() {
   };
 
   const handleCameraSave = (url: string) => {
-    setPhotoUrl(url);
-    if (cameraMode === "checkin") {
-      setCheckedIn(true);
-      setCheckInAt(nowHHMM());
-    }
+    updateActivity(activity.id, {
+      photoUrl: url,
+      ...(cameraMode === "checkin" ? { status: "checked_in" as const, checkInTime: nowHHMM() } : {}),
+    });
     setCameraOpen(false);
   };
 
   const handleCameraSkip = () => {
     if (cameraMode === "checkin") {
-      setCheckedIn(true);
-      setCheckInAt(nowHHMM());
+      updateActivity(activity.id, { status: "checked_in", checkInTime: nowHHMM() });
     }
     setCameraOpen(false);
   };

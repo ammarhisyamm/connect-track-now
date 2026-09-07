@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { CameraModal } from "@/components/camera-modal";
 import {
-  activities,
   formatJadwal,
   monthOptions,
   parseMonthOption,
   STATUS_META,
-  type ActivityStatus,
 } from "@/lib/mock-data";
+import { nowHHMM, updateActivity, useActivities } from "@/lib/activity-store";
 import { useMemo, useState } from "react";
 import {
   ChevronRight,
@@ -30,22 +30,34 @@ function ActivityList() {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Semua");
   const [dari, setDari] = useState(MONTHS[0]);
   const [ke, setKe] = useState(MONTHS[MONTHS.length - 1]);
-  const [statusById, setStatusById] = useState<Record<string, ActivityStatus>>({});
+  const [checkinId, setCheckinId] = useState<string | null>(null);
+
+  const confirmCheckin = (url?: string) => {
+    if (checkinId) {
+      updateActivity(checkinId, {
+        status: "checked_in",
+        checkInTime: nowHHMM(),
+        ...(url ? { photoUrl: url } : {}),
+      });
+    }
+    setCheckinId(null);
+  };
+
+  const allActivities = useActivities();
 
   const filtered = useMemo(() => {
     const d = parseMonthOption(dari);
     const k = parseMonthOption(ke);
     const start = new Date(d.year, d.month, 1).getTime();
     const end = new Date(k.year, k.month + 1, 1).getTime();
-    return activities.filter((a) => {
+    return allActivities.filter((a) => {
       const t = new Date(a.date).getTime();
       if (t < start || t >= end) return false;
-      const status = statusById[a.id] ?? a.status;
       if (tab === "Hari Ini") return new Date(a.date).toDateString() === new Date().toDateString();
-      if (tab === "Riwayat") return status === "completed";
+      if (tab === "Riwayat") return a.status === "completed";
       return true;
     });
-  }, [tab, dari, ke, statusById]);
+  }, [tab, dari, ke, allActivities]);
 
   return (
     <MobileShell hideFab>
@@ -106,7 +118,7 @@ function ActivityList() {
 
         <div className="space-y-3">
           {filtered.map((a) => {
-            const status = statusById[a.id] ?? a.status;
+            const status = a.status;
             const meta = STATUS_META[status];
             return (
               <div key={a.id} className="rounded-xl border border-slate-200 bg-white p-4">
@@ -137,14 +149,14 @@ function ActivityList() {
                     </span>
                   ) : status === "checked_in" ? (
                     <button
-                      onClick={() => setStatusById((s) => ({ ...s, [a.id]: "completed" }))}
+                      onClick={() => updateActivity(a.id, { status: "completed", checkOutTime: nowHHMM() })}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3.5 py-2 text-[12px] font-semibold text-white"
                     >
                       <LogOut className="h-3.5 w-3.5" /> Check Out {a.checkInTime ?? ""}
                     </button>
                   ) : (
                     <button
-                      onClick={() => setStatusById((s) => ({ ...s, [a.id]: "checked_in" }))}
+                      onClick={() => setCheckinId(a.id)}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-4 py-2 text-[12px] font-semibold text-white"
                     >
                       <MapPin className="h-3.5 w-3.5" /> Check In
@@ -170,6 +182,15 @@ function ActivityList() {
           </Link>
         </div>
       </div>
+
+      {checkinId && (
+        <CameraModal
+          mode="checkin"
+          onClose={() => setCheckinId(null)}
+          onSave={confirmCheckin}
+          onSkip={confirmCheckin}
+        />
+      )}
     </MobileShell>
   );
 }
