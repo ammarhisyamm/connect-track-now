@@ -1,27 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { CameraModal } from "@/components/camera-modal";
 import {
   activities,
-  contacts,
   fillWaTemplate,
   formatTanggalPanjang,
   getShareCode,
   getShareLink,
-  KELURAHAN_WILAYAH,
-  PEKERJAAN_PROMAS,
   profile,
   STATUS_META,
-  STATUS_NASABAH,
   WA_TEMPLATES,
   type Contact,
-  type LeadStatus,
 } from "@/lib/mock-data";
-import { useEffect, useRef, useState } from "react";
+import { useLeads } from "@/lib/leads-store";
+import { useState } from "react";
 import {
   ArrowLeft,
   Camera,
   Check,
-  ChevronRight,
   Copy,
   Eye,
   Link2,
@@ -31,7 +27,6 @@ import {
   Phone,
   Plus,
   Share2,
-  VideoOff,
   X,
 } from "lucide-react";
 
@@ -62,10 +57,8 @@ function ActivityDetail() {
   const [cameraOpen, setCameraOpen] = useState(false);
   const [cameraMode, setCameraMode] = useState<"checkin" | "photo">("photo");
 
-  const related = contacts.filter((c) => c.source === activity.type);
-  const [leads, setLeads] = useState<Contact[]>(related.length > 0 ? related : contacts.slice(0, 3));
+  const leads = useLeads(activity.id, activity.type);
 
-  const [leadModal, setLeadModal] = useState(false);
   const [waLead, setWaLead] = useState<Contact | null>(null);
 
   const meta = STATUS_META[isDone ? "completed" : checkedIn ? "checked_in" : "planned"];
@@ -203,13 +196,14 @@ function ActivityDetail() {
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-[15px] font-bold text-slate-900">Detail Leads ({leads.length})</h3>
-            <button
-              onClick={() => setLeadModal(true)}
+            <Link
+              to="/tambah-leads/$activityId"
+              params={{ activityId: activity.id }}
               className="inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-[13px] font-medium"
               style={{ color: PRIMARY, borderColor: PRIMARY }}
             >
               <Plus className="h-4 w-4" /> Tambah Leads
-            </button>
+            </Link>
           </div>
           <div className="space-y-2.5">
             {leads.map((c) => (
@@ -250,17 +244,6 @@ function ActivityDetail() {
         />
       )}
 
-      {leadModal && (
-        <TambahLeadsModal
-          activityType={activity.type}
-          onClose={() => setLeadModal(false)}
-          onSave={(c) => {
-            setLeads((l) => [c, ...l]);
-            setLeadModal(false);
-          }}
-        />
-      )}
-
       {waLead && (
         <WaTemplateSheet
           lead={waLead}
@@ -271,417 +254,6 @@ function ActivityDetail() {
         />
       )}
     </MobileShell>
-  );
-}
-
-/* ---------------- Kamera ---------------- */
-
-function CameraModal({
-  mode,
-  onClose,
-  onSave,
-  onSkip,
-}: {
-  mode: "checkin" | "photo";
-  onClose: () => void;
-  onSave: (url: string) => void;
-  onSkip: () => void;
-}) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const [perm, setPerm] = useState<"idle" | "requesting" | "granted" | "denied">("idle");
-  const [unsupported, setUnsupported] = useState(false);
-  const [videoReady, setVideoReady] = useState(false);
-  const [captured, setCaptured] = useState<string | null>(null);
-  const [clock, setClock] = useState("");
-
-  useEffect(() => {
-    const tick = () => {
-      const d = new Date();
-      const p = (n: number) => String(n).padStart(2, "0");
-      setClock(`${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`);
-    };
-    tick();
-    const t = setInterval(tick, 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(
-    () => () => {
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    },
-    []
-  );
-
-  const requestCamera = async () => {
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setUnsupported(true);
-      setPerm("denied");
-      return;
-    }
-    setPerm("requesting");
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
-        audio: false,
-      });
-      streamRef.current = stream;
-      setVideoReady(false);
-      setPerm("granted");
-    } catch {
-      setPerm("denied");
-    }
-  };
-
-  // Attach stream setiap kali elemen video mount (awal & setelah Ulangi)
-  useEffect(() => {
-    if (perm === "granted" && !captured && videoRef.current && streamRef.current) {
-      videoRef.current.srcObject = streamRef.current;
-      videoRef.current.play().catch(() => {});
-    }
-  }, [perm, captured]);
-
-  const shutter = () => {
-    const video = videoRef.current;
-    if (!video || video.videoWidth === 0) return;
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(video, 0, 0);
-    // Stempel waktu bukti real-time
-    const barH = Math.max(40, Math.round(canvas.height * 0.07));
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.fillRect(0, canvas.height - barH, canvas.width, barH);
-    ctx.fillStyle = "#fff";
-    ctx.font = `${Math.round(barH * 0.42)}px sans-serif`;
-    ctx.fillText(clock || new Date().toLocaleString("id-ID"), 16, canvas.height - barH * 0.32);
-    setCaptured(canvas.toDataURL("image/jpeg", 0.85));
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black">
-      <div className="mx-auto flex h-full w-full max-w-[440px] flex-col">
-        <button onClick={onClose} aria-label="Tutup kamera" className="absolute left-4 top-12 z-10 rounded-full bg-black/40 p-2 text-white">
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-
-        {perm === "granted" ? (
-          <>
-            <div className="relative flex-1 overflow-hidden bg-black">
-              {captured ? (
-                <img src={captured} alt="Hasil foto" className="h-full w-full object-cover" />
-              ) : (
-                <>
-                  <video
-                    ref={videoRef}
-                    playsInline
-                    muted
-                    autoPlay
-                    onLoadedMetadata={() => setVideoReady(true)}
-                    className="h-full w-full object-cover"
-                  />
-                  <span className="absolute right-4 top-14 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-bold text-white">
-                    <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> LIVE
-                  </span>
-                  <span className="absolute bottom-3 left-3 rounded-full bg-black/50 px-2.5 py-1 font-mono text-[11px] text-white">
-                    {clock}
-                  </span>
-                </>
-              )}
-            </div>
-            <div className="flex items-center justify-center gap-4 bg-black/90 px-6 py-6">
-              {captured ? (
-                <>
-                  <button
-                    onClick={() => setCaptured(null)}
-                    className="flex-1 rounded-lg border border-white/40 py-3 text-[14px] font-medium text-white"
-                  >
-                    Ulangi
-                  </button>
-                  <button
-                    onClick={() => onSave(captured)}
-                    className="flex-1 rounded-lg bg-white py-3 text-[14px] font-semibold text-slate-900"
-                  >
-                    {mode === "checkin" ? "Simpan & Check In" : "Simpan"}
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={shutter}
-                  disabled={!videoReady}
-                  aria-label="Ambil foto"
-                  className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-white/20 disabled:opacity-40"
-                >
-                  <Camera className="h-6 w-6 text-white" />
-                </button>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="flex flex-1 flex-col items-center justify-center bg-slate-900 px-8 text-center">
-            {perm === "denied" ? (
-              <>
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/15 text-red-400">
-                  <VideoOff className="h-8 w-8" />
-                </span>
-                <p className="mt-4 text-[17px] font-bold text-white">Akses Kamera Ditolak</p>
-                <p className="mt-2 text-[13px] leading-relaxed text-slate-300">
-                  {unsupported
-                    ? "Perangkat atau browser ini tidak mendukung akses kamera."
-                    : "Izin kamera dibutuhkan untuk foto bukti check-in. Aktifkan lewat ikon kamera/gembok di address bar browser, lalu coba lagi."}
-                </p>
-                {!unsupported && (
-                  <button
-                    onClick={requestCamera}
-                    className="mt-5 w-full rounded-lg bg-white py-3 text-[14px] font-semibold text-slate-900"
-                  >
-                    Coba Lagi
-                  </button>
-                )}
-                {mode === "checkin" && (
-                  <button onClick={onSkip} className="mt-2 w-full rounded-lg py-3 text-[14px] font-medium text-slate-300">
-                    Lanjut Tanpa Foto
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/10 text-white">
-                  <Camera className="h-8 w-8" />
-                </span>
-                <p className="mt-4 text-[17px] font-bold text-white">Izinkan Akses Kamera</p>
-                <p className="mt-2 text-[13px] leading-relaxed text-slate-300">
-                  {mode === "checkin"
-                    ? "Kami akan mengambil foto sebagai bukti check-in yang valid dan real-time di lokasi ini."
-                    : "Kami membutuhkan akses kamera untuk dokumentasi foto lokasi aktivitas."}
-                </p>
-                <button
-                  onClick={requestCamera}
-                  disabled={perm === "requesting"}
-                  className="mt-5 w-full rounded-lg bg-white py-3 text-[14px] font-semibold text-slate-900 disabled:opacity-60"
-                >
-                  {perm === "requesting" ? "Meminta izin…" : "Aktifkan Kamera"}
-                </button>
-                <button onClick={onClose} className="mt-2 w-full rounded-lg py-3 text-[14px] font-medium text-slate-300">
-                  Nanti Saja
-                </button>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ---------------- Tambah Leads ---------------- */
-
-const GENDERS = ["Laki-Laki", "Perempuan"] as const;
-const KELURAHAN = Object.keys(KELURAHAN_WILAYAH);
-
-function TambahLeadsModal({
-  activityType,
-  onClose,
-  onSave,
-}: {
-  activityType: string;
-  onClose: () => void;
-  onSave: (c: Contact) => void;
-}) {
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [kelurahan, setKelurahan] = useState("");
-  const [job, setJob] = useState("");
-  const [status, setStatus] = useState<LeadStatus | "">("");
-  const [statusPicker, setStatusPicker] = useState(false);
-
-  const valid = name.trim() && gender && phone.trim() && kelurahan && job && status;
-
-  const save = () => {
-    if (!valid || !status) return;
-    onSave({
-      id: `c-${Date.now()}`,
-      name: name.trim(),
-      phone: phone.trim(),
-      status,
-      source: activityType as Contact["source"],
-      lastContact: "Baru saja",
-      hasGold: status === "Hot" || status === "Warm",
-      interested: status !== "Cold",
-      gender: gender as Contact["gender"],
-      address: address.trim() || undefined,
-      kelurahan,
-      wilayah: KELURAHAN_WILAYAH[kelurahan],
-      job,
-    });
-  };
-
-  const inputCls =
-    "w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-[14px] text-slate-800 outline-none placeholder:text-slate-300";
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50">
-      <div className="max-h-[92dvh] w-full max-w-[440px] overflow-y-auto rounded-t-2xl bg-white px-5 pb-6 pt-4">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-[16px] font-bold text-slate-900">Tambah Leads</h3>
-          <button onClick={onClose} aria-label="Tutup" className="rounded-full p-1 text-slate-500">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <div className="space-y-3.5">
-          <div>
-            <Label>Nama Calon Nasabah</Label>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Masukkan Nama Lengkap" className={inputCls} />
-          </div>
-          <div>
-            <Label>Jenis Kelamin</Label>
-            <span className="relative block">
-              <select value={gender} onChange={(e) => setGender(e.target.value)} className={`${inputCls} appearance-none ${!gender ? "text-slate-300" : ""}`}>
-                <option value="" disabled>Pilih Jenis Kelamin</option>
-                {GENDERS.map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
-              </select>
-              <ChevronRight className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 rotate-90 text-slate-400" />
-            </span>
-          </div>
-          <div>
-            <Label>Nomor Telepon</Label>
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" placeholder="Masukkan Nomor Telepon" className={inputCls} />
-          </div>
-          <div>
-            <Label>Alamat</Label>
-            <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Masukkan alamat" className={inputCls} />
-          </div>
-          <div>
-            <Label>Kelurahan</Label>
-            <span className="relative block">
-              <select value={kelurahan} onChange={(e) => setKelurahan(e.target.value)} className={`${inputCls} appearance-none ${!kelurahan ? "text-slate-300" : ""}`}>
-                <option value="" disabled>Pilih Kelurahan</option>
-                {KELURAHAN.map((k) => (
-                  <option key={k} value={k}>{k}</option>
-                ))}
-              </select>
-              <ChevronRight className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            </span>
-          </div>
-          <div>
-            <Label>Kecamatan, Kabupaten, Provinsi, Kode Pos</Label>
-            <input value={kelurahan ? (KELURAHAN_WILAYAH[kelurahan] ?? "") : ""} readOnly placeholder="" className={`${inputCls} bg-slate-50 text-slate-500`} />
-          </div>
-          <div>
-            <Label>Pekerjaan Nasabah</Label>
-            <span className="relative block">
-              <select value={job} onChange={(e) => setJob(e.target.value)} className={`${inputCls} appearance-none ${!job ? "text-slate-300" : ""}`}>
-                <option value="" disabled>Masukkan Pekerjaan Nasabah</option>
-                {PEKERJAAN_PROMAS.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-              <ChevronRight className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 rotate-90 text-slate-400" />
-            </span>
-            <p className="mt-1 text-[11px] text-slate-400">Ambil datanya dari Promas</p>
-          </div>
-          <div>
-            <Label>Status Nasabah</Label>
-            <button
-              type="button"
-              onClick={() => setStatusPicker(true)}
-              className={`${inputCls} flex items-center justify-between text-left ${!status ? "text-slate-300" : ""}`}
-            >
-              {status || "Pilih Status Nasabah"}
-              <ChevronRight className="h-4 w-4 -translate-y-0 rotate-90 text-slate-400" />
-            </button>
-          </div>
-
-          <button
-            onClick={save}
-            disabled={!valid}
-            className={`w-full rounded-lg py-3 text-[14px] font-semibold text-white disabled:bg-slate-200 disabled:text-slate-400`}
-            style={valid ? { background: PRIMARY } : undefined}
-          >
-            Simpan Data Nasabah
-          </button>
-        </div>
-      </div>
-
-      {statusPicker && (
-        <StatusPickerSheet
-          value={status || "Hot"}
-          onPick={(v) => {
-            setStatus(v);
-            setStatusPicker(false);
-          }}
-          onClose={() => setStatusPicker(false)}
-        />
-      )}
-    </div>
-  );
-}
-
-function Label({ children }: { children: React.ReactNode }) {
-  return <label className="mb-1 block text-[12px] text-slate-600">{children}</label>;
-}
-
-function StatusPickerSheet({
-  value,
-  onPick,
-  onClose,
-}: {
-  value: LeadStatus;
-  onPick: (v: LeadStatus) => void;
-  onClose: () => void;
-}) {
-  const [sel, setSel] = useState<LeadStatus>(value);
-  return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50" onClick={onClose}>
-      <div
-        className="w-full max-w-[440px] rounded-t-2xl bg-white px-5 pb-6 pt-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-3 flex items-center justify-between">
-          <h4 className="text-[15px] font-bold text-slate-900">Status Nasabah</h4>
-          <button onClick={onClose} aria-label="Tutup" className="rounded-full p-1 text-slate-500">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="space-y-1">
-          {STATUS_NASABAH.map((s) => (
-            <button
-              key={s.value}
-              onClick={() => setSel(s.value)}
-              className="flex w-full items-center justify-between py-2.5 text-left"
-            >
-              <span>
-                <span className="block text-[14px] text-slate-800">{s.value}</span>
-                <span className="block text-[11px] text-slate-400">{s.desc}</span>
-              </span>
-              <span
-                className="flex h-5 w-5 items-center justify-center rounded-full border-2"
-                style={sel === s.value ? { borderColor: PRIMARY } : { borderColor: "#cbd5e1" }}
-              >
-                {sel === s.value && (
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: PRIMARY }} />
-                )}
-              </span>
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => onPick(sel)}
-          className="mt-3 w-full rounded-lg py-3 text-[14px] font-semibold text-white"
-          style={{ background: PRIMARY }}
-        >
-          Pilih Status Nasabah
-        </button>
-      </div>
-    </div>
   );
 }
 
@@ -755,7 +327,8 @@ function WaTemplateSheet({
 function ShareLinkCard({ activityId, shareCode, views, leadsCount }: { activityId: string; shareCode?: string; views: number; leadsCount: number }) {
   const [copied, setCopied] = useState(false);
   const link = getShareLink({ id: activityId, shareCode } as { id: string; shareCode?: string });
-  const fullLink = typeof window !== "undefined" ? window.location.origin + link : link;
+  // getShareLink sudah absolut di client — jangan tambah origin lagi
+  const fullLink = link;
 
   const copy = async () => {
     try {

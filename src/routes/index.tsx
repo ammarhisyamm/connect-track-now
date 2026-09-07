@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { CameraModal } from "@/components/camera-modal";
 import {
   activities,
   formatTanggalPanjang,
@@ -40,6 +41,12 @@ type Range = "today" | "week" | "month";
 function Home() {
   const [range, setRange] = useState<Range>("today");
   const [statusById, setStatusById] = useState<Record<string, ActivityStatus>>({});
+  const [checkinId, setCheckinId] = useState<string | null>(null);
+
+  const confirmCheckin = () => {
+    if (checkinId) setStatusById((s) => ({ ...s, [checkinId]: "checked_in" }));
+    setCheckinId(null);
+  };
 
   const todayActivities = activities.filter(
     (a) => new Date(a.date).toDateString() === new Date().toDateString()
@@ -208,7 +215,7 @@ function Home() {
                         </button>
                       ) : (
                         <button
-                          onClick={() => setStatusById((s) => ({ ...s, [a.id]: "checked_in" }))}
+                          onClick={() => setCheckinId(a.id)}
                           className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-4 py-2 text-[12px] font-semibold text-white"
                         >
                           <MapPin className="h-3.5 w-3.5" /> Check In
@@ -225,6 +232,15 @@ function Home() {
           )}
         </section>
       </div>
+
+      {checkinId && (
+        <CameraModal
+          mode="checkin"
+          onClose={() => setCheckinId(null)}
+          onSave={confirmCheckin}
+          onSkip={confirmCheckin}
+        />
+      )}
     </MobileShell>
   );
 }

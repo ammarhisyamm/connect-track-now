@@ -20,6 +20,7 @@ import { Route as AktivitasIndexRouteImport } from './routes/aktivitas.index'
 import { Route as AktivitasIdRouteImport } from './routes/aktivitas.$id'
 import { Route as AktivitasBuatRouteImport } from './routes/aktivitas.buat'
 import { Route as IsiIdRouteImport } from './routes/isi.$id'
+import { Route as TambahLeadsActivityIdRouteImport } from './routes/tambah-leads.$activityId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +77,11 @@ const IsiIdRoute = IsiIdRouteImport.update({
   path: '/isi/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TambahLeadsActivityIdRoute = TambahLeadsActivityIdRouteImport.update({
+  id: '/tambah-leads/$activityId',
+  path: '/tambah-leads/$activityId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
+  '/tambah-leads/$activityId': typeof TambahLeadsActivityIdRoute
   '/aktivitas/': typeof AktivitasIndexRoute
 }
 export interface FileRoutesByTo {
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
+  '/tambah-leads/$activityId': typeof TambahLeadsActivityIdRoute
   '/aktivitas': typeof AktivitasIndexRoute
 }
 export interface FileRoutesById {
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
+  '/tambah-leads/$activityId': typeof TambahLeadsActivityIdRoute
   '/aktivitas/': typeof AktivitasIndexRoute
 }
 export interface FileRouteTypes {
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
+    | '/tambah-leads/$activityId'
     | '/aktivitas/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
+    | '/tambah-leads/$activityId'
     | '/aktivitas'
   id:
     | '__root__'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
+    | '/tambah-leads/$activityId'
     | '/aktivitas/'
   fileRoutesById: FileRoutesById
 }
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   ProgramRoute: typeof ProgramRoute
   UbahPasswordRoute: typeof UbahPasswordRoute
   IsiIdRoute: typeof IsiIdRoute
+  TambahLeadsActivityIdRoute: typeof TambahLeadsActivityIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IsiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tambah-leads/$activityId': {
+      id: '/tambah-leads/$activityId'
+      path: '/tambah-leads/$activityId'
+      fullPath: '/tambah-leads/$activityId'
+      preLoaderRoute: typeof TambahLeadsActivityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -275,6 +295,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgramRoute: ProgramRoute,
   UbahPasswordRoute: UbahPasswordRoute,
   IsiIdRoute: IsiIdRoute,
+  TambahLeadsActivityIdRoute: TambahLeadsActivityIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
