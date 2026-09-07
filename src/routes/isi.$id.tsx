@@ -1,9 +1,21 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
-import { activities, formatTanggalPanjang, profile } from "@/lib/mock-data";
+import { StatusPickerSheet } from "@/components/status-picker";
+import {
+  activities,
+  formatTanggalPanjang,
+  KELURAHAN_WILAYAH,
+  PEKERJAAN_PROMAS,
+  profile,
+  type LeadStatus,
+} from "@/lib/mock-data";
 import { useActivity } from "@/lib/activity-store";
+import { addLead } from "@/lib/leads-store";
 import { useState } from "react";
-import { CheckCircle2, Clock3, Link2, Lock, ShieldCheck } from "lucide-react";
+import { CheckCircle2, ChevronRight, Clock3, Link2, Lock, ShieldCheck } from "lucide-react";
+
+const KELURAHAN = Object.keys(KELURAHAN_WILAYAH);
+const PRIMARY = "#2953A4";
 
 export const Route = createFileRoute("/isi/$id")({
   head: () => ({ meta: [{ title: "Formulir Pendaftaran — Gadai Mas" }] }),
@@ -24,9 +36,37 @@ function PublicLeadForm() {
   const effective = stored ?? activity;
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [kelurahan, setKelurahan] = useState("");
+  const [job, setJob] = useState("");
+  const [status, setStatus] = useState<LeadStatus | "">("");
+  const [statusPicker, setStatusPicker] = useState(false);
   const [hasGold, setHasGold] = useState<"ya" | "tidak" | "">("");
   const [need, setNeed] = useState("");
   const [done, setDone] = useState(false);
+
+  const valid = name.trim() && phone.trim() && kelurahan && job && status;
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!valid || !status) return;
+    addLead(activity.id, activity.type, {
+      id: `c-${Date.now()}`,
+      name: name.trim(),
+      phone: phone.trim(),
+      status,
+      source: activity.type,
+      lastContact: "Baru saja",
+      hasGold: hasGold === "ya" || status === "Hot" || status === "Warm",
+      interested: status !== "Cold",
+      address: address.trim() || undefined,
+      kelurahan,
+      wilayah: KELURAHAN_WILAYAH[kelurahan],
+      job,
+      note: need.trim() || undefined,
+    });
+    setDone(true);
+  };
 
   if (done) {
     return (
@@ -92,51 +132,107 @@ function PublicLeadForm() {
       </header>
 
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setDone(true);
-        }}
-        className="space-y-4 px-5 py-5"
+        onSubmit={submit}
+        className="space-y-4 bg-white px-5 py-5"
       >
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Nama Lengkap
-          </label>
+          <Label>Nama Lengkap</Label>
           <input
-            required
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="cth: Siti Sarah"
-            className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-brand"
+            className={inputCls}
           />
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            No. HP / WA Aktif
-          </label>
+          <Label>No. HP / WA Aktif</Label>
           <input
-            required
             inputMode="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="cth: 0812xxxxxxx"
-            className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-brand"
+            className={inputCls}
           />
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Punya emas / perhiasan?
-          </label>
+          <Label>Alamat</Label>
+          <input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Masukkan alamat"
+            className={inputCls}
+          />
+        </div>
+
+        <div>
+          <Label>Kelurahan</Label>
+          <span className="relative block">
+            <select
+              value={kelurahan}
+              onChange={(e) => setKelurahan(e.target.value)}
+              className={`${inputCls} appearance-none ${!kelurahan ? "text-slate-400" : ""}`}
+            >
+              <option value="" disabled>Pilih Kelurahan</option>
+              {KELURAHAN.map((k) => (
+                <option key={k} value={k}>{k}</option>
+              ))}
+            </select>
+            <ChevronRight className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          </span>
+        </div>
+
+        <div>
+          <Label>Kecamatan, Kabupaten, Provinsi, Kode Pos</Label>
+          <input
+            value={kelurahan ? (KELURAHAN_WILAYAH[kelurahan] ?? "") : ""}
+            readOnly
+            className={`${inputCls} bg-slate-50 text-slate-500`}
+          />
+        </div>
+
+        <div>
+          <Label>Pekerjaan Nasabah</Label>
+          <span className="relative block">
+            <select
+              value={job}
+              onChange={(e) => setJob(e.target.value)}
+              className={`${inputCls} appearance-none ${!job ? "text-slate-400" : ""}`}
+            >
+              <option value="" disabled>Masukkan Pekerjaan Nasabah</option>
+              {PEKERJAAN_PROMAS.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+            <ChevronRight className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 rotate-90 text-slate-400" />
+          </span>
+        </div>
+
+        <div>
+          <Label>Status Nasabah</Label>
+          <button
+            type="button"
+            onClick={() => setStatusPicker(true)}
+            className={`${inputCls} flex items-center justify-between text-left ${!status ? "text-slate-400" : ""}`}
+          >
+            {status || "Pilih Status Nasabah"}
+            <ChevronRight className="h-4 w-4 rotate-90 text-slate-400" />
+          </button>
+        </div>
+
+        <div>
+          <Label>Punya emas / perhiasan?</Label>
           <div className="grid grid-cols-2 gap-2">
             {(["ya", "tidak"] as const).map((v) => (
               <button
                 type="button"
                 key={v}
                 onClick={() => setHasGold(v)}
-                className={`rounded-xl border px-3 py-3 text-sm font-medium capitalize ${
-                  hasGold === v ? "border-brand bg-brand/5 text-brand" : "border-border text-muted-foreground"
+                className={`rounded-lg border px-3 py-3 text-sm font-medium capitalize ${
+                  hasGold === v
+                    ? "border-[#2953A4] bg-[#2953A4]/5 text-[#2953A4]"
+                    : "border-slate-200 text-slate-500"
                 }`}
               >
                 {v === "ya" ? "Ya, punya" : "Belum punya"}
@@ -146,28 +242,46 @@ function PublicLeadForm() {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Kebutuhan (opsional)
-          </label>
+          <Label>Kebutuhan (opsional)</Label>
           <textarea
             value={need}
             onChange={(e) => setNeed(e.target.value)}
             placeholder="cth: Butuh dana cepat, tanya bunga & tenor"
             rows={3}
-            className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-brand"
+            className={inputCls}
           />
         </div>
 
         <button
           type="submit"
-          className="w-full rounded-full bg-brand py-3.5 text-sm font-semibold text-brand-foreground shadow-lg shadow-brand/20 active:scale-[0.98]"
+          disabled={!valid}
+          className="w-full rounded-lg py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
+          style={valid ? { background: PRIMARY } : undefined}
         >
           Kirim Data Saya
         </button>
-        <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-muted-foreground">
+        <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-slate-400">
           <ShieldCheck className="h-3.5 w-3.5" /> Data aman, hanya untuk pengajuan gadai.
         </p>
       </form>
+
+      {statusPicker && (
+        <StatusPickerSheet
+          value={status || "Hot"}
+          onPick={(v) => {
+            setStatus(v);
+            setStatusPicker(false);
+          }}
+          onClose={() => setStatusPicker(false)}
+        />
+      )}
     </MobileShell>
   );
+}
+
+const inputCls =
+  "w-full rounded-lg border border-slate-200 bg-white px-3.5 py-3 text-[14px] text-slate-800 outline-none placeholder:text-slate-400";
+
+function Label({ children }: { children: React.ReactNode }) {
+  return <label className="mb-1.5 block text-[14px] text-slate-800">{children}</label>;
 }
