@@ -14,7 +14,7 @@ import {
 } from "@/lib/mock-data";
 import { useLeads } from "@/lib/leads-store";
 import { nowHHMM, updateActivity, useActivity } from "@/lib/activity-store";
-import { ScreenLoader } from "@/components/motion";
+import { OverlayPortal, ScreenLoader } from "@/components/motion";
 import { AktivitasDetailSkeleton } from "@/components/skeletons";
 import { toast } from "@/components/motion";
 import { useState } from "react";
@@ -284,6 +284,7 @@ function WaTemplateSheet({
     kode_kupon: coupon,
   };
   return (
+    <OverlayPortal>
     <div className="motion-backdrop-in fixed inset-0 z-50 flex items-end justify-center bg-black/50" onClick={onClose}>
       <div
         className="motion-sheet-in max-h-[85dvh] w-full max-w-[440px] overflow-y-auto rounded-t-2xl bg-white px-5 pb-6 pt-4"
@@ -323,6 +324,7 @@ function WaTemplateSheet({
         </div>
       </div>
     </div>
+    </OverlayPortal>
   );
 }
 

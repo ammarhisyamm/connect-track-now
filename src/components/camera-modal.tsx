@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Camera, VideoOff } from "lucide-react";
-import { useReducedMotion } from "./motion";
+import { OverlayPortal, useReducedMotion } from "./motion";
 
 export function CameraModal({
   mode,
@@ -94,6 +94,7 @@ export function CameraModal({
   };
 
   return (
+    <OverlayPortal>
     <div className="motion-page-fade fixed inset-0 z-50 bg-black">
       <div className="mx-auto flex h-full w-full max-w-[440px] flex-col">
         <button onClick={onClose} aria-label="Tutup kamera" className="absolute left-4 top-12 z-10 rounded-full bg-black/40 p-2 text-white">
@@ -207,6 +208,7 @@ export function CameraModal({
         )}
       </div>
     </div>
+    </OverlayPortal>
   );
 }
 

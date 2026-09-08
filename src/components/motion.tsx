@@ -1,5 +1,22 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { useRouterState } from "@tanstack/react-router";
+
+/* ---------- portal ---------- */
+
+/**
+ * Render overlay langsung ke document.body — kebal terhadap stacking
+ * context / transform milik ancestor manapun (modal selalu viewport-fixed).
+ * Aman SSR: render null sampai mount (modal selalu dibuka via interaksi).
+ */
+export function OverlayPortal({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted || typeof document === "undefined") return null;
+  return createPortal(children, document.body);
+}
 
 /* ---------- hooks ---------- */
 

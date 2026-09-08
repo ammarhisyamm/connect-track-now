@@ -10,7 +10,7 @@ import {
 } from "@/lib/mock-data";
 import { useEffect, useState } from "react";
 import { ChevronRight, LogOut, Settings, ShieldCheck, UserRound } from "lucide-react";
-import { ScreenLoader, useReducedMotion } from "@/components/motion";
+import { OverlayPortal, ScreenLoader, useReducedMotion } from "@/components/motion";
 import { ProfileSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/profile")({
@@ -196,6 +196,7 @@ function ProfilePage() {
       </div>
 
       {logoutOpen && (
+        <OverlayPortal>
         <div className="motion-backdrop-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-8">
           <div className="motion-modal-in w-full max-w-[320px] rounded-2xl bg-white p-6 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2953A4]">
@@ -217,6 +218,7 @@ function ProfilePage() {
             </button>
           </div>
         </div>
+        </OverlayPortal>
       )}
     </MobileShell>
   );

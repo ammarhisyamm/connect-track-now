@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
-import { Spinner, useMinBusy } from "@/components/motion";
+import { OverlayPortal, Spinner, useMinBusy } from "@/components/motion";
 import { useState } from "react";
 import { ArrowLeft, Check, Eye, EyeOff } from "lucide-react";
 
@@ -153,6 +153,7 @@ function UbahPassword() {
       </form>
 
       {success && (
+        <OverlayPortal>
         <div className="motion-backdrop-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-10">
           <div className="motion-modal-in w-full max-w-[300px] rounded-2xl bg-white p-6 text-center">
             <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-400">
@@ -171,6 +172,7 @@ function UbahPassword() {
             </button>
           </div>
         </div>
+        </OverlayPortal>
       )}
     </MobileShell>
   );

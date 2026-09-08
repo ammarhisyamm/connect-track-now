@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { STATUS_NASABAH, type LeadStatus } from "@/lib/mock-data";
+import { OverlayPortal } from "./motion";
 
 const PRIMARY = "#2953A4";
 
@@ -15,6 +16,7 @@ export function StatusPickerSheet({
 }) {
   const [sel, setSel] = useState<LeadStatus>(value);
   return (
+    <OverlayPortal>
     <div className="motion-backdrop-in fixed inset-0 z-[60] flex items-end justify-center bg-black/50" onClick={onClose}>
       <div
         className="motion-sheet-in w-full max-w-[440px] rounded-t-2xl bg-white px-5 pb-6 pt-4"
@@ -57,5 +59,6 @@ export function StatusPickerSheet({
         </button>
       </div>
     </div>
+    </OverlayPortal>
   );
 }
