@@ -6,13 +6,12 @@ import {
   formatTanggalPanjang,
   KELURAHAN_WILAYAH,
   PEKERJAAN_PROMAS,
-  profile,
   shortLocation,
 } from "@/lib/mock-data";
 import { useActivity } from "@/lib/activity-store";
 import { addLead } from "@/lib/leads-store";
 import { useState } from "react";
-import { CheckCircle2, ChevronRight, Clock3, MapPin, Lock, ShieldCheck } from "lucide-react";
+import { ChevronRight, Clock3, MapPin, ScanSearch, ShieldCheck, X } from "lucide-react";
 
 const KELURAHAN = Object.keys(KELURAHAN_WILAYAH);
 const PRIMARY = "#2953A4";
@@ -69,34 +68,14 @@ function PublicLeadForm() {
     });
   };
 
-  if (done) {
-    return (
-      <MobileShell hideNav>
-        <div className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center">
-          <CheckCircle2 className="h-14 w-14 text-green-500" />
-          <h1 className="mt-4 text-lg font-bold text-slate-900">Terima kasih, {name.split(" ")[0] || "Kak"}!</h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Data kamu sudah masuk ke tim <b>{profile.name}</b>. Kami hubungi via WA maksimal
-            1x24 jam untuk info gadai emas.
-          </p>
-          <p className="mt-3 rounded-full bg-slate-100 px-3 py-1 text-[11px] text-slate-500">
-            Ref: {activity.locationName} · {activity.type}
-          </p>
-        </div>
-      </MobileShell>
-    );
-  }
-
   if (activity.kind !== "digital") {
     return (
       <MobileShell hideNav>
         <div className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-            <Lock className="h-7 w-7" />
-          </span>
-          <h1 className="mt-4 text-lg font-bold text-slate-900">Formulir Tidak Tersedia</h1>
+          <ClosedIcon />
+          <h1 className="mt-8 text-2xl font-bold text-slate-900">Pendaftaran Telah Ditutup</h1>
           <p className="mt-2 text-sm text-slate-500">
-            Aktivitas lapangan tidak menggunakan formulir pendaftaran publik.
+            Link pendaftaran untuk aktivitas ini sudah tidak dapat digunakan.
           </p>
         </div>
       </MobileShell>
@@ -124,12 +103,10 @@ function PublicLeadForm() {
     return (
       <MobileShell hideNav>
         <div className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-            <Lock className="h-7 w-7" />
-          </span>
-          <h1 className="mt-4 text-lg font-bold text-slate-900">Pendaftaran Ditutup</h1>
+          <ClosedIcon />
+          <h1 className="mt-8 text-2xl font-bold text-slate-900">Pendaftaran Telah Ditutup</h1>
           <p className="mt-2 text-sm text-slate-500">
-            Aktivitas <b>{activity.locationName}</b> sudah selesai. Hubungi sales kami untuk info kegiatan berikutnya.
+            Link pendaftaran untuk aktivitas ini sudah tidak dapat digunakan.
           </p>
         </div>
       </MobileShell>
@@ -253,6 +230,29 @@ function PublicLeadForm() {
           <ShieldCheck className="h-3.5 w-3.5" /> Data aman, hanya untuk pengajuan gadai.
         </p>
       </form>
+
+      {done && (
+        <div className="fixed inset-0 z-50 flex items-end bg-slate-950/15">
+          <div className="w-full rounded-t-2xl bg-white px-5 pb-8 pt-8 text-center shadow-2xl">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eef2ff]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ffd43d] text-4xl font-bold leading-none text-white shadow-[inset_0_-3px_0_#f5a623]">
+                ✓
+              </span>
+            </div>
+            <h2 className="mt-5 text-2xl font-bold text-slate-950">Data Anda berhasil Dikirim</h2>
+            <p className="mx-auto mt-2 max-w-sm text-base leading-6 text-slate-600">
+              Data Anda telah tersimpan dan akan diproses lebih lanjut.
+            </p>
+            <button
+              type="button"
+              onClick={() => setDone(false)}
+              className="mt-8 w-full rounded-xl bg-[#315bac] py-3.5 text-lg font-semibold text-white"
+            >
+              Selesai
+            </button>
+          </div>
+        </div>
+      )}
     </MobileShell>
   );
 }
@@ -262,4 +262,15 @@ const inputCls =
 
 function Label({ children }: { children: React.ReactNode }) {
   return <label className="mb-1.5 block text-[14px] text-slate-800">{children}</label>;
+}
+
+function ClosedIcon() {
+  return (
+    <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#d4d4d4] text-white">
+      <ScanSearch className="h-14 w-14 stroke-[2.5]" />
+      <span className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#aeb0b8]">
+        <X className="h-5 w-5 stroke-[3]" />
+      </span>
+    </div>
+  );
 }
