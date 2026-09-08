@@ -126,7 +126,10 @@
 
 @keyframes motion-page-push {
   from { opacity: 0; transform: translateX(24px); }
-  to { opacity: 1; transform: translateX(0); }
+  /* NOTE: `none` (bukan translateX(0)) supaya tidak membentuk stacking
+     context permanen — kalau tidak, modal fixed z-50 di dalamnya akan
+     tertutup bottom-nav z-40 yang jadi sibling-nya. */
+  to { opacity: 1; transform: none; }
 }
 @keyframes motion-page-fade {
   from { opacity: 0; }
