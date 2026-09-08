@@ -115,7 +115,10 @@ function PublicLeadForm() {
 
   return (
     <MobileShell hideNav>
-      <div className="px-5 pb-8 pt-12 text-white" style={{ background: "var(--gradient-brand)" }}>
+      <div
+        className="px-5 pb-8 pt-12 text-white"
+        style={{ backgroundImage: "url('/header-gradient.svg')", backgroundSize: "cover", backgroundPosition: "center" }}
+      >
         <h1 className="text-[26px] font-bold leading-tight">Formulir Pendaftaran</h1>
         <span className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[13px] font-medium text-slate-900">
           <MapPin className="h-4 w-4" />
@@ -232,8 +235,8 @@ function PublicLeadForm() {
       </form>
 
       {done && (
-        <div className="fixed inset-0 z-50 flex items-end bg-slate-950/15">
-          <div className="w-full rounded-t-2xl bg-white px-5 pb-8 pt-8 text-center shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5">
+          <div className="w-full max-w-[353px] rounded-xl bg-white px-4 pb-4 pt-8 text-center shadow-2xl">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eef2ff]">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ffd43d] text-4xl font-bold leading-none text-white shadow-[inset_0_-3px_0_#f5a623]">
                 ✓

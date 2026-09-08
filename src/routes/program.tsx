@@ -21,7 +21,10 @@ function ProgramPage() {
         <h1 className="text-[22px] font-bold text-slate-900">Program</h1>
       </div>
 
-      <div className="px-5 pb-3 pt-3 text-white" style={{ background: "var(--gradient-brand)" }}>
+      <div
+        className="px-5 pb-3 pt-3 text-white"
+        style={{ backgroundImage: "url('/header-gradient.svg')", backgroundSize: "cover", backgroundPosition: "center" }}
+      >
         <h2 className="text-[24px] font-bold leading-tight">{hero.name}</h2>
         <span className="mt-2 inline-block rounded-full bg-white px-3.5 py-1 text-[13px] font-medium text-slate-900">
           {hero.period}
