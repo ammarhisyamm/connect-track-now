@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { Spinner, toast, useMinBusy } from "@/components/motion";
 import { useState } from "react";
-import { KELURAHAN_WILAYAH, type ActivityType } from "@/lib/mock-data";
+import { KELURAHAN_WILAYAH, type ActivityKind, type ActivityType } from "@/lib/mock-data";
+import { createActivity } from "@/lib/activity-store";
 import { ArrowLeft, CalendarDays, ChevronDown, ChevronRight, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/aktivitas/buat")({
@@ -16,6 +17,7 @@ const PRIMARY = "#2953A4";
 
 function CreateActivity() {
   const nav = useNavigate();
+  const [kind, setKind] = useState<ActivityKind | "">("");
   const [type, setType] = useState("");
   const [ptm, setPtm] = useState<"Dalam PTM" | "Luar PTM" | "">("");
   const [locName, setLocName] = useState("");
@@ -25,7 +27,7 @@ function CreateActivity() {
   const [from, setFrom] = useState("07:00");
   const [to, setTo] = useState("08:00");
 
-  const valid = type && ptm && locName.trim() && address.trim() && kelurahan && date && from && to;
+  const valid = kind && type && ptm && locName.trim() && address.trim() && kelurahan && date && from && to;
   const [busy, runSave] = useMinBusy();
 
   return (
@@ -40,11 +42,23 @@ function CreateActivity() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (!valid || busy) return;
           runSave(() => {
-            if (valid) {
-              toast("Aktivitas tersimpan");
-              nav({ to: "/aktivitas" });
-            }
+            const a = createActivity({
+              type: type as ActivityType,
+              kind: kind as ActivityKind,
+              ptm: ptm as "Dalam PTM" | "Luar PTM",
+              locationName: locName.trim(),
+              address: address.trim(),
+              kelurahan,
+              wilayah: KELURAHAN_WILAYAH[kelurahan],
+              date: new Date(date).toISOString(),
+              timeRange: `${from} - ${to}`,
+              startTime: from,
+              endTime: to,
+            });
+            toast("Aktivitas tersimpan");
+            nav({ to: "/aktivitas/$id", params: { id: a.id } });
           });
         }}
         className="space-y-4 bg-white px-5 pb-8 pt-4"
@@ -53,6 +67,38 @@ function CreateActivity() {
           <h2 className="text-[20px] font-bold text-slate-900">Buat Aktivitas</h2>
           <p className="mt-0.5 text-[13px] text-slate-500">Isi detail kegiatan dan lokasi pelaksanaan</p>
         </div>
+
+        <Field label="Jenis Aktivitas">
+          <div className="grid grid-cols-2 gap-2.5">
+            {(
+              [
+                { v: "digital", t: "Digital", d: "Ada link nasabah" },
+                { v: "lapangan", t: "Lapangan", d: "Tanpa link nasabah" },
+              ] as const
+            ).map((o) => (
+              <button
+                type="button"
+                key={o.v}
+                onClick={() => setKind(o.v)}
+                className="flex items-center gap-2.5 rounded-lg border border-slate-200 px-3.5 py-3 text-left"
+              >
+                <span
+                  className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 ${
+                    kind === o.v ? "border-[#2953A4]" : "border-slate-300"
+                  }`}
+                >
+                  {kind === o.v && <span className="h-2.5 w-2.5 rounded-full bg-[#2953A4]" />}
+                </span>
+                <span>
+                  <span className={`block text-[14px] font-medium ${kind === o.v ? "text-slate-800" : "text-slate-400"}`}>
+                    {o.t}
+                  </span>
+                  <span className="block text-[11px] text-slate-400">{o.d}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </Field>
 
         <Field label="Aktivitas">
           <span className="relative block">

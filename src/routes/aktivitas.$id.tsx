@@ -45,17 +45,18 @@ export const Route = createFileRoute("/aktivitas/$id")({
     </MobileShell>
   ),
   loader: ({ params }) => {
-    const a = activities.find((x) => x.id === params.id);
-    if (!a) throw notFound();
-    return a;
+    return activities.find((x) => x.id === params.id) ?? null;
   },
 });
 
 function ActivityDetail() {
-  const activity = Route.useLoaderData();
-
-  const stored = useActivity(activity.id);
-  const current = stored ?? activity;
+  const params = Route.useParams();
+  const base = Route.useLoaderData();
+  // Aktivitas buatan user hanya ada di store client (localStorage)
+  const stored = useActivity(params.id);
+  const activity = stored ?? base;
+  if (!activity) throw notFound();
+  const current = activity;
   const checkedIn = current.status === "checked_in";
   const isDone = current.status === "completed";
   const photoUrl = current.photoUrl;
@@ -120,6 +121,9 @@ function ActivityDetail() {
           <p className="text-[15px] font-bold text-slate-900">{activity.locationName}</p>
           <p className="mt-0.5 text-[13px] text-slate-500">
             {activity.kelurahan ? `${activity.kelurahan}, ` : ""}{activity.address}
+            <span className="ml-1.5 text-[11px] font-semibold" style={{ color: PRIMARY }}>
+              · {activity.kind === "digital" ? "Digital" : "Lapangan"}
+            </span>
           </p>
         </div>
 
@@ -170,12 +174,14 @@ function ActivityDetail() {
               </button>
             )}
           </div>
+          {current.kind === "digital" && (
           <ShareLinkCard
             activityId={activity.id}
             shareCode={activity.shareCode}
             views={activity.linkViews ?? 0}
             leadsCount={activity.leadsCount}
           />
+          )}
           </>
         ) : (
           <div className="rounded-xl border border-slate-200 bg-white px-4 py-10 text-center">

@@ -2,6 +2,7 @@ import { useSyncExternalStore } from "react";
 import { activities, type Activity, type ActivityStatus } from "./mock-data";
 
 const KEY = "connect-track-activity-v1";
+const CUSTOM_KEY = "connect-track-activity-custom-v1";
 
 export interface ActivityOverride {
   status?: ActivityStatus;
@@ -42,7 +43,52 @@ function hydrate() {
 }
 
 function base(id: string): Activity | undefined {
-  return activities.find((a) => a.id === id);
+  return allBase().find((a) => a.id === id);
+}
+
+function allBase(): Activity[] {
+  return [...loadCustoms(), ...activities];
+}
+
+let customs: Activity[] | null = null;
+
+function loadCustoms(): Activity[] {
+  if (customs) return customs;
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CUSTOM_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    customs = Array.isArray(parsed) ? parsed : [];
+  } catch {
+    customs = [];
+  }
+  return customs;
+}
+
+function persistCustoms() {
+  try {
+    window.localStorage.setItem(CUSTOM_KEY, JSON.stringify(loadCustoms()));
+  } catch {
+    /* abaikan */
+  }
+}
+
+/** Simpan aktivitas baru dari form (status awal Segera). */
+export function createActivity(
+  data: Omit<Activity, "id" | "status" | "leadsCount" | "leadsTarget" | "closingCount">
+): Activity {
+  const a: Activity = {
+    ...data,
+    id: `u-${Date.now()}`,
+    status: "planned",
+    leadsCount: 0,
+    leadsTarget: 10,
+    closingCount: 0,
+  };
+  customs = [a, ...loadCustoms()];
+  if (typeof window !== "undefined") persistCustoms();
+  notify();
+  return a;
 }
 
 // Cache array gabungan agar snapshot stabil antar render
@@ -51,7 +97,7 @@ let allCache: Activity[] | null = null;
 function allMerged(): Activity[] {
   hydrate();
   if (!allCache) {
-    allCache = activities.map((a) => ({ ...a, ...(cache[a.id] ?? {}) }));
+    allCache = allBase().map((a) => ({ ...a, ...(cache[a.id] ?? {}) }));
   }
   return allCache;
 }
@@ -81,9 +127,11 @@ export function updateActivity(id: string, patch: ActivityOverride) {
 
 export function resetActivities() {
   cache = {};
+  customs = [];
   if (typeof window !== "undefined") {
     try {
       window.localStorage.removeItem(KEY);
+      window.localStorage.removeItem(CUSTOM_KEY);
     } catch {
       /* abaikan */
     }

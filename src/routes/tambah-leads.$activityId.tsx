@@ -10,6 +10,7 @@ import {
 import { StatusPickerSheet } from "@/components/status-picker";
 import { Spinner, toast, useMinBusy } from "@/components/motion";
 import { addLead } from "@/lib/leads-store";
+import { useActivity } from "@/lib/activity-store";
 import { useState } from "react";
 import { ArrowLeft, ChevronRight, X } from "lucide-react";
 
@@ -22,9 +23,7 @@ export const Route = createFileRoute("/tambah-leads/$activityId")({
     </MobileShell>
   ),
   loader: ({ params }) => {
-    const a = activities.find((x) => x.id === params.activityId);
-    if (!a) throw notFound();
-    return a;
+    return activities.find((x) => x.id === params.activityId) ?? null;
   },
 });
 
@@ -33,7 +32,11 @@ const KELURAHAN = Object.keys(KELURAHAN_WILAYAH);
 const PRIMARY = "#2953A4";
 
 function TambahLeadsPage() {
-  const activity = Route.useLoaderData();
+  const params = Route.useParams();
+  const base = Route.useLoaderData();
+  const stored = useActivity(params.activityId);
+  const activity = stored ?? base;
+  if (!activity) throw notFound();
   const nav = useNavigate();
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");

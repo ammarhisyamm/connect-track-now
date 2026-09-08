@@ -28,6 +28,8 @@ function persist() {
 }
 
 function seed(activityId: string, source: string): Contact[] {
+  // Aktivitas buatan user mulai kosong — tanpa contoh
+  if (activityId.startsWith("u-")) return [];
   const related = contacts.filter((c) => c.source === source);
   const base = related.length > 0 ? related : contacts.slice(0, 3);
   return base.map((c) => ({ ...c }));

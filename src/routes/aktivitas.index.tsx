@@ -139,7 +139,12 @@ function ActivityList() {
                 >
                   <div className="min-w-0">
                     <p className="truncate text-[16px] font-bold text-slate-900">{a.locationName}</p>
-                    <p className="mt-0.5 truncate text-[13px] text-slate-500">{a.address}</p>
+                    <p className="mt-0.5 truncate text-[13px] text-slate-500">
+                      {a.address}
+                      <span className="ml-1.5 text-[11px] font-semibold text-[#2953A4]">
+                        · {a.kind === "digital" ? "Digital" : "Lapangan"}
+                      </span>
+                    </p>
                   </div>
                   <ChevronRight className="h-5 w-5 flex-shrink-0 text-[#2953A4]" />
                 </Link>

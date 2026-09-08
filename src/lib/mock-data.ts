@@ -6,9 +6,12 @@ export type LeadStatus = "Hot" | "Warm" | "Cold" | "Closing";
 
 export type ActivityStatus = "planned" | "checked_in" | "completed";
 
+export type ActivityKind = "digital" | "lapangan";
+
 export interface Activity {
   id: string;
   type: ActivityType;
+  kind: ActivityKind;
   ptm: "Dalam PTM" | "Luar PTM";
   locationName: string;
   address: string;
@@ -100,6 +103,7 @@ export const activities: Activity[] = [
   {
     id: "a1",
     type: "Canvassing",
+    kind: "lapangan",
     ptm: "Luar PTM",
     locationName: "Pasar Rawamangun",
     address: "Jl. Balai Pustaka Timur No. 1, Rawamangun",
@@ -118,6 +122,7 @@ export const activities: Activity[] = [
   {
     id: "a2",
     type: "Open Booth",
+    kind: "lapangan",
     ptm: "Dalam PTM",
     locationName: "Mall Kelapa Gading",
     address: "Jl. Boulevard Raya, Kelapa Gading",
@@ -135,11 +140,12 @@ export const activities: Activity[] = [
   {
     id: "a3",
     type: "Event",
+    kind: "digital",
     ptm: "Dalam PTM",
-    locationName: "Aula Serbaguna Renon",
-    address: "Jl. Raya Puputan, Renon",
-    kelurahan: "Renon",
-    wilayah: "Kec. Denpasar Selatan, Kota Denpasar, Bali, 80226",
+    locationName: "Webinar Edukasi Gadai Emas",
+    address: "Zoom Meeting (link dibagikan)",
+    kelurahan: "Kemayoran",
+    wilayah: "Kec. Kemayoran, Jakarta Pusat, DKI Jakarta, 10620",
     date: new Date().toISOString(),
     timeRange: "15:00 - 18:00",
     startTime: "15:00",
@@ -154,6 +160,7 @@ export const activities: Activity[] = [
   {
     id: "a4",
     type: "Sosialisasi",
+    kind: "lapangan",
     ptm: "Dalam PTM",
     locationName: "Balai Warga Kemayoran",
     address: "Jl. Kemayoran Gempol, Kemayoran",
@@ -173,6 +180,7 @@ export const activities: Activity[] = [
   {
     id: "a5",
     type: "Market ke instansi",
+    kind: "lapangan",
     ptm: "Luar PTM",
     locationName: "RSUD Jatinegara",
     address: "Jl. Jatinegara Barat No. 142, Jatinegara",
@@ -439,6 +447,15 @@ export const monthOptions = (year = 2026) => BULAN_EN.map((m) => `${m} ${year}`)
 export const parseMonthOption = (opt: string) => {
   const [m, y] = opt.split(" ");
   return { month: BULAN_EN.indexOf(m as (typeof BULAN_EN)[number]), year: Number(y) };
+};
+
+/** "Kemayoran, Jakarta Pusat" dari kelurahan + wilayah */
+export const shortLocation = (c: { kelurahan?: string; wilayah?: string; address?: string }) => {
+  if (c.kelurahan && c.wilayah) {
+    const parts = c.wilayah.split(",").map((x) => x.trim());
+    return `${c.kelurahan}, ${parts[1] ?? parts[0]}`;
+  }
+  return c.address ?? "-";
 };
 
 export const KELURAHAN_WILAYAH: Record<string, string> = {

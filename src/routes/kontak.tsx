@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { ScreenLoader } from "@/components/motion";
 import { KontakSkeleton } from "@/components/skeletons";
-import { contacts } from "@/lib/mock-data";
+import { contacts, shortLocation } from "@/lib/mock-data";
 import { MapPin, MessageCircle, Phone, Search, UserRound } from "lucide-react";
 import { useState } from "react";
 
@@ -19,15 +19,6 @@ const STATUS_COLOR: Record<string, string> = {
   Cold: "text-slate-400",
   Closing: "text-green-500",
 };
-
-function shortLocation(c: { kelurahan?: string; wilayah?: string; address?: string }) {
-  if (c.kelurahan && c.wilayah) {
-    const parts = c.wilayah.split(",").map((s) => s.trim());
-    const city = parts[1] ?? parts[0];
-    return `${c.kelurahan}, ${city}`;
-  }
-  return c.address ?? "-";
-}
 
 function ContactsPage() {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Semua");
