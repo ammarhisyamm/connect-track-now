@@ -8,6 +8,7 @@ import {
   type LeadStatus,
 } from "@/lib/mock-data";
 import { StatusPickerSheet } from "@/components/status-picker";
+import { Spinner, toast, useMinBusy } from "@/components/motion";
 import { addLead } from "@/lib/leads-store";
 import { useState } from "react";
 import { ArrowLeft, ChevronRight, X } from "lucide-react";
@@ -44,11 +45,13 @@ function TambahLeadsPage() {
   const [statusPicker, setStatusPicker] = useState(false);
 
   const valid = name.trim() && gender && phone.trim() && kelurahan && job && status;
+  const [busy, runSave] = useMinBusy();
 
   const save = () => {
-    if (!valid || !status) return;
-    addLead(activity.id, activity.type, {
-      id: `c-${Date.now()}`,
+    if (!valid || !status || busy) return;
+    runSave(() => {
+      addLead(activity.id, activity.type, {
+        id: `c-${Date.now()}`,
       name: name.trim(),
       phone: phone.trim(),
       status,
@@ -62,7 +65,9 @@ function TambahLeadsPage() {
       wilayah: KELURAHAN_WILAYAH[kelurahan],
       job,
     });
-    nav({ to: "/aktivitas/$id", params: { id: activity.id } });
+      toast("Leads baru tersimpan");
+      nav({ to: "/aktivitas/$id", params: { id: activity.id } });
+    });
   };
 
   const inputCls =
@@ -157,11 +162,12 @@ function TambahLeadsPage() {
       <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-[440px] -translate-x-1/2 border-t border-slate-100 bg-white/95 px-5 pb-6 pt-3 backdrop-blur">
         <button
           onClick={save}
-          disabled={!valid}
-          className="w-full rounded-lg py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
-          style={valid ? { background: PRIMARY } : undefined}
+          disabled={!valid || busy}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
+          style={valid && !busy ? { background: PRIMARY } : undefined}
         >
-          Simpan Data Nasabah
+          {busy && <Spinner className="h-4 w-4" />}
+          {busy ? "Menyimpan…" : "Simpan Data Nasabah"}
         </button>
         <Link
           to="/aktivitas/$id"

@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { StatusPickerSheet } from "@/components/status-picker";
+import { Spinner, useMinBusy } from "@/components/motion";
 import {
   activities,
   formatTanggalPanjang,
@@ -46,12 +47,14 @@ function PublicLeadForm() {
   const [done, setDone] = useState(false);
 
   const valid = name.trim() && phone.trim() && kelurahan && job && status;
+  const [busy, runSubmit] = useMinBusy();
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valid || !status) return;
-    addLead(activity.id, activity.type, {
-      id: `c-${Date.now()}`,
+    if (!valid || !status || busy) return;
+    runSubmit(() => {
+      addLead(activity.id, activity.type, {
+        id: `c-${Date.now()}`,
       name: name.trim(),
       phone: phone.trim(),
       status,
@@ -65,7 +68,8 @@ function PublicLeadForm() {
       job,
       note: need.trim() || undefined,
     });
-    setDone(true);
+      setDone(true);
+    });
   };
 
   if (done) {
@@ -254,11 +258,12 @@ function PublicLeadForm() {
 
         <button
           type="submit"
-          disabled={!valid}
-          className="w-full rounded-lg py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
-          style={valid ? { background: PRIMARY } : undefined}
+          disabled={!valid || busy}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
+          style={valid && !busy ? { background: PRIMARY } : undefined}
         >
-          Kirim Data Saya
+          {busy && <Spinner className="h-4 w-4" />}
+          {busy ? "Mengirim…" : "Kirim Data Saya"}
         </button>
         <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-slate-400">
           <ShieldCheck className="h-3.5 w-3.5" /> Data aman, hanya untuk pengajuan gadai.

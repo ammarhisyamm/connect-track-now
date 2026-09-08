@@ -15,9 +15,9 @@ export function StatusPickerSheet({
 }) {
   const [sel, setSel] = useState<LeadStatus>(value);
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50" onClick={onClose}>
+    <div className="motion-backdrop-in fixed inset-0 z-[60] flex items-end justify-center bg-black/50" onClick={onClose}>
       <div
-        className="w-full max-w-[440px] rounded-t-2xl bg-white px-5 pb-6 pt-4"
+        className="motion-sheet-in w-full max-w-[440px] rounded-t-2xl bg-white px-5 pb-6 pt-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-3 flex items-center justify-between">

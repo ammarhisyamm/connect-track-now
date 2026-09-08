@@ -112,3 +112,81 @@
 @utility soft-card {
   @apply rounded-2xl bg-card shadow-[var(--shadow-card)];
 }
+
+/* ---------- Motion system ---------- */
+:root {
+  --motion-instant: 100ms;
+  --motion-micro: 150ms;
+  --motion-screen: 250ms;
+  --motion-modal: 300ms;
+  --motion-chart: 800ms;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emph: cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+@keyframes motion-page-push {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes motion-page-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes motion-sheet-in {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes motion-modal-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes motion-toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes motion-flash {
+  from { opacity: 0.9; }
+  to { opacity: 0; }
+}
+@keyframes motion-bar-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes motion-progress-slide {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(320%); }
+}
+@keyframes motion-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.motion-page-push { animation: motion-page-push var(--motion-screen) var(--ease-out) both; }
+.motion-page-fade { animation: motion-page-fade 200ms var(--ease-out) both; }
+.motion-backdrop-in { animation: motion-page-fade 200ms var(--ease-out) both; }
+.motion-sheet-in { animation: motion-sheet-in var(--motion-modal) var(--ease-emph) both; }
+.motion-modal-in { animation: motion-modal-in 250ms var(--ease-out) both; }
+.motion-toast-in { animation: motion-toast-in 200ms var(--ease-out) both; }
+.motion-flash { animation: motion-flash 100ms ease-out both; }
+.motion-bar-grow { transform-origin: left center; animation: motion-bar-grow 600ms var(--ease-out) both; }
+.motion-progress-bar { animation: motion-progress-slide 1s linear infinite; }
+.motion-skeleton {
+  background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.65) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: motion-shimmer 1200ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-page-push,
+  .motion-page-fade,
+  .motion-backdrop-in,
+  .motion-sheet-in,
+  .motion-modal-in,
+  .motion-toast-in,
+  .motion-flash,
+  .motion-bar-grow,
+  .motion-progress-bar,
+  .motion-skeleton {
+    animation: none;
+  }
+}

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { Spinner, useMinBusy } from "@/components/motion";
 import { useState } from "react";
 import { ArrowLeft, Check, Eye, EyeOff } from "lucide-react";
 
@@ -32,23 +33,26 @@ function UbahPassword() {
   const newValid = longEnough && rulesOk;
   const match = confirm.length > 0 && confirm === next;
   const canSave = current.length > 0 && newValid && match;
+  const [busy, runSave] = useMinBusy();
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    let ok = true;
-    if (current.length < 8) {
-      setCurrentErr("Password salah, silakan cek dan coba lagi!");
-      ok = false;
-    } else {
-      setCurrentErr("");
-    }
-    if (confirm !== next) {
-      setConfirmErr("Password tidak sama, silakan cek kembali");
-      ok = false;
-    } else {
-      setConfirmErr("");
-    }
-    if (ok && canSave) setSuccess(true);
+    runSave(() => {
+      let ok = true;
+      if (current.length < 8) {
+        setCurrentErr("Password salah, silakan cek dan coba lagi!");
+        ok = false;
+      } else {
+        setCurrentErr("");
+      }
+      if (confirm !== next) {
+        setConfirmErr("Password tidak sama, silakan cek kembali");
+        ok = false;
+      } else {
+        setConfirmErr("");
+      }
+      if (ok && canSave) setSuccess(true);
+    });
   };
 
   const inputCls = (err: string) =>
@@ -139,17 +143,18 @@ function UbahPassword() {
 
         <button
           type="submit"
-          disabled={!canSave}
-          className="w-full rounded-lg py-3 text-[14px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
-          style={canSave ? { background: PRIMARY } : undefined}
+          disabled={!canSave || busy}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg py-3 text-[14px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
+          style={canSave && !busy ? { background: PRIMARY } : undefined}
         >
-          Simpan
+          {busy && <Spinner className="h-4 w-4" />}
+          {busy ? "Menyimpan…" : "Simpan"}
         </button>
       </form>
 
       {success && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-10">
-          <div className="w-full max-w-[300px] rounded-2xl bg-white p-6 text-center">
+        <div className="motion-backdrop-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-10">
+          <div className="motion-modal-in w-full max-w-[300px] rounded-2xl bg-white p-6 text-center">
             <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-400">
               <Check className="h-6 w-6 text-white" strokeWidth={3} />
             </span>

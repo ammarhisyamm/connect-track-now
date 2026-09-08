@@ -8,8 +8,9 @@ import {
   profile,
   QUADRANT_DESC,
 } from "@/lib/mock-data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronRight, LogOut, Settings, ShieldCheck, UserRound } from "lucide-react";
+import { useReducedMotion } from "@/components/motion";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile" }] }),
@@ -90,7 +91,7 @@ function ProfilePage() {
               <p className="font-bold text-slate-900">{bookingPct}%</p>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white">
-              <div className="h-full rounded-full" style={{ width: `${bookingPct}%`, background: PRIMARY }} />
+              <div className="motion-bar-grow h-full rounded-full" style={{ width: `${bookingPct}%`, background: PRIMARY }} />
             </div>
             <p className="mt-1.5 text-[12px] text-slate-500">
               {rp(profile.booking)} dari target {rp(profile.bookingEstimate)}
@@ -192,8 +193,8 @@ function ProfilePage() {
       </div>
 
       {logoutOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-8">
-          <div className="w-full max-w-[320px] rounded-2xl bg-white p-6 text-center">
+        <div className="motion-backdrop-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-8">
+          <div className="motion-modal-in w-full max-w-[320px] rounded-2xl bg-white p-6 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2953A4]">
               <ShieldCheck className="h-8 w-8 text-amber-300" />
             </span>
@@ -224,6 +225,13 @@ function Donut() {
   const c = 2 * Math.PI * r;
   const gap = 3; // px putih antar segmen ala chart standar
   const total = LEAD_DISTRIBUTION.reduce((s, l) => s + l.pct, 0);
+  const reduced = useReducedMotion();
+  const [animate, setAnimate] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setAnimate(true)));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  const play = animate || reduced;
   let acc = 0;
   const segs = LEAD_DISTRIBUTION.map((l) => {
     const frac = l.pct / total;
@@ -248,8 +256,13 @@ function Donut() {
                 stroke={s.color}
                 strokeWidth={34}
                 strokeLinecap="butt"
-                strokeDasharray={`${len} ${c - len}`}
+                strokeDasharray={play ? `${len} ${c - len}` : `0 ${c}`}
                 strokeDashoffset={-s.start * c + gap / 2}
+                style={
+                  reduced
+                    ? undefined
+                    : { transition: "stroke-dasharray 800ms cubic-bezier(0.2,0,0,1)" }
+                }
               />
             );
           })}
@@ -269,6 +282,8 @@ function Donut() {
                 fill="#fff"
                 fontSize={12}
                 fontWeight={600}
+                opacity={play ? 1 : 0}
+                style={reduced ? undefined : { transition: "opacity 400ms ease-out 300ms" }}
               >
                 {s.pct}%
               </text>

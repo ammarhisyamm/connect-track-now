@@ -9,6 +9,7 @@ import {
   type ActivityStatus,
 } from "@/lib/mock-data";
 import { nowHHMM, updateActivity, useActivities } from "@/lib/activity-store";
+import { toast } from "@/components/motion";
 import { useState } from "react";
 import {
   Banknote,
@@ -49,6 +50,7 @@ function Home() {
         checkInTime: nowHHMM(),
         ...(url ? { photoUrl: url } : {}),
       });
+      toast("Check-in berhasil · selamat bertugas");
     }
     setCheckinId(null);
   };
@@ -214,15 +216,19 @@ function Home() {
                         </span>
                       ) : status === "checked_in" ? (
                         <button
-                          onClick={() => updateActivity(a.id, { status: "completed", checkOutTime: nowHHMM() })}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3.5 py-2 text-[12px] font-semibold text-white"
+                          onClick={() => {
+                            const t = nowHHMM();
+                            updateActivity(a.id, { status: "completed", checkOutTime: t });
+                            toast(`Check-out tersimpan · Finished ${t}`);
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3.5 py-2 text-[12px] font-semibold text-white transition-transform duration-100 active:scale-[0.98]"
                         >
                           <LogOut className="h-3.5 w-3.5" /> Check Out {a.checkInTime ?? ""}
                         </button>
                       ) : (
                         <button
                           onClick={() => setCheckinId(a.id)}
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-4 py-2 text-[12px] font-semibold text-white"
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-[#2953A4] px-4 py-2 text-[12px] font-semibold text-white transition-transform duration-100 active:scale-[0.98]"
                         >
                           <MapPin className="h-3.5 w-3.5" /> Check In
                         </button>
@@ -264,7 +270,7 @@ function TargetCard({ icon, label, current, target }: { icon: React.ReactNode; l
       </p>
       <div className="mt-2 flex items-center gap-2">
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
-          <div className="h-full rounded-full bg-[#2953A4]" style={{ width: `${pct}%` }} />
+          <div className="motion-bar-grow h-full rounded-full bg-[#2953A4]" style={{ width: `${pct}%` }} />
         </div>
         <span className="text-[12px] text-slate-500">{pct}%</span>
       </div>
@@ -294,7 +300,7 @@ function TambahButton() {
   return (
     <Link
       to="/aktivitas/buat"
-      className="inline-flex items-center gap-1.5 rounded-lg border border-[#2953A4] bg-white px-4 py-2 text-[14px] font-medium text-[#2953A4]"
+      className="inline-flex items-center gap-1.5 rounded-lg border border-[#2953A4] bg-white px-4 py-2 text-[14px] font-medium text-[#2953A4] transition-transform duration-100 active:scale-[0.98]"
     >
       <Plus className="h-4 w-4" /> Tambah Aktivitas
     </Link>

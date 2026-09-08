@@ -14,6 +14,7 @@ import {
 } from "@/lib/mock-data";
 import { useLeads } from "@/lib/leads-store";
 import { nowHHMM, updateActivity, useActivity } from "@/lib/activity-store";
+import { toast } from "@/components/motion";
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -68,7 +69,9 @@ function ActivityDetail() {
   const startTime = activity.startTime ?? activity.timeRange.split(" - ")[0];
 
   const checkout = () => {
-    updateActivity(activity.id, { status: "completed", checkOutTime: nowHHMM() });
+    const t = nowHHMM();
+    updateActivity(activity.id, { status: "completed", checkOutTime: t });
+    toast(`Check-out tersimpan · Finished ${t}`);
   };
 
   const openCamera = (m: "checkin" | "photo") => {
@@ -81,12 +84,14 @@ function ActivityDetail() {
       photoUrl: url,
       ...(cameraMode === "checkin" ? { status: "checked_in" as const, checkInTime: nowHHMM() } : {}),
     });
+    if (cameraMode === "checkin") toast("Check-in berhasil · selamat bertugas");
     setCameraOpen(false);
   };
 
   const handleCameraSkip = () => {
     if (cameraMode === "checkin") {
       updateActivity(activity.id, { status: "checked_in", checkInTime: nowHHMM() });
+      toast("Check-in berhasil · selamat bertugas");
     }
     setCameraOpen(false);
   };
@@ -148,7 +153,7 @@ function ActivityDetail() {
             <div className="-mt-0 flex justify-center">
               <button
                 onClick={checkout}
-                className="inline-flex -translate-y-1/2 items-center gap-1.5 rounded-full bg-red-500 px-5 py-2 text-[13px] font-semibold text-white shadow-lg shadow-red-500/30"
+                className="inline-flex -translate-y-1/2 items-center gap-1.5 rounded-full bg-red-500 px-5 py-2 text-[13px] font-semibold text-white shadow-lg shadow-red-500/30 transition-transform duration-100 active:scale-95"
               >
                 <LogOut className="h-4 w-4" /> Check Out {checkInAt ?? ""}
               </button>
@@ -180,7 +185,7 @@ function ActivityDetail() {
             </p>
             <button
               onClick={() => openCamera("checkin")}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-lg px-5 py-2 text-[13px] font-semibold text-white"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg px-5 py-2 text-[13px] font-semibold text-white transition-transform duration-100 active:scale-[0.98]"
               style={{ background: PRIMARY }}
             >
               <MapPin className="h-4 w-4" /> Check In
@@ -194,7 +199,7 @@ function ActivityDetail() {
             <Link
               to="/tambah-leads/$activityId"
               params={{ activityId: activity.id }}
-              className="inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-[13px] font-medium"
+              className="inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-[13px] font-medium transition-transform duration-100 active:scale-[0.98]"
               style={{ color: PRIMARY, borderColor: PRIMARY }}
             >
               <Plus className="h-4 w-4" /> Tambah Leads
@@ -212,7 +217,7 @@ function ActivityDetail() {
                 <a
                   href={`tel:${c.phone}`}
                   aria-label={`Telepon ${c.name}`}
-                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2953A4]/10"
+                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2953A4]/10 transition-transform duration-100 active:scale-90"
                   style={{ color: PRIMARY }}
                 >
                   <Phone className="h-4.5 w-4.5" />
@@ -220,7 +225,7 @@ function ActivityDetail() {
                 <button
                   onClick={() => setWaLead(c)}
                   aria-label={`WhatsApp ${c.name}`}
-                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600"
+                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600 transition-transform duration-100 active:scale-90"
                 >
                   <MessageCircle className="h-4.5 w-4.5" />
                 </button>
@@ -275,9 +280,9 @@ function WaTemplateSheet({
     kode_kupon: coupon,
   };
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50" onClick={onClose}>
+    <div className="motion-backdrop-in fixed inset-0 z-50 flex items-end justify-center bg-black/50" onClick={onClose}>
       <div
-        className="max-h-[85dvh] w-full max-w-[440px] overflow-y-auto rounded-t-2xl bg-white px-5 pb-6 pt-4"
+        className="motion-sheet-in max-h-[85dvh] w-full max-w-[440px] overflow-y-auto rounded-t-2xl bg-white px-5 pb-6 pt-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-3 flex items-center justify-between">

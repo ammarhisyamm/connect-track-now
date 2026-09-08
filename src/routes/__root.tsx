@@ -16,6 +16,7 @@ import "@fontsource/plus-jakarta-sans/600.css";
 import "@fontsource/plus-jakarta-sans/700.css";
 import "@fontsource/plus-jakarta-sans/800.css";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Toaster, TopProgressBar } from "../components/motion";
 
 function NotFoundComponent() {
   return (
@@ -83,6 +84,8 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
+      <TopProgressBar />
+      <Toaster />
       <Outlet />
     </QueryClientProvider>
   );

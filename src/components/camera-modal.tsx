@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Camera, VideoOff } from "lucide-react";
+import { useReducedMotion } from "./motion";
 
 export function CameraModal({
   mode,
@@ -19,6 +20,8 @@ export function CameraModal({
   const [videoReady, setVideoReady] = useState(false);
   const [captured, setCaptured] = useState<string | null>(null);
   const [clock, setClock] = useState("");
+  const [flash, setFlash] = useState(0);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const tick = () => {
@@ -70,6 +73,10 @@ export function CameraModal({
   const shutter = () => {
     const video = videoRef.current;
     if (!video || video.videoWidth === 0) return;
+    if (!reducedMotion) {
+      setFlash((f) => f + 1);
+      setTimeout(() => setFlash((f) => Math.max(0, f - 1)), 120);
+    }
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -87,7 +94,7 @@ export function CameraModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black">
+    <div className="motion-page-fade fixed inset-0 z-50 bg-black">
       <div className="mx-auto flex h-full w-full max-w-[440px] flex-col">
         <button onClick={onClose} aria-label="Tutup kamera" className="absolute left-4 top-12 z-10 rounded-full bg-black/40 p-2 text-white">
           <ArrowLeft className="h-5 w-5" />
@@ -96,6 +103,7 @@ export function CameraModal({
         {perm === "granted" ? (
           <>
             <div className="relative flex-1 overflow-hidden bg-black">
+              {flash > 0 && <div key={flash} className="motion-flash pointer-events-none absolute inset-0 z-10 bg-white" />}
               {captured ? (
                 <img src={captured} alt="Hasil foto" className="h-full w-full object-cover" />
               ) : (
@@ -109,7 +117,7 @@ export function CameraModal({
                     className="h-full w-full object-cover"
                   />
                   <span className="absolute right-4 top-14 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-bold text-white">
-                    <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> LIVE
+                    <span className="h-2 w-2 rounded-full bg-red-500 motion-safe:animate-pulse" /> LIVE
                   </span>
                   <span className="absolute bottom-3 left-3 rounded-full bg-black/50 px-2.5 py-1 font-mono text-[11px] text-white">
                     {clock}

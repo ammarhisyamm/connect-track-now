@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, ListChecks, Users, CalendarRange, User, Plus } from "lucide-react";
 import type { ReactNode } from "react";
+import { PageTransition } from "./motion";
 
 const tabs = [
   { to: "/", label: "Home", icon: Home },
@@ -15,7 +16,9 @@ export function MobileShell({ children, hideNav = false, hideFab = false }: { ch
 
   return (
     <div className="mobile-shell relative">
-      <div className={`flex flex-1 flex-col ${hideNav ? "" : "pb-24"}`}>{children}</div>
+      <PageTransition variant={hideNav ? "push" : "fade"}>
+        <div className={`flex flex-1 flex-col ${hideNav ? "" : "pb-24"}`}>{children}</div>
+      </PageTransition>
       {!hideNav && (
         <>
           <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-[440px] -translate-x-1/2 border-t border-border bg-card/95 backdrop-blur">

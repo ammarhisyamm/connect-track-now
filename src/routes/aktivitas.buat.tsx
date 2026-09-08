@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { Spinner, toast, useMinBusy } from "@/components/motion";
 import { useState } from "react";
 import { KELURAHAN_WILAYAH, type ActivityType } from "@/lib/mock-data";
 import { ArrowLeft, CalendarDays, ChevronDown, ChevronRight, Clock } from "lucide-react";
@@ -25,6 +26,7 @@ function CreateActivity() {
   const [to, setTo] = useState("08:00");
 
   const valid = type && ptm && locName.trim() && address.trim() && kelurahan && date && from && to;
+  const [busy, runSave] = useMinBusy();
 
   return (
     <MobileShell hideNav>
@@ -38,7 +40,12 @@ function CreateActivity() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (valid) nav({ to: "/aktivitas" });
+          runSave(() => {
+            if (valid) {
+              toast("Aktivitas tersimpan");
+              nav({ to: "/aktivitas" });
+            }
+          });
         }}
         className="space-y-4 bg-white px-5 pb-8 pt-4"
       >
@@ -168,11 +175,12 @@ function CreateActivity() {
 
         <button
           type="submit"
-          disabled={!valid}
-          className="w-full rounded-lg py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
-          style={valid ? { background: PRIMARY } : undefined}
+          disabled={!valid || busy}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
+          style={valid && !busy ? { background: PRIMARY } : undefined}
         >
-          Simpan Aktivitas
+          {busy && <Spinner className="h-4 w-4" />}
+          {busy ? "Menyimpan…" : "Simpan Aktivitas"}
         </button>
       </form>
     </MobileShell>

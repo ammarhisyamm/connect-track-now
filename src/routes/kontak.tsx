@@ -108,7 +108,7 @@ function ContactsPage() {
                 <div className="mt-3 grid grid-cols-2 gap-2.5">
                   <a
                     href={`tel:${c.phone}`}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#2953A4]/10 py-2.5 text-[14px] font-medium text-[#2953A4]"
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#2953A4]/10 py-2.5 text-[14px] font-medium text-[#2953A4] transition-transform duration-100 active:scale-[0.98]"
                   >
                     <Phone className="h-4 w-4" /> Telepon
                   </a>
@@ -116,7 +116,7 @@ function ContactsPage() {
                     href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 rounded-full bg-green-50 py-2.5 text-[14px] font-medium text-green-600"
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full bg-green-50 py-2.5 text-[14px] font-medium text-green-600 transition-transform duration-100 active:scale-[0.98]"
                   >
                     <MessageCircle className="h-4 w-4" /> Whatsapp
                   </a>

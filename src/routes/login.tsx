@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { Spinner, useMinBusy } from "@/components/motion";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const nav = useNavigate();
   const [show, setShow] = useState(false);
+  const [busy, runLogin] = useMinBusy(600);
 
   return (
     <MobileShell hideNav>
@@ -25,7 +27,7 @@ function LoginPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            nav({ to: "/" });
+            runLogin(() => nav({ to: "/" }));
           }}
           className="space-y-4 rounded-t-3xl bg-card p-6 pb-10 text-foreground"
         >
@@ -53,9 +55,11 @@ function LoginPage() {
           <button className="text-xs font-medium text-brand">Lupa password?</button>
           <button
             type="submit"
-            className="w-full rounded-full bg-brand py-3.5 text-sm font-semibold text-brand-foreground shadow-lg shadow-brand/20 active:scale-[0.98]"
+            disabled={busy}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3.5 text-sm font-semibold text-brand-foreground shadow-lg shadow-brand/20 active:scale-[0.98] disabled:opacity-70"
           >
-            Masuk
+            {busy && <Spinner className="h-4 w-4" />}
+            {busy ? "Masuk…" : "Masuk"}
           </button>
         </form>
       </div>

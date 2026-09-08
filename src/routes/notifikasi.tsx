@@ -82,7 +82,7 @@ function NotifikasiPage() {
               <button
                 key={n.id}
                 onClick={() => markRead(n.id)}
-                className={`flex w-full gap-3 border-b border-slate-100 px-5 py-4 text-left ${
+                className={`flex w-full gap-3 border-b border-slate-100 px-5 py-4 text-left transition-colors duration-150 active:bg-slate-50 ${
                   unread ? "bg-[#2953A4]/5" : "bg-white"
                 }`}
               >
