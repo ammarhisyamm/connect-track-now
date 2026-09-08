@@ -10,7 +10,8 @@ import {
 } from "@/lib/mock-data";
 import { useEffect, useState } from "react";
 import { ChevronRight, LogOut, Settings, ShieldCheck, UserRound } from "lucide-react";
-import { useReducedMotion } from "@/components/motion";
+import { ScreenLoader, useReducedMotion } from "@/components/motion";
+import { ProfileSkeleton } from "@/components/skeletons";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile" }] }),
@@ -34,6 +35,7 @@ function ProfilePage() {
       </div>
 
       <div className="space-y-4 bg-white px-5 pb-8 pt-3">
+      <ScreenLoader skeleton={<ProfileSkeleton />}>
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <div className="flex items-center gap-3">
             <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-[#2953A4]/10 text-[#2953A4]">
@@ -190,6 +192,7 @@ function ProfilePage() {
             <ChevronRight className="h-4 w-4 text-slate-400" />
           </button>
         </div>
+      </ScreenLoader>
       </div>
 
       {logoutOpen && (

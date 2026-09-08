@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { ScreenLoader } from "@/components/motion";
+import { NotifikasiSkeleton } from "@/components/skeletons";
 import { notifications } from "@/lib/mock-data";
 import { useState } from "react";
 import {
@@ -74,6 +76,7 @@ function NotifikasiPage() {
           </p>
         </div>
       ) : (
+        <ScreenLoader skeleton={<NotifikasiSkeleton />}>
         <div className="bg-white pb-8">
           {notifications.map((n) => {
             const Icon = ICONS[n.icon];
@@ -108,6 +111,7 @@ function NotifikasiPage() {
             );
           })}
         </div>
+        </ScreenLoader>
       )}
     </MobileShell>
   );

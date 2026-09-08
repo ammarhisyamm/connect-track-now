@@ -14,6 +14,8 @@ import {
 } from "@/lib/mock-data";
 import { useLeads } from "@/lib/leads-store";
 import { nowHHMM, updateActivity, useActivity } from "@/lib/activity-store";
+import { ScreenLoader } from "@/components/motion";
+import { AktivitasDetailSkeleton } from "@/components/skeletons";
 import { toast } from "@/components/motion";
 import { useState } from "react";
 import {
@@ -106,6 +108,7 @@ function ActivityDetail() {
       </div>
 
       <div className="space-y-4 bg-white px-5 pb-8 pt-3">
+      <ScreenLoader skeleton={<AktivitasDetailSkeleton />}>
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <div className="flex items-center justify-between gap-2">
             <p className="text-[12px] font-medium" style={{ color: PRIMARY }}>
@@ -233,6 +236,7 @@ function ActivityDetail() {
             ))}
           </div>
         </div>
+      </ScreenLoader>
       </div>
 
       {cameraOpen && (

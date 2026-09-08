@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { ScreenLoader } from "@/components/motion";
+import { ProgramSkeleton } from "@/components/skeletons";
 import { profile, programHero } from "@/lib/mock-data";
 import { Crosshair, ReceiptText } from "lucide-react";
 
@@ -27,6 +29,7 @@ function ProgramPage() {
       </div>
 
       <div className="-mt-0 space-y-4 bg-white px-5 pb-8 pt-4">
+      <ScreenLoader skeleton={<ProgramSkeleton />}>
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <div className="flex items-start justify-between gap-2">
             <div>
@@ -101,6 +104,7 @@ function ProgramPage() {
             ))}
           </div>
         </div>
+      </ScreenLoader>
       </div>
     </MobileShell>
   );

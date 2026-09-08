@@ -161,9 +161,46 @@ export function Skeleton({ className = "" }: { className?: string }) {
   );
 }
 
+/** Berapa lama skeleton tampil tiap pindah layar. Kecilkan/Nol-kan kalau data sudah async. */
+export const SCREEN_SKELETON_MS = 450;
+
+let hasNavigated = false;
+
+/**
+ * Tampilkan skeleton setiap kali layar di-mount akibat navigasi.
+ * Load pertama (SSR/hydration) langsung render konten — tanpa flash.
+ * Form tidak memakai ini supaya input langsung bisa diketik.
+ */
+export function ScreenLoader({
+  skeleton,
+  children,
+}: {
+  skeleton: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const [ready, setReady] = useState(() => !hasNavigated);
+  useEffect(() => {
+    if (!hasNavigated) {
+      hasNavigated = true;
+      setReady(true);
+      return;
+    }
+    const t = setTimeout(() => setReady(true), SCREEN_SKELETON_MS);
+    return () => clearTimeout(t);
+  }, []);
+  if (!ready) {
+    return (
+      <div aria-busy role="status" aria-label="Memuat konten">
+        <span className="sr-only">Memuat konten…</span>
+        <div aria-hidden>{skeleton}</div>
+      </div>
+    );
+  }
+  return <>{children}</>;
+}
+
 /** Daftar baris skeleton + pengumuman aksesibel tunggal. */
-export function SkeletonRows({ n = 3, className = "" }: { n?: number; className?: string }) {
-  return (
+export function SkeletonRows({ n = 3, className = "" }: { n?: number; className?: string }) {  return (
     <div className={className} aria-busy role="status" aria-label="Memuat konten">
       <span className="sr-only">Memuat konten…</span>
       <div className="space-y-3" aria-hidden>

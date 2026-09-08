@@ -9,6 +9,8 @@ import {
   type ActivityStatus,
 } from "@/lib/mock-data";
 import { nowHHMM, updateActivity, useActivities } from "@/lib/activity-store";
+import { ScreenLoader } from "@/components/motion";
+import { HomeSkeleton } from "@/components/skeletons";
 import { toast } from "@/components/motion";
 import { useState } from "react";
 import {
@@ -108,6 +110,7 @@ function Home() {
       </header>
 
       <div className="space-y-6 bg-white px-5 pb-8 pt-5">
+      <ScreenLoader skeleton={<HomeSkeleton />}>
         <section>
           <h2 className="text-[17px] font-bold text-slate-900">Target Leads dan Closing</h2>
           <div className="mt-2.5 flex gap-2">
@@ -243,6 +246,7 @@ function Home() {
             </div>
           )}
         </section>
+      </ScreenLoader>
       </div>
 
       {checkinId && (

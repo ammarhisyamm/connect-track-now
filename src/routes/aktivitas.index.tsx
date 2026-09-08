@@ -8,6 +8,8 @@ import {
   STATUS_META,
 } from "@/lib/mock-data";
 import { nowHHMM, updateActivity, useActivities } from "@/lib/activity-store";
+import { ScreenLoader } from "@/components/motion";
+import { AktivitasListSkeleton } from "@/components/skeletons";
 import { toast } from "@/components/motion";
 import { useMemo, useState } from "react";
 import {
@@ -119,6 +121,7 @@ function ActivityList() {
         </div>
 
         <div className="space-y-3">
+        <ScreenLoader skeleton={<AktivitasListSkeleton />}>
           {filtered.map((a) => {
             const status = a.status;
             const meta = STATUS_META[status];
@@ -177,6 +180,7 @@ function ActivityList() {
               Belum ada aktivitas.
             </div>
           )}
+        </ScreenLoader>
         </div>
 
         <div className="flex justify-center pt-1">

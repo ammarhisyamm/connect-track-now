@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { ScreenLoader } from "@/components/motion";
+import { KontakSkeleton } from "@/components/skeletons";
 import { contacts } from "@/lib/mock-data";
 import { MapPin, MessageCircle, Phone, Search, UserRound } from "lucide-react";
 import { useState } from "react";
@@ -87,6 +89,7 @@ function ContactsPage() {
         </div>
 
         <div className="space-y-3">
+        <ScreenLoader skeleton={<KontakSkeleton />}>
           {filtered.map((c) => (
             <div key={c.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
               <div className="p-4 pb-3">
@@ -133,6 +136,7 @@ function ContactsPage() {
               Tidak ada kontak.
             </div>
           )}
+        </ScreenLoader>
         </div>
       </div>
     </MobileShell>
