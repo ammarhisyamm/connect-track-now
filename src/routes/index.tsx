@@ -43,7 +43,6 @@ type Range = "today" | "week" | "month";
 
 function Home() {
   const [range, setRange] = useState<Range>("today");
-  const [activityRange, setActivityRange] = useState<"today" | "week">("today");
   const [checkinId, setCheckinId] = useState<string | null>(null);
 
   const confirmCheckin = (url?: string) => {
@@ -66,19 +65,6 @@ function Home() {
 
   const lead = targets.leads[range];
   const closing = targets.closingLeads[range];
-  const activityTarget = targets.activities[activityRange].target;
-  const now = new Date();
-  const periodStart = new Date(now);
-  if (activityRange === "today") {
-    periodStart.setHours(0, 0, 0, 0);
-  } else if (range === "week") {
-    periodStart.setHours(0, 0, 0, 0);
-    periodStart.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-  } else {
-    periodStart.setDate(1);
-    periodStart.setHours(0, 0, 0, 0);
-  }
-  const activityCurrent = allActivities.filter((a) => new Date(a.date) >= periodStart).length;
 
   return (
     <MobileShell hideFab>
@@ -128,12 +114,12 @@ function Home() {
         <section>
            <h2 className="text-[17px] font-bold text-slate-900">Target Aktivitas</h2>
            <div className="mt-2.5 flex gap-2">
-             {([["today", "Hari ini"], ["week", "Minggu ini"]] as const).map(([r, label]) => (
+             {([["today", "Hari ini"], ["week", "Minggu ini"], ["month", "Bulan ini"]] as const).map(([r, label]) => (
                <button
                  key={r}
-                 onClick={() => setActivityRange(r)}
+                 onClick={() => setRange(r)}
                  className={`rounded-full border px-4 py-2 text-[13px] font-medium ${
-                   activityRange === r
+                   range === r
                      ? "border-[#2953A4] bg-[#2953A4] text-white"
                     : "border-slate-200 bg-white text-slate-500"
                 }`}
@@ -142,32 +128,10 @@ function Home() {
               </button>
             ))}
           </div>
-           <div className="mt-3">
-             <TargetCard icon={<ClipboardList className="h-4 w-4 text-[#2953A4]" />} label="Aktivitas" current={activityCurrent} target={activityTarget} />
-           </div>
-         </section>
-
-         <section>
-           <h2 className="text-[17px] font-bold text-slate-900">Target Leads dan Closing</h2>
-           <div className="mt-2.5 flex gap-2">
-             {([["today", "Hari ini"], ["week", "Minggu ini"], ["month", "Bulan ini"]] as const).map(([r, label]) => (
-               <button
-                 key={r}
-                 onClick={() => setRange(r)}
-                 className={`rounded-full border px-4 py-2 text-[13px] font-medium ${
-                   range === r
-                     ? "border-[#2953A4] bg-[#2953A4] text-white"
-                     : "border-slate-200 bg-white text-slate-500"
-                 }`}
-               >
-                 {label}
-               </button>
-             ))}
-           </div>
            <div className="mt-3 grid grid-cols-2 gap-3">
-            <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
-            <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
-          </div>
+             <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
+             <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
+           </div>
         </section>
 
         <section>

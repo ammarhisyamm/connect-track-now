@@ -95,7 +95,6 @@ export const profile: SalesProfile = {
 };
 
 export const targets = {
-  activities: { today: { target: 2 }, week: { target: 10 }, month: { target: 40 } },
   leads: { today: { current: 90, target: 100 }, week: { current: 240, target: 500 }, month: { current: 880, target: 2000 } },
   closingLeads: { today: { current: 12, target: 24 }, week: { current: 42, target: 120 }, month: { current: 165, target: 480 } },
 };
