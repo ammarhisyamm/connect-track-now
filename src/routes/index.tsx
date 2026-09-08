@@ -65,6 +65,19 @@ function Home() {
 
   const lead = targets.leads[range];
   const closing = targets.closingLeads[range];
+  const activityTarget = targets.activities[range].target;
+  const now = new Date();
+  const periodStart = new Date(now);
+  if (range === "today") {
+    periodStart.setHours(0, 0, 0, 0);
+  } else if (range === "week") {
+    periodStart.setHours(0, 0, 0, 0);
+    periodStart.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  } else {
+    periodStart.setDate(1);
+    periodStart.setHours(0, 0, 0, 0);
+  }
+  const activityCurrent = allActivities.filter((a) => new Date(a.date) >= periodStart).length;
 
   return (
     <MobileShell hideFab>
@@ -112,7 +125,7 @@ function Home() {
       <div className="space-y-6 bg-white px-5 pb-8 pt-5">
       <ScreenLoader skeleton={<HomeSkeleton />}>
         <section>
-          <h2 className="text-[17px] font-bold text-slate-900">Target Leads dan Closing</h2>
+           <h2 className="text-[17px] font-bold text-slate-900">Target Aktivitas & Performa</h2>
           <div className="mt-2.5 flex gap-2">
             {([["today", "Hari ini"], ["week", "Minggu ini"], ["month", "Bulan ini"]] as const).map(([r, label]) => (
               <button
@@ -128,7 +141,10 @@ function Home() {
               </button>
             ))}
           </div>
-          <div className="mt-3 grid grid-cols-2 gap-3">
+           <div className="mt-3">
+             <TargetCard icon={<ClipboardList className="h-4 w-4 text-[#2953A4]" />} label="Aktivitas" current={activityCurrent} target={activityTarget} />
+           </div>
+           <div className="mt-3 grid grid-cols-2 gap-3">
             <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
             <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
           </div>

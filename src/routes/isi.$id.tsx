@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { Spinner, useMinBusy } from "@/components/motion";
 import {
@@ -26,6 +26,7 @@ export const Route = createFileRoute("/isi/$id")({
 });
 
 function PublicLeadForm() {
+  const navigate = useNavigate();
   const params = Route.useParams();
   const base = Route.useLoaderData();
   const fromStore = useActivity(params.id);
@@ -248,7 +249,7 @@ function PublicLeadForm() {
             </p>
             <button
               type="button"
-              onClick={() => setDone(false)}
+              onClick={() => navigate({ to: "/aktivitas" })}
               className="mt-8 w-full rounded-xl bg-[#315bac] py-3.5 text-lg font-semibold text-white"
             >
               Selesai
