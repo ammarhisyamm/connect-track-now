@@ -26,7 +26,7 @@ export const Route = createFileRoute("/aktivitas/")({
   component: ActivityList,
 });
 
-const TABS = ["Semua", "Hari Ini", "Riwayat"] as const;
+const TABS = ["Semua", "Hari Ini", "Custom"] as const;
 const MONTHS = monthOptions(2026);
 
 function ActivityList() {
@@ -50,17 +50,24 @@ function ActivityList() {
   const allActivities = useActivities();
 
   const filtered = useMemo(() => {
-    const d = parseMonthOption(dari);
-    const k = parseMonthOption(ke);
-    const start = new Date(d.year, d.month, 1).getTime();
-    const end = new Date(k.year, k.month + 1, 1).getTime();
-    return allActivities.filter((a) => {
-      const t = new Date(a.date).getTime();
-      if (t < start || t >= end) return false;
-      if (tab === "Hari Ini") return new Date(a.date).toDateString() === new Date().toDateString();
-      if (tab === "Riwayat") return a.status === "completed";
-      return true;
-    });
+    // Filter bulan hanya berlaku untuk tab Custom.
+    // Tab Semua / Hari Ini tidak dibatasi rentang bulan.
+    if (tab === "Hari Ini") {
+      return allActivities.filter(
+        (a) => new Date(a.date).toDateString() === new Date().toDateString()
+      );
+    }
+    if (tab === "Custom") {
+      const d = parseMonthOption(dari);
+      const k = parseMonthOption(ke);
+      const start = new Date(d.year, d.month, 1).getTime();
+      const end = new Date(k.year, k.month + 1, 1).getTime();
+      return allActivities.filter((a) => {
+        const t = new Date(a.date).getTime();
+        return t >= start && t < end;
+      });
+    }
+    return allActivities;
   }, [tab, dari, ke, allActivities]);
 
   return (
@@ -87,6 +94,7 @@ function ActivityList() {
           ))}
         </div>
 
+        {tab === "Custom" && (
         <div className="grid grid-cols-2 gap-3 rounded-xl bg-[#2953A4]/10 p-3">
           <label className="block">
             <span className="mb-1 block text-[13px] text-slate-700">Dari Bulan</span>
@@ -119,6 +127,7 @@ function ActivityList() {
             </span>
           </label>
         </div>
+        )}
 
         <div className="space-y-3">
         <ScreenLoader skeleton={<AktivitasListSkeleton />}>
