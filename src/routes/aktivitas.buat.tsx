@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
-import { Spinner, toast, useMinBusy } from "@/components/motion";
+import { OverlayPortal, Spinner, useMinBusy } from "@/components/motion";
 import { useState } from "react";
-import { KELURAHAN_WILAYAH, type ActivityKind, type ActivityType } from "@/lib/mock-data";
+import { KELURAHAN_WILAYAH, type Activity, type ActivityKind, type ActivityType } from "@/lib/mock-data";
 import { createActivity } from "@/lib/activity-store";
-import { ArrowLeft, CalendarDays, ChevronDown, ChevronRight, Clock } from "lucide-react";
+import { ArrowLeft, CalendarDays, ChevronDown, ChevronRight, Clock, MapPin } from "lucide-react";
 
 export const Route = createFileRoute("/aktivitas/buat")({
   head: () => ({ meta: [{ title: "Tambah Aktivitas" }] }),
@@ -26,6 +26,7 @@ function CreateActivity() {
   const [date, setDate] = useState("");
   const [from, setFrom] = useState("07:00");
   const [to, setTo] = useState("08:00");
+  const [createdActivity, setCreatedActivity] = useState<Activity | null>(null);
 
   const valid = kind && type && ptm && locName.trim() && address.trim() && kelurahan && date && from && to;
   const [busy, runSave] = useMinBusy();
@@ -57,8 +58,7 @@ function CreateActivity() {
               startTime: from,
               endTime: to,
             });
-            toast("Aktivitas tersimpan");
-            nav({ to: "/aktivitas/$id", params: { id: a.id } });
+             setCreatedActivity(a);
           });
         }}
         className="space-y-4 bg-white px-5 pb-8 pt-4"
@@ -228,8 +228,40 @@ function CreateActivity() {
           {busy && <Spinner className="h-4 w-4" />}
           {busy ? "Menyimpan…" : "Simpan Aktivitas"}
         </button>
-      </form>
-    </MobileShell>
+       </form>
+
+       {createdActivity && (
+         <OverlayPortal>
+           <div className="motion-backdrop-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5">
+             <div className="w-full max-w-[360px] rounded-2xl bg-white px-5 pb-5 pt-8 text-center shadow-2xl">
+               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eef2ff]">
+                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ffd43d] text-4xl font-bold leading-none text-white shadow-[inset_0_-3px_0_#f5a623]">
+                   ✓
+                 </span>
+               </div>
+               <h2 className="mt-5 text-[22px] font-bold text-slate-950">Aktivitas Berhasil Dibuat</h2>
+               <p className="mt-2 text-[14px] leading-5 text-slate-500">
+                 Aktivitas sudah tersimpan dan siap kamu pantau.
+               </p>
+               <div className="mt-5 rounded-xl bg-slate-50 px-4 py-3 text-left">
+                 <p className="truncate text-[15px] font-bold text-slate-900">{createdActivity.locationName}</p>
+                 <p className="mt-1 flex items-center gap-1.5 truncate text-[13px] text-slate-500">
+                   <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-[#2953A4]" />
+                   {createdActivity.kelurahan}, {createdActivity.address}
+                 </p>
+               </div>
+               <button
+                 type="button"
+                 onClick={() => nav({ to: "/aktivitas/$id", params: { id: createdActivity.id } })}
+                 className="mt-5 w-full rounded-xl bg-[#315bac] py-3.5 text-[15px] font-semibold text-white"
+               >
+                 Lihat Detail Aktivitas
+               </button>
+             </div>
+           </div>
+         </OverlayPortal>
+       )}
+     </MobileShell>
   );
 }
 
