@@ -57,7 +57,7 @@ function KacabHome() {
 
   return (
     <MobileShell role="kacab" hideFab>
-      <header className="relative overflow-hidden px-5 pb-20 pt-12 text-white" style={{ background: "var(--gradient-brand)" }}>
+      <header className="relative h-[222px] overflow-visible px-5 pt-12 text-white" style={{ background: "var(--gradient-brand)" }}>
         <div className="relative z-10 flex items-center justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-white/25">
@@ -73,7 +73,7 @@ function KacabHome() {
           </button>
         </div>
 
-        <div className="relative z-10 mt-4 grid grid-cols-2 divide-x divide-slate-200 rounded-xl bg-white p-4 text-slate-900">
+        <div className="absolute left-4 right-4 top-[154px] z-20 grid grid-cols-2 divide-x divide-slate-200 rounded-2xl bg-white p-4 text-slate-900 shadow-[0_12px_24px_rgba(25,42,77,0.10)]">
           <SummaryMetric icon={<MapPin />} label="Visit" value={`${kcp.visit[period][0]}`} target={`/${kcp.visit[period][1]}`} />
           <SummaryMetric icon={<ClipboardCheck />} label="Waskat" value={`${kcp.waskat[period]}`} />
         </div>
@@ -84,7 +84,7 @@ function KacabHome() {
         </svg>
       </header>
 
-      <main className="space-y-5 bg-white px-5 pb-8 pt-5">
+      <main className="space-y-5 bg-white px-5 pb-8 pt-[64px]">
         <section>
           <label className="block text-[14px] font-medium text-slate-700">Pilih KCP</label>
           <span className="relative mt-1.5 block">
@@ -146,7 +146,7 @@ function KacabHome() {
 function SummaryMetric({ icon, label, value, target }: { icon: React.ReactNode; label: string; value: string; target?: string }) {
   return (
     <div className="flex items-center gap-2 px-1 first:pr-3 last:pl-3">
-      <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#93a8c8] text-[#2953A4]">{icon}</span>
+      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eef5ff] text-[#607b9d]">{icon}</span>
       <div>
         <p className="text-[13px] text-slate-500">{label}</p>
         <p className="mt-1 text-[18px] font-bold text-slate-900">{value}<span className="font-normal text-slate-400">{target}</span></p>
