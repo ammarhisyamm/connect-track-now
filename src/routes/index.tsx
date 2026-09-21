@@ -87,8 +87,8 @@ function Home() {
           </Link>
         </div>
 
-        <div className="relative z-10 mt-4 grid grid-cols-2 divide-x divide-slate-200 rounded-xl bg-white p-4 text-slate-900">
-          <div className="pr-3">
+        <div className="relative z-10 mt-4 grid grid-cols-2 gap-x-3 gap-y-4 rounded-xl bg-white p-4 text-slate-900">
+          <div className="border-r border-slate-200 pr-3">
             <p className="flex items-center gap-1.5 text-[13px] text-slate-500">
               <Wallet className="h-4 w-4 text-[#2953A4]" /> Booking (Amount)
             </p>
@@ -97,11 +97,25 @@ function Home() {
             </p>
             <p className="text-[13px] text-slate-400">{rp(profile.bookingEstimate)}</p>
           </div>
-          <div className="pl-3">
+          <div className="pl-1">
             <p className="flex items-center gap-1.5 text-[13px] text-slate-500">
               <Banknote className="h-4 w-4 text-[#2953A4]" /> Estimasi Insentif
             </p>
             <p className="mt-1.5 text-[17px] font-bold">{rp(profile.estimasiInsentif)}</p>
+          </div>
+          <div className="border-r border-slate-200 pr-3">
+            <p className="flex items-center gap-1.5 text-[13px] text-slate-500">
+              <Wallet className="h-4 w-4 text-[#2953A4]" /> ADO
+            </p>
+            <p className="mt-1.5 text-[17px] font-bold">{formatCompactRupiah(ado.current)}</p>
+            <p className="text-[12px] text-slate-400">Target {formatCompactRupiah(ado.target)}</p>
+          </div>
+          <div className="pl-1">
+            <p className="flex items-center gap-1.5 text-[13px] text-slate-500">
+              <Scale className="h-4 w-4 text-[#2953A4]" /> Gram (New CIF)
+            </p>
+            <p className="mt-1.5 text-[17px] font-bold">{formatCompactGram(grams.current)}</p>
+            <p className="text-[12px] text-slate-400">Target {formatCompactGram(grams.target)}</p>
           </div>
         </div>
 
@@ -134,8 +148,6 @@ function Home() {
            <div className="mt-3 grid grid-cols-2 gap-3">
               <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
               <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
-              <TargetCard icon={<Wallet className="h-4 w-4 text-[#2953A4]" />} label="ADO" hint="Belum lunas" current={ado.current} target={ado.target} format={formatCompactRupiah} />
-              <TargetCard icon={<Scale className="h-4 w-4 text-[#2953A4]" />} label="Gram" current={grams.current} target={grams.target} format={formatCompactGram} />
            </div>
         </section>
 
