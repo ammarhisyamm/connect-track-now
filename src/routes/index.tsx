@@ -24,6 +24,7 @@ import {
   LogOut,
   MapPin,
   Plus,
+  Scale,
   UserRound,
   Wallet,
 } from "lucide-react";
@@ -65,6 +66,8 @@ function Home() {
 
   const lead = targets.leads[range];
   const closing = targets.closingLeads[range];
+  const adon = targets.adon[range];
+  const grams = targets.grams[range];
 
   return (
     <MobileShell hideFab>
@@ -129,8 +132,10 @@ function Home() {
             ))}
           </div>
            <div className="mt-3 grid grid-cols-2 gap-3">
-             <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
-             <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
+              <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
+              <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
+              <TargetCard icon={<Wallet className="h-4 w-4 text-[#2953A4]" />} label="ADON" current={adon.current} target={adon.target} format={formatCompactRupiah} />
+              <TargetCard icon={<Scale className="h-4 w-4 text-[#2953A4]" />} label="Gram" current={grams.current} target={grams.target} format={formatCompactGram} />
            </div>
         </section>
 
@@ -266,16 +271,16 @@ function Home() {
   );
 }
 
-function TargetCard({ icon, label, current, target }: { icon: React.ReactNode; label: string; current: number; target: number }) {
+function TargetCard({ icon, label, current, target, format = String }: { icon: React.ReactNode; label: string; current: number; target: number; format?: (value: number) => string }) {
   const pct = Math.min(100, Math.round((current / target) * 100));
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-3.5">
       <p className="flex items-center gap-1.5 text-[14px] text-slate-700">
         {icon} {label}
       </p>
-      <p className="mt-1.5 text-[20px] font-bold text-slate-900">
-        {current}
-        <span className="text-[14px] font-normal text-slate-400">/{target}</span>
+      <p className="mt-1.5 truncate text-[18px] font-bold text-slate-900">
+        {format(current)}
+        <span className="text-[13px] font-normal text-slate-400">/{format(target)}</span>
       </p>
       <div className="mt-2 flex items-center gap-2">
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
@@ -285,6 +290,23 @@ function TargetCard({ icon, label, current, target }: { icon: React.ReactNode; l
       </div>
     </div>
   );
+}
+
+function formatCompactRupiah(value: number) {
+  if (value >= 1_000_000) {
+    return `Rp${(value / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} jt`;
+  }
+  if (value >= 1_000) {
+    return `Rp${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} rb`;
+  }
+  return `Rp${value.toLocaleString("id-ID")}`;
+}
+
+function formatCompactGram(value: number) {
+  if (value >= 1_000) {
+    return `${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`;
+  }
+  return `${value.toLocaleString("id-ID")} g`;
 }
 
 function StatusText({ status }: { status: ActivityStatus }) {
