@@ -97,7 +97,7 @@ export const profile: SalesProfile = {
 export const targets = {
   leads: { today: { current: 90, target: 100 }, week: { current: 240, target: 500 }, month: { current: 880, target: 2000 } },
   closingLeads: { today: { current: 12, target: 24 }, week: { current: 42, target: 120 }, month: { current: 165, target: 480 } },
-  adon: { today: { current: 4800000, target: 8000000 }, week: { current: 14250000, target: 22000000 }, month: { current: 14250000, target: 22000000 } },
+  ado: { today: { current: 4800000, target: 8000000 }, week: { current: 14250000, target: 22000000 }, month: { current: 14250000, target: 22000000 } },
   grams: { today: { current: 42, target: 100 }, week: { current: 180, target: 400 }, month: { current: 320, target: 1000 } },
 };
 

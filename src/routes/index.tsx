@@ -66,7 +66,7 @@ function Home() {
 
   const lead = targets.leads[range];
   const closing = targets.closingLeads[range];
-  const adon = targets.adon[range];
+  const ado = targets.ado[range];
   const grams = targets.grams[range];
 
   return (
@@ -134,7 +134,7 @@ function Home() {
            <div className="mt-3 grid grid-cols-2 gap-3">
               <TargetCard icon={<Crosshair className="h-4 w-4 text-[#2953A4]" />} label="Leads" current={lead.current} target={lead.target} />
               <TargetCard icon={<UserRound className="h-4 w-4 text-[#2953A4]" />} label="Closing Leads" current={closing.current} target={closing.target} />
-              <TargetCard icon={<Wallet className="h-4 w-4 text-[#2953A4]" />} label="ADON" current={adon.current} target={adon.target} format={formatCompactRupiah} />
+              <TargetCard icon={<Wallet className="h-4 w-4 text-[#2953A4]" />} label="ADO" hint="Belum lunas" current={ado.current} target={ado.target} format={formatCompactRupiah} />
               <TargetCard icon={<Scale className="h-4 w-4 text-[#2953A4]" />} label="Gram" current={grams.current} target={grams.target} format={formatCompactGram} />
            </div>
         </section>
@@ -271,12 +271,13 @@ function Home() {
   );
 }
 
-function TargetCard({ icon, label, current, target, format = String }: { icon: React.ReactNode; label: string; current: number; target: number; format?: (value: number) => string }) {
+function TargetCard({ icon, label, hint, current, target, format = String }: { icon: React.ReactNode; label: string; hint?: string; current: number; target: number; format?: (value: number) => string }) {
   const pct = Math.min(100, Math.round((current / target) * 100));
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-3.5">
       <p className="flex items-center gap-1.5 text-[14px] text-slate-700">
         {icon} {label}
+        {hint && <span className="text-[10px] text-slate-400">({hint})</span>}
       </p>
       <p className="mt-1.5 truncate text-[18px] font-bold text-slate-900">
         {format(current)}
