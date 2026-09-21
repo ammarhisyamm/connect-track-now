@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AktivitasRouteImport } from './routes/aktivitas'
 import { Route as KacabRouteImport } from './routes/kacab'
+import { Route as KacabAktivitasRouteImport } from './routes/kacab-aktivitas'
+import { Route as KacabProfileRouteImport } from './routes/kacab-profile'
 import { Route as KontakRouteImport } from './routes/kontak'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NotifikasiRouteImport } from './routes/notifikasi'
@@ -22,6 +24,7 @@ import { Route as AktivitasIndexRouteImport } from './routes/aktivitas.index'
 import { Route as AktivitasIdRouteImport } from './routes/aktivitas.$id'
 import { Route as AktivitasBuatRouteImport } from './routes/aktivitas.buat'
 import { Route as IsiIdRouteImport } from './routes/isi.$id'
+import { Route as KacabAktivitasBuatRouteImport } from './routes/kacab-aktivitas.buat'
 import { Route as TambahLeadsActivityIdRouteImport } from './routes/tambah-leads.$activityId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -37,6 +40,16 @@ const AktivitasRoute = AktivitasRouteImport.update({
 const KacabRoute = KacabRouteImport.update({
   id: '/kacab',
   path: '/kacab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KacabAktivitasRoute = KacabAktivitasRouteImport.update({
+  id: '/kacab-aktivitas',
+  path: '/kacab-aktivitas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KacabProfileRoute = KacabProfileRouteImport.update({
+  id: '/kacab-profile',
+  path: '/kacab-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontakRoute = KontakRouteImport.update({
@@ -89,6 +102,11 @@ const IsiIdRoute = IsiIdRouteImport.update({
   path: '/isi/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KacabAktivitasBuatRoute = KacabAktivitasBuatRouteImport.update({
+  id: '/buat',
+  path: '/buat',
+  getParentRoute: () => KacabAktivitasRoute,
+} as any)
 const TambahLeadsActivityIdRoute = TambahLeadsActivityIdRouteImport.update({
   id: '/tambah-leads/$activityId',
   path: '/tambah-leads/$activityId',
@@ -99,6 +117,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
   '/kacab': typeof KacabRoute
+  '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
+  '/kacab-profile': typeof KacabProfileRoute
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
   '/notifikasi': typeof NotifikasiRoute
@@ -108,12 +128,15 @@ export interface FileRoutesByFullPath {
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
+  '/kacab-aktivitas/buat': typeof KacabAktivitasBuatRoute
   '/tambah-leads/$activityId': typeof TambahLeadsActivityIdRoute
   '/aktivitas/': typeof AktivitasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/kacab': typeof KacabRoute
+  '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
+  '/kacab-profile': typeof KacabProfileRoute
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
   '/notifikasi': typeof NotifikasiRoute
@@ -123,6 +146,7 @@ export interface FileRoutesByTo {
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
+  '/kacab-aktivitas/buat': typeof KacabAktivitasBuatRoute
   '/tambah-leads/$activityId': typeof TambahLeadsActivityIdRoute
   '/aktivitas': typeof AktivitasIndexRoute
 }
@@ -131,6 +155,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
   '/kacab': typeof KacabRoute
+  '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
+  '/kacab-profile': typeof KacabProfileRoute
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
   '/notifikasi': typeof NotifikasiRoute
@@ -140,6 +166,7 @@ export interface FileRoutesById {
   '/aktivitas/$id': typeof AktivitasIdRoute
   '/aktivitas/buat': typeof AktivitasBuatRoute
   '/isi/$id': typeof IsiIdRoute
+  '/kacab-aktivitas/buat': typeof KacabAktivitasBuatRoute
   '/tambah-leads/$activityId': typeof TambahLeadsActivityIdRoute
   '/aktivitas/': typeof AktivitasIndexRoute
 }
@@ -149,6 +176,8 @@ export interface FileRouteTypes {
     | '/'
     | '/aktivitas'
     | '/kacab'
+    | '/kacab-aktivitas'
+    | '/kacab-profile'
     | '/kontak'
     | '/login'
     | '/notifikasi'
@@ -158,12 +187,15 @@ export interface FileRouteTypes {
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
+    | '/kacab-aktivitas/buat'
     | '/tambah-leads/$activityId'
     | '/aktivitas/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/kacab'
+    | '/kacab-aktivitas'
+    | '/kacab-profile'
     | '/kontak'
     | '/login'
     | '/notifikasi'
@@ -173,6 +205,7 @@ export interface FileRouteTypes {
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
+    | '/kacab-aktivitas/buat'
     | '/tambah-leads/$activityId'
     | '/aktivitas'
   id:
@@ -180,6 +213,8 @@ export interface FileRouteTypes {
     | '/'
     | '/aktivitas'
     | '/kacab'
+    | '/kacab-aktivitas'
+    | '/kacab-profile'
     | '/kontak'
     | '/login'
     | '/notifikasi'
@@ -189,6 +224,7 @@ export interface FileRouteTypes {
     | '/aktivitas/$id'
     | '/aktivitas/buat'
     | '/isi/$id'
+    | '/kacab-aktivitas/buat'
     | '/tambah-leads/$activityId'
     | '/aktivitas/'
   fileRoutesById: FileRoutesById
@@ -197,6 +233,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AktivitasRoute: typeof AktivitasRouteWithChildren
   KacabRoute: typeof KacabRoute
+  KacabAktivitasRoute: typeof KacabAktivitasRouteWithChildren
+  KacabProfileRoute: typeof KacabProfileRoute
   KontakRoute: typeof KontakRoute
   LoginRoute: typeof LoginRoute
   NotifikasiRoute: typeof NotifikasiRoute
@@ -228,6 +266,20 @@ declare module '@tanstack/react-router' {
       path: '/kacab'
       fullPath: '/kacab'
       preLoaderRoute: typeof KacabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kacab-aktivitas': {
+      id: '/kacab-aktivitas'
+      path: '/kacab-aktivitas'
+      fullPath: '/kacab-aktivitas'
+      preLoaderRoute: typeof KacabAktivitasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kacab-profile': {
+      id: '/kacab-profile'
+      path: '/kacab-profile'
+      fullPath: '/kacab-profile'
+      preLoaderRoute: typeof KacabProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontak': {
@@ -300,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IsiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kacab-aktivitas/buat': {
+      id: '/kacab-aktivitas/buat'
+      path: '/buat'
+      fullPath: '/kacab-aktivitas/buat'
+      preLoaderRoute: typeof KacabAktivitasBuatRouteImport
+      parentRoute: typeof KacabAktivitasRoute
+    }
     '/tambah-leads/$activityId': {
       id: '/tambah-leads/$activityId'
       path: '/tambah-leads/$activityId'
@@ -326,10 +385,24 @@ const AktivitasRouteWithChildren = AktivitasRoute._addFileChildren(
   AktivitasRouteChildren,
 )
 
+interface KacabAktivitasRouteChildren {
+  KacabAktivitasBuatRoute: typeof KacabAktivitasBuatRoute
+}
+
+const KacabAktivitasRouteChildren: KacabAktivitasRouteChildren = {
+  KacabAktivitasBuatRoute: KacabAktivitasBuatRoute,
+}
+
+const KacabAktivitasRouteWithChildren = KacabAktivitasRoute._addFileChildren(
+  KacabAktivitasRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AktivitasRoute: AktivitasRouteWithChildren,
   KacabRoute: KacabRoute,
+  KacabAktivitasRoute: KacabAktivitasRouteWithChildren,
+  KacabProfileRoute: KacabProfileRoute,
   KontakRoute: KontakRoute,
   LoginRoute: LoginRoute,
   NotifikasiRoute: NotifikasiRoute,

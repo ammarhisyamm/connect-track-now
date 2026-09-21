@@ -1,6 +1,6 @@
 // Mock data for the sales tracking app
 
-export type ActivityType = "Canvassing" | "Sosialisasi" | "Open Booth" | "Event" | "Market ke instansi" | "Other";
+export type ActivityType = "Canvassing" | "Sosialisasi" | "Open Booth" | "Event" | "Market ke instansi" | "Penyelesaian Case Outlet" | "Visit Nasabah One Obligor" | "Evaluasi Pencapaian Target Unit & Sales" | "Other";
 
 export type LeadStatus = "Hot" | "Warm" | "Cold" | "Closing";
 
@@ -11,6 +11,7 @@ export type ActivityKind = "digital" | "lapangan";
 export interface Activity {
   id: string;
   type: ActivityType;
+  activityTypes?: ActivityType[];
   kind: ActivityKind;
   ptm: "Dalam PTM" | "Luar PTM";
   locationName: string;

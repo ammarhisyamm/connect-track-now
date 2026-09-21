@@ -13,8 +13,8 @@ const salesTabs = [
 
 const kacabTabs = [
   { to: "/kacab", label: "Home", icon: Home },
-  { to: "/aktivitas", label: "Aktivitas", icon: ListChecks },
-  { to: "/profile", label: "Profil", icon: User },
+  { to: "/kacab-aktivitas", label: "Aktivitas", icon: ListChecks },
+  { to: "/kacab-profile", label: "Profil", icon: User },
 ] as const;
 
 export function MobileShell({ children, hideNav = false, hideFab = false, role = "sales" }: { children: ReactNode; hideNav?: boolean; hideFab?: boolean; role?: "sales" | "kacab" }) {

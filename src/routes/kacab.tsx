@@ -141,7 +141,7 @@ function KacabHome() {
 function SummaryMetric({ icon, label, value, target }: { icon: React.ReactNode; label: string; value: string; target?: string }) {
   return (
     <div className="flex items-center gap-2 px-1 first:pr-3 last:pl-3">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2953A4]/10 text-[#2953A4]">{icon}</span>
+      <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#93a8c8] text-[#2953A4]">{icon}</span>
       <div>
         <p className="text-[13px] text-slate-500">{label}</p>
         <p className="mt-1 text-[18px] font-bold text-slate-900">{value}<span className="font-normal text-slate-400">{target}</span></p>
