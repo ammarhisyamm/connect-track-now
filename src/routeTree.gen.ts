@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AktivitasRouteImport } from './routes/aktivitas'
+import { Route as KacabRouteImport } from './routes/kacab'
 import { Route as KontakRouteImport } from './routes/kontak'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NotifikasiRouteImport } from './routes/notifikasi'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const AktivitasRoute = AktivitasRouteImport.update({
   id: '/aktivitas',
   path: '/aktivitas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KacabRoute = KacabRouteImport.update({
+  id: '/kacab',
+  path: '/kacab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontakRoute = KontakRouteImport.update({
@@ -92,6 +98,7 @@ const TambahLeadsActivityIdRoute = TambahLeadsActivityIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
+  '/kacab': typeof KacabRoute
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
   '/notifikasi': typeof NotifikasiRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/kacab': typeof KacabRoute
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
   '/notifikasi': typeof NotifikasiRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
+  '/kacab': typeof KacabRoute
   '/kontak': typeof KontakRoute
   '/login': typeof LoginRoute
   '/notifikasi': typeof NotifikasiRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/aktivitas'
+    | '/kacab'
     | '/kontak'
     | '/login'
     | '/notifikasi'
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/kacab'
     | '/kontak'
     | '/login'
     | '/notifikasi'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/aktivitas'
+    | '/kacab'
     | '/kontak'
     | '/login'
     | '/notifikasi'
@@ -184,6 +196,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AktivitasRoute: typeof AktivitasRouteWithChildren
+  KacabRoute: typeof KacabRoute
   KontakRoute: typeof KontakRoute
   LoginRoute: typeof LoginRoute
   NotifikasiRoute: typeof NotifikasiRoute
@@ -208,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/aktivitas'
       fullPath: '/aktivitas'
       preLoaderRoute: typeof AktivitasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kacab': {
+      id: '/kacab'
+      path: '/kacab'
+      fullPath: '/kacab'
+      preLoaderRoute: typeof KacabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontak': {
@@ -309,6 +329,7 @@ const AktivitasRouteWithChildren = AktivitasRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AktivitasRoute: AktivitasRouteWithChildren,
+  KacabRoute: KacabRoute,
   KontakRoute: KontakRoute,
   LoginRoute: LoginRoute,
   NotifikasiRoute: NotifikasiRoute,

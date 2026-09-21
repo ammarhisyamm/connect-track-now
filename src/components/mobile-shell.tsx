@@ -3,7 +3,7 @@ import { Home, ListChecks, Users, CalendarRange, User, Plus } from "lucide-react
 import type { ReactNode } from "react";
 import { PageTransition } from "./motion";
 
-const tabs = [
+const salesTabs = [
   { to: "/", label: "Home", icon: Home },
   { to: "/aktivitas", label: "Aktivitas", icon: ListChecks },
   { to: "/kontak", label: "Kontak", icon: Users },
@@ -11,8 +11,15 @@ const tabs = [
   { to: "/profile", label: "Profil", icon: User },
 ] as const;
 
-export function MobileShell({ children, hideNav = false, hideFab = false }: { children: ReactNode; hideNav?: boolean; hideFab?: boolean }) {
+const kacabTabs = [
+  { to: "/kacab", label: "Home", icon: Home },
+  { to: "/aktivitas", label: "Aktivitas", icon: ListChecks },
+  { to: "/profile", label: "Profil", icon: User },
+] as const;
+
+export function MobileShell({ children, hideNav = false, hideFab = false, role = "sales" }: { children: ReactNode; hideNav?: boolean; hideFab?: boolean; role?: "sales" | "kacab" }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const tabs = role === "kacab" ? kacabTabs : salesTabs;
 
   return (
     <div className="mobile-shell relative">
@@ -25,7 +32,7 @@ export function MobileShell({ children, hideNav = false, hideFab = false }: { ch
             <ul className="grid grid-cols-5 px-2 pb-3 pt-2">
               {tabs.map((t) => {
                 const Icon = t.icon;
-                const active = t.to === "/" ? pathname === "/" : pathname.startsWith(t.to);
+                const active = t.to === "/" || t.to === "/kacab" ? pathname === t.to : pathname.startsWith(t.to);
                 return (
                   <li key={t.to} className="flex justify-center">
                     <Link
