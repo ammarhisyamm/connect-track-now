@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { useMemo, useState } from "react";
 import { Building2, ChevronDown, Eye, MapPin, Plus } from "lucide-react";
@@ -15,6 +15,12 @@ const ITEMS = [
 ];
 
 function KacabActivities() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  if (pathname !== "/kacab-aktivitas") return <Outlet />;
+  return <KacabActivityList />;
+}
+
+function KacabActivityList() {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Custom");
   const [from, setFrom] = useState("2026-01-01");
   const [to, setTo] = useState("2026-12-31");
