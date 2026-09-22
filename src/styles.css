@@ -193,3 +193,6 @@
     animation: none;
   }
 }
+.sales-view section:first-of-type {
+  display: none;
+}
