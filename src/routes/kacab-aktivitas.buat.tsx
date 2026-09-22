@@ -20,11 +20,11 @@ const KCP_OPTIONS = [
 const ACTIVITIES: ActivityType[] = ["Penyelesaian Case Outlet", "Visit Nasabah One Obligor", "Evaluasi Pencapaian Target Unit & Sales"];
 const PRIORITIES = ["High", "Low"] as const;
 const KELURAHAN_OPTIONS = [...new Set([...Object.keys(KELURAHAN_WILAYAH), ...KCP_OPTIONS.map((item) => item.kelurahan)])];
-type Picker = "activity" | "priority" | "kelurahan" | null;
+type Picker = "activity" | "priority" | "date" | "kelurahan" | null;
 
 function CreateKacabActivity() {
   const navigate = useNavigate();
-  const [selectedTypes, setSelectedTypes] = useState<ActivityType[]>([]);
+  const [selectedType, setSelectedType] = useState<ActivityType | "">("");
   const [priority, setPriority] = useState<(typeof PRIORITIES)[number] | "">("");
   const [date, setDate] = useState("");
   const [kcpName, setKcpName] = useState("");
@@ -36,19 +36,22 @@ function CreateKacabActivity() {
   const [photoUrl, setPhotoUrl] = useState("");
   const [cameraOpen, setCameraOpen] = useState(false);
   const [picker, setPicker] = useState<Picker>(null);
+  const [dateDay, setDateDay] = useState("01");
+  const [dateMonth, setDateMonth] = useState("01");
+  const [dateYear, setDateYear] = useState("2026");
   const [kelurahanSearch, setKelurahanSearch] = useState("");
   const [created, setCreated] = useState<Activity | null>(null);
   const [busy, runSave] = useMinBusy();
   const kcp = KCP_OPTIONS.find((item) => item.name === kcpName);
   const filteredKelurahan = useMemo(() => KELURAHAN_OPTIONS.filter((item) => item.toLowerCase().includes(kelurahanSearch.toLowerCase())), [kelurahanSearch]);
-  const valid = selectedTypes.length > 0 && priority && date && kcpName && kelurahan;
+  const valid = selectedType && priority && date && kcpName && kelurahan;
 
   const save = (event: React.FormEvent) => {
     event.preventDefault();
     if (!valid || busy || !kcp) return;
     runSave(() => {
       const activity = createActivity({
-        type: selectedTypes[0], activityTypes: selectedTypes, kind: "lapangan", ptm: "Dalam PTM",
+        type: selectedType as ActivityType, activityTypes: [selectedType as ActivityType], kind: "lapangan", ptm: "Dalam PTM",
         locationName: kcp.name, address: place.trim() || kcp.address, kelurahan,
         wilayah: KELURAHAN_WILAYAH[kelurahan] || kcp.wilayah, date: new Date(date).toISOString(),
         timeRange: `${from} - ${to}`, startTime: from, endTime: to, photoUrl: photoUrl || undefined,
@@ -70,13 +73,10 @@ function CreateKacabActivity() {
       <form onSubmit={save} className="space-y-4 bg-white px-5 pb-8 pt-4">
         <div><h1 className="text-[20px] font-bold text-slate-900">Buat Aktivitas</h1><p className="mt-0.5 text-[13px] text-slate-500">Isi detail kegiatan monitoring KCP</p></div>
 
-        <Field label="Kegiatan" hint={selectedTypes.length ? `${selectedTypes.length} kegiatan dipilih` : undefined}>
-          <button type="button" onClick={() => setPicker("activity")} className={`flex w-full items-center justify-between rounded-xl border px-3.5 py-3 text-left text-[14px] ${selectedTypes.length ? "text-slate-900" : "text-slate-400"}`}><span>{selectedTypes.length ? "Kegiatan terpilih" : "Pilih Kegiatan"}</span><ChevronDown className="h-4 w-4 text-slate-500" /></button>
-          {selectedTypes.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{selectedTypes.map((type) => <span key={type} className="inline-flex max-w-full items-center gap-1 rounded-md bg-slate-100 px-2.5 py-1 text-[12px] text-slate-700"><span className="truncate">{type}</span><button type="button" onClick={() => setSelectedTypes((items) => items.filter((item) => item !== type))} aria-label={`Hapus ${type}`}><X className="h-3.5 w-3.5" /></button></span>)}</div>}
-        </Field>
+        <Field label="Kegiatan"><button type="button" onClick={() => setPicker("activity")} className={`flex w-full items-center justify-between rounded-xl border px-3.5 py-3 text-left text-[14px] ${selectedType ? "text-slate-900" : "text-slate-400"}`}>{selectedType || "Pilih Kegiatan"}<ChevronDown className="h-4 w-4 text-slate-500" /></button></Field>
 
         <Field label="Priority"><button type="button" onClick={() => setPicker("priority")} className={`flex w-full items-center justify-between rounded-xl border px-3.5 py-3 text-left text-[14px] ${priority ? "text-slate-900" : "text-slate-400"}`}>{priority || "Pilih Priority"}<ChevronDown className="h-4 w-4 text-slate-500" /></button></Field>
-        <Field label="Tanggal Pelaksanaan"><span className="relative block"><input required type="date" value={date} onChange={(event) => setDate(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[14px] text-slate-800 outline-none" /><CalendarDays className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /></span></Field>
+        <Field label="Tanggal Pelaksanaan"><button type="button" onClick={() => setPicker("date")} className={`flex w-full items-center justify-between rounded-xl border px-3.5 py-3 text-left text-[14px] ${date ? "text-slate-900" : "text-slate-400"}`}>{date ? formatDateInput(date) : "DD/MM/YYYY"}<CalendarDays className="h-4 w-4 text-slate-500" /></button></Field>
         <Field label="Nama KCP"><span className="relative block"><select required value={kcpName} onChange={(event) => chooseKcp(event.target.value)} className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[14px] text-slate-800 outline-none"><option value="" disabled>Pilih KCP</option>{KCP_OPTIONS.map((item) => <option key={item.name} value={item.name}>{item.name}</option>)}</select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /></span></Field>
         <Field label="Tempat Kegiatan (Opsional)"><input value={place} onChange={(event) => setPlace(event.target.value)} placeholder={kcp?.address ?? "Contoh: Balai Desa"} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[14px] text-slate-800 outline-none placeholder:text-slate-400" /></Field>
         <Field label="Kelurahan"><button type="button" onClick={() => setPicker("kelurahan")} className={`flex w-full items-center justify-between rounded-xl border px-3.5 py-3 text-left text-[14px] ${kelurahan ? "text-slate-900" : "text-slate-400"}`}>{kelurahan || "Pilih Kelurahan"}<ChevronRight className="h-4 w-4 text-slate-500" /></button></Field>
@@ -85,15 +85,16 @@ function CreateKacabActivity() {
         <div className="sticky bottom-0 -mx-5 mt-2 bg-white px-5 pb-4 pt-3"><button type="submit" disabled={!valid || busy} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2953A4] py-3.5 text-[15px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400">{busy && <Spinner className="h-4 w-4" />}{busy ? "Menyimpan…" : "Simpan Aktivitas"}</button></div>
       </form>
 
-      {picker && <PickerOverlay picker={picker} selectedTypes={selectedTypes} priority={priority} kelurahan={kelurahan} search={kelurahanSearch} setSearch={setKelurahanSearch} onClose={() => setPicker(null)} onActivities={setSelectedTypes} onPriority={setPriority} onKelurahan={(value) => { setKelurahan(value); setPicker(null); }} />}
+      {picker && <PickerOverlay picker={picker} selectedType={selectedType} priority={priority} kelurahan={kelurahan} search={kelurahanSearch} setSearch={setKelurahanSearch} dateDay={dateDay} dateMonth={dateMonth} dateYear={dateYear} setDateDay={setDateDay} setDateMonth={setDateMonth} setDateYear={setDateYear} onClose={() => setPicker(null)} onActivity={(value) => { setSelectedType(value); setPicker(null); }} onPriority={setPriority} onDate={() => { setDate(`${dateYear}-${dateMonth}-${dateDay}`); setPicker(null); }} onKelurahan={(value) => { setKelurahan(value); setPicker(null); }} />}
       {cameraOpen && <CameraModal mode="photo" onClose={() => setCameraOpen(false)} onSave={(url) => { setPhotoUrl(url || ""); setPhotoName("Foto kegiatan tersimpan"); setCameraOpen(false); }} onSkip={() => setCameraOpen(false)} />}
       {created && <OverlayPortal><div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5"><div className="w-full max-w-[360px] rounded-2xl bg-white px-5 pb-5 pt-8 text-center shadow-2xl"><div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eef2ff]"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ffd43d] text-4xl font-bold leading-none text-white">✓</span></div><h2 className="mt-5 text-[22px] font-bold text-slate-950">Aktivitas Berhasil Dibuat</h2><p className="mt-2 text-[14px] leading-5 text-slate-500">Aktivitas monitoring sudah tersimpan.</p><button type="button" onClick={() => navigate({ to: "/kacab-aktivitas" })} className="mt-6 w-full rounded-xl bg-[#315bac] py-3.5 text-[15px] font-semibold text-white">Lihat Aktivitas</button></div></div></OverlayPortal>}
     </MobileShell>
   );
 }
 
-function PickerOverlay({ picker, selectedTypes, priority, kelurahan, search, setSearch, onClose, onActivities, onPriority, onKelurahan }: { picker: Exclude<Picker, null>; selectedTypes: ActivityType[]; priority: (typeof PRIORITIES)[number] | ""; kelurahan: string; search: string; setSearch: (value: string) => void; onClose: () => void; onActivities: (value: ActivityType[]) => void; onPriority: (value: (typeof PRIORITIES)[number]) => void; onKelurahan: (value: string) => void }) {
-  return <OverlayPortal><div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50" onClick={onClose}><div className="motion-backdrop-in w-full max-w-[440px] rounded-t-2xl bg-white px-5 pb-6 pt-5" onClick={(event) => event.stopPropagation()}><div className="flex items-center justify-between"><h2 className="text-[17px] font-bold text-slate-900">{picker === "activity" ? "Kegiatan" : picker === "priority" ? "Priority" : "Kelurahan"}</h2><button type="button" onClick={onClose} aria-label="Tutup"><X className="h-5 w-5 text-slate-500" /></button></div>{picker === "kelurahan" && <div className="relative mt-4"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input autoFocus value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari kelurahan/kode pos" className="w-full rounded-lg border border-slate-200 py-3 pl-9 pr-3 text-[13px] outline-none" /></div>}<div className="mt-3 max-h-[45vh] overflow-y-auto">{picker === "activity" && ACTIVITIES.map((item) => <PickerRow key={item} label={item} selected={selectedTypes.includes(item)} onClick={() => onActivities(selectedTypes.includes(item) ? selectedTypes.filter((value) => value !== item) : [...selectedTypes, item])} />)}{picker === "priority" && PRIORITIES.map((item) => <PickerRow key={item} label={item} selected={priority === item} onClick={() => { onPriority(item); onClose(); }} />)}{picker === "kelurahan" && KELURAHAN_OPTIONS.filter((item) => item.toLowerCase().includes(search.toLowerCase())).map((item) => <PickerRow key={item} label={item} detail={KELURAHAN_WILAYAH[item]} selected={kelurahan === item} onClick={() => onKelurahan(item)} />)}</div>{picker === "activity" && <button type="button" onClick={onClose} className="mt-4 w-full rounded-xl bg-[#315bac] py-3 text-[14px] font-semibold text-white">Pilih Kegiatan</button>}{picker === "kelurahan" && <button type="button" onClick={onClose} className="mt-4 w-full rounded-xl bg-[#315bac] py-3 text-[14px] font-semibold text-white">Pilih Kelurahan</button>}</div></div></OverlayPortal>;
+function PickerOverlay({ picker, selectedType, priority, kelurahan, search, setSearch, dateDay, dateMonth, dateYear, setDateDay, setDateMonth, setDateYear, onClose, onActivity, onPriority, onDate, onKelurahan }: { picker: Exclude<Picker, null>; selectedType: ActivityType | ""; priority: (typeof PRIORITIES)[number] | ""; kelurahan: string; search: string; setSearch: (value: string) => void; dateDay: string; dateMonth: string; dateYear: string; setDateDay: (value: string) => void; setDateMonth: (value: string) => void; setDateYear: (value: string) => void; onClose: () => void; onActivity: (value: ActivityType) => void; onPriority: (value: (typeof PRIORITIES)[number]) => void; onDate: () => void; onKelurahan: (value: string) => void }) {
+  const title = picker === "activity" ? "Kegiatan" : picker === "priority" ? "Priority" : picker === "date" ? "Tanggal Pelaksanaan" : "Kelurahan";
+  return <OverlayPortal><div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50" onClick={onClose}><div className="motion-backdrop-in w-full max-w-[440px] rounded-t-2xl bg-white px-5 pb-6 pt-5" onClick={(event) => event.stopPropagation()}><div className="flex items-center justify-between"><h2 className="text-[17px] font-bold text-slate-900">{title}</h2><button type="button" onClick={onClose} aria-label="Tutup"><X className="h-5 w-5 text-slate-500" /></button></div>{picker === "kelurahan" && <div className="relative mt-4"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input autoFocus value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari kelurahan/kode pos" className="w-full rounded-lg border border-slate-200 py-3 pl-9 pr-3 text-[13px] outline-none" /></div>}{picker === "date" && <div className="mt-6 grid grid-cols-3 gap-2"><select value={dateDay} onChange={(event) => setDateDay(event.target.value)} className="rounded-xl border border-slate-200 px-3 py-3 text-center text-[16px]"><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option></select><select value={dateMonth} onChange={(event) => setDateMonth(event.target.value)} className="rounded-xl border border-slate-200 px-3 py-3 text-center text-[16px]"><option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select><select value={dateYear} onChange={(event) => setDateYear(event.target.value)} className="rounded-xl border border-slate-200 px-3 py-3 text-center text-[16px]"><option>2026</option><option>2027</option><option>2028</option></select></div>}<div className="mt-3 max-h-[45vh] overflow-y-auto">{picker === "activity" && ACTIVITIES.map((item) => <PickerRow key={item} label={item} selected={selectedType === item} onClick={() => onActivity(item)} />)}{picker === "priority" && PRIORITIES.map((item) => <PickerRow key={item} label={item} selected={priority === item} onClick={() => { onPriority(item); onClose(); }} />)}{picker === "kelurahan" && KELURAHAN_OPTIONS.filter((item) => item.toLowerCase().includes(search.toLowerCase())).map((item) => <PickerRow key={item} label={item} detail={KELURAHAN_WILAYAH[item]} selected={kelurahan === item} onClick={() => onKelurahan(item)} />)}</div>{(picker === "date" || picker === "kelurahan") && <button type="button" onClick={picker === "date" ? onDate : onClose} className="mt-4 w-full rounded-xl bg-[#315bac] py-3 text-[14px] font-semibold text-white">{picker === "date" ? "Pilih Tanggal Pelaksanaan" : "Pilih Kelurahan"}</button>}</div></div></OverlayPortal>;
 }
 
 function PickerRow({ label, detail, selected, onClick }: { label: string; detail?: string; selected: boolean; onClick: () => void }) {
@@ -102,4 +103,9 @@ function PickerRow({ label, detail, selected, onClick }: { label: string; detail
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return <div><label className="mb-1.5 block text-[14px] text-slate-800">{label}</label>{children}{hint && <p className="mt-1.5 text-[12px] text-[#2953A4]">{hint}</p>}</div>;
+}
+
+function formatDateInput(value: string) {
+  const [year, month, day] = value.split("-");
+  return `${day}/${month}/${year}`;
 }

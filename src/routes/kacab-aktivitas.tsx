@@ -1,7 +1,9 @@
 import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
+import { CameraModal } from "@/components/camera-modal";
+import { toast } from "@/components/motion";
 import { useMemo, useState } from "react";
-import { Building2, ChevronDown, Eye, MapPin, Plus } from "lucide-react";
+import { Building2, Camera, ChevronDown, Eye, MapPin, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/kacab-aktivitas")({
   head: () => ({ meta: [{ title: "Aktivitas KACAB" }] }),
@@ -24,6 +26,8 @@ function KacabActivityList() {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Custom");
   const [from, setFrom] = useState("2026-01-01");
   const [to, setTo] = useState("2026-12-31");
+  const [cameraItem, setCameraItem] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<string[]>([]);
   const visible = useMemo(() => {
     if (tab !== "Custom") return ITEMS;
     return ITEMS.filter((item) => item.date >= from && item.date <= to);
@@ -42,11 +46,12 @@ function KacabActivityList() {
         </div>
         {tab === "Custom" && <div className="grid grid-cols-2 gap-3 rounded-2xl border border-[#dce6f3] bg-[#f1f6fc] p-3"><DateField label="Dari Tanggal" value={from} onChange={setFrom} /><DateField label="Ke Tanggal" value={to} onChange={setTo} /></div>}
         <div className="space-y-4">
-          {groups.map((group) => <section key={group.kcp} className="overflow-hidden rounded-2xl bg-[#eef5ff]"><h2 className="flex items-center gap-2 px-4 py-3 text-[16px] font-bold text-[#2953A4]"><Building2 className="h-5 w-5" />{group.kcp}</h2><div className="space-y-3 px-1 pb-1">{group.items.map((item) => <article key={`${item.kcp}-${item.date}`} className="rounded-xl border border-slate-200 bg-white p-4"><div className="flex items-start justify-between gap-3"><p className="text-[14px] font-bold text-[#2953A4]">{formatDate(item.date)} | {item.time}</p><span className={`flex-shrink-0 text-[14px] font-semibold ${item.priority === "High" ? "text-red-500" : "text-amber-600"}`}>{item.priority}</span></div><div className="my-3 border-t border-slate-100" /><h3 className="text-[18px] font-bold leading-tight text-slate-950">{item.title}</h3><div className="mt-4 flex items-center gap-3 rounded-xl border border-slate-200 px-3 py-3"><span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#eef5ff] text-[#2953A4]"><MapPin className="h-5 w-5" /></span><div className="min-w-0"><p className="truncate text-[15px] font-medium text-slate-900">{item.place}</p><p className="mt-0.5 text-[14px] text-slate-500">{item.region}</p></div></div><button type="button" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#315bac] py-3 text-[15px] font-semibold text-white"><Eye className="h-5 w-5" /> Lihat Foto</button></article>)}</div></section>)}
+          {groups.map((group) => <section key={group.kcp} className="overflow-hidden rounded-2xl bg-[#eef5ff]"><h2 className="flex items-center gap-2 px-4 py-3 text-[16px] font-bold text-[#2953A4]"><Building2 className="h-5 w-5" />{group.kcp}</h2><div className="space-y-3 px-1 pb-1">{group.items.map((item) => { const key = `${item.kcp}-${item.date}`; const hasPhoto = photos.includes(key); return <article key={key} className="rounded-xl border border-slate-200 bg-white p-4"><div className="flex items-start justify-between gap-3"><p className="text-[14px] font-bold text-[#2953A4]">{formatDate(item.date)} | {item.time}</p><span className={`flex-shrink-0 text-[14px] font-semibold ${item.priority === "High" ? "text-red-500" : "text-amber-600"}`}>{item.priority}</span></div><div className="my-3 border-t border-slate-100" /><h3 className="text-[18px] font-bold leading-tight text-slate-950">{item.title}</h3><div className="mt-4 flex items-center gap-3 rounded-xl border border-slate-200 px-3 py-3"><span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#eef5ff] text-[#2953A4]"><MapPin className="h-5 w-5" /></span><div className="min-w-0"><p className="truncate text-[15px] font-medium text-slate-900">{item.place}</p><p className="mt-0.5 text-[14px] text-slate-500">{item.region}</p></div></div><button type="button" onClick={() => setCameraItem(key)} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#315bac] py-3 text-[15px] font-semibold text-white">{hasPhoto ? <Camera className="h-5 w-5" /> : <Eye className="h-5 w-5" />} {hasPhoto ? "Foto Ulang" : "Lihat Foto"}</button></article>; })}</div></section>)}
           {groups.length === 0 && <div className="rounded-2xl border border-slate-200 px-5 py-12 text-center text-[14px] text-slate-500">Belum ada aktivitas pada rentang tanggal ini.</div>}
         </div>
         <div className="flex justify-center pt-1"><a href="/kacab-aktivitas/buat" className="inline-flex items-center gap-2 rounded-xl border-2 border-[#2953A4] px-5 py-3 text-[15px] font-semibold text-[#2953A4]"><Plus className="h-5 w-5" /> Tambah Aktivitas</a></div>
       </main>
+      {cameraItem && <CameraModal mode="photo" onClose={() => setCameraItem(null)} onSave={() => { setPhotos((items) => [...new Set([...items, cameraItem])]); toast("Foto aktivitas berhasil diperbarui"); setCameraItem(null); }} onSkip={() => setCameraItem(null)} />}
     </MobileShell>
   );
 }
