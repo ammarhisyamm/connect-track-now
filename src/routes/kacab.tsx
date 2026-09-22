@@ -7,6 +7,7 @@ import {
   ChevronRight,
   ClipboardCheck,
   ClipboardList,
+  Clock3,
   Crosshair,
   FileText,
   Megaphone,
@@ -108,19 +109,19 @@ function KacabHome() {
             ))}
           </div>
           <div className="mt-3 space-y-3">
-            <MetricGroup icon={<UserRound />} title="Kepala KCP">
-              <MetricRow icon={<Megaphone />} label="Marketing" value={kcp.marketing.kepala[period]} />
+            <MetricGroup icon={<UserRound className="h-4 w-4" />} title="Kepala KCP">
+              <MetricRow icon={<Megaphone className="h-4 w-4" />} label="Marketing" value={kcp.marketing.kepala[period]} />
             </MetricGroup>
-            <MetricGroup icon={<UsersRound />} title="Penaksir Kasir">
+            <MetricGroup icon={<UsersRound className="h-4 w-4" />} title="Penaksir Kasir">
               <div className="grid grid-cols-2 gap-2.5">
-                <MetricRow icon={<FileText />} label="Follow Up RO" value={kcp.marketing.ro[period]} />
-                <MetricRow icon={<Crosshair />} label="Follow Up OVD" value={kcp.marketing.ovd[period]} />
+                <MetricRow icon={<FileText className="h-4 w-4" />} label="Follow Up RO" value={kcp.marketing.ro[period]} />
+                <MetricRow icon={<Clock3 className="h-4 w-4" />} label="Follow Up OVD" value={kcp.marketing.ovd[period]} />
               </div>
             </MetricGroup>
-            <MetricGroup icon={<UsersRound />} title="Sales Officer">
+            <MetricGroup icon={<UsersRound className="h-4 w-4" />} title="Sales Officer">
               <div className="grid grid-cols-2 gap-2.5">
-                <MetricRow icon={<Crosshair />} label="Leads" value={kcp.marketing.leads[period]} />
-                <MetricRow icon={<UserRound />} label="Closing Leads" value={kcp.marketing.closing[period]} />
+                <MetricRow icon={<Crosshair className="h-4 w-4" />} label="Leads" value={kcp.marketing.leads[period]} />
+                <MetricRow icon={<UserRound className="h-4 w-4" />} label="Closing Leads" value={kcp.marketing.closing[period]} />
               </div>
             </MetricGroup>
           </div>
