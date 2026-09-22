@@ -29,7 +29,7 @@ export function MobileShell({ children, hideNav = false, hideFab = false, role =
       {!hideNav && (
         <>
           <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-[440px] -translate-x-1/2 border-t border-border bg-card/95 backdrop-blur">
-            <ul className="grid grid-cols-5 px-2 pb-3 pt-2">
+            <ul className={`grid ${role === "kacab" ? "grid-cols-3" : "grid-cols-5"} px-2 pb-3 pt-2`}>
               {tabs.map((t) => {
                 const Icon = t.icon;
                 const active = t.to === "/" || t.to === "/kacab" ? pathname === t.to : pathname.startsWith(t.to);
