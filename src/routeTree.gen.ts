@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AktivitasRouteImport } from './routes/aktivitas'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as KacabRouteImport } from './routes/kacab'
 import { Route as KacabAktivitasRouteImport } from './routes/kacab-aktivitas'
 import { Route as KacabProfileRouteImport } from './routes/kacab-profile'
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 const AktivitasRoute = AktivitasRouteImport.update({
   id: '/aktivitas',
   path: '/aktivitas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KacabRoute = KacabRouteImport.update({
@@ -116,6 +122,7 @@ const TambahLeadsActivityIdRoute = TambahLeadsActivityIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/kacab': typeof KacabRoute
   '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
   '/kacab-profile': typeof KacabProfileRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/kacab': typeof KacabRoute
   '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
   '/kacab-profile': typeof KacabProfileRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
+  '/dashboard': typeof DashboardRoute
   '/kacab': typeof KacabRoute
   '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
   '/kacab-profile': typeof KacabProfileRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/aktivitas'
+    | '/dashboard'
     | '/kacab'
     | '/kacab-aktivitas'
     | '/kacab-profile'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
     | '/kacab'
     | '/kacab-aktivitas'
     | '/kacab-profile'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/aktivitas'
+    | '/dashboard'
     | '/kacab'
     | '/kacab-aktivitas'
     | '/kacab-profile'
@@ -232,6 +244,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AktivitasRoute: typeof AktivitasRouteWithChildren
+  DashboardRoute: typeof DashboardRoute
   KacabRoute: typeof KacabRoute
   KacabAktivitasRoute: typeof KacabAktivitasRouteWithChildren
   KacabProfileRoute: typeof KacabProfileRoute
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/aktivitas'
       fullPath: '/aktivitas'
       preLoaderRoute: typeof AktivitasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kacab': {
@@ -400,6 +420,7 @@ const KacabAktivitasRouteWithChildren = KacabAktivitasRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AktivitasRoute: AktivitasRouteWithChildren,
+  DashboardRoute: DashboardRoute,
   KacabRoute: KacabRoute,
   KacabAktivitasRoute: KacabAktivitasRouteWithChildren,
   KacabProfileRoute: KacabProfileRoute,
