@@ -200,3 +200,24 @@
 .non-kcp-view > div > section:nth-of-type(2) {
   display: none;
 }
+
+.sales-view > section {
+  max-width: 100%;
+}
+
+.sales-view > section > div.overflow-x-auto {
+  padding-inline: 20px;
+}
+
+.sales-view > section table {
+  min-width: 1280px;
+}
+
+.sales-view > section th,
+.sales-view > section td {
+  padding-inline: 20px !important;
+}
+
+.sales-view > section tbody tr {
+  min-height: 76px;
+}
