@@ -33,19 +33,19 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#17182d]">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[300px] bg-[#292663] text-white lg:block">
-        <div className="flex h-[130px] items-center gap-3 bg-[#199900] px-7"><span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-6 w-6" /></span><div><p className="text-[19px] font-medium">Rawamangun</p><p className="mt-1 text-[14px] text-white/70">Kepala Cabang</p></div></div>
-        <nav className="pt-5 text-[16px]">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[344px] bg-[#292663] text-white lg:block">
+        <div className="flex h-[176px] items-center gap-4 bg-[#199900] px-8"><span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-8 w-8" /></span><div><p className="text-[21px] font-medium">Rawamangun</p><p className="mt-1.5 text-[16px] text-white/70">Kepala Cabang</p></div></div>
+        <nav className="pt-0 text-[18px]">
           <NavItem icon={<LayoutGrid />} label="Dashboard" />
           <NavItem icon={<FileText />} label="Pencapaian Tim" active />
-          <div className="border-l-4 border-transparent py-3 pl-[76px] text-white/90">Target Aktivitas <span className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-white" /></div>
-          <div className="space-y-1 px-8 pb-5 pl-[76px] text-[14px] text-white/70"><p className="text-white">Pencapaian Kepala KCP</p><p>Pencapaian Penaksir</p><p>Pencapaian Sales Officer</p><p>Pencapaian Sales Agent</p></div>
+          <div className="border-l-4 border-transparent py-4 pl-[104px] text-white/90">Target Aktivitas <span className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-white" /></div>
+          <div className="space-y-7 px-8 pb-8 pl-[104px] text-[17px] text-white/70"><p className="text-white">Pencapaian Kepala KCP</p><p>Pencapaian Penaksir</p><p>Pencapaian Sales Officer</p><p>Pencapaian Sales Agent</p></div>
           <NavItem icon={<ClipboardCheck />} label="Pengajuan Event" /><NavItem icon={<FileText />} label="Realisasi Event" /><NavItem icon={<LogOut />} label="Pengembalian Realisasi" /><NavItem icon={<FileText />} label="Riwayat Event" />
           <div className="mt-12"><NavItem icon={<Settings2 />} label="Ubah Kata Sandi" /><NavItem icon={<LogOut />} label="Keluar" /></div>
         </nav>
       </aside>
 
-      <main className="min-h-screen lg:ml-[300px]">
+      <main className="min-h-screen lg:ml-[344px]">
         <div className="mx-auto max-w-[1600px] px-6 py-8 lg:px-12 lg:py-12">
           <div className="flex items-center gap-4 text-[16px] text-slate-500"><span>Home</span><span>/</span><strong className="text-slate-900">Pencapaian Tim</strong></div>
           <div className="mt-5 flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-[32px] font-bold tracking-tight">Target Aktivitas</h1><p className="mt-2 text-[14px] text-slate-500">Atur target aktivitas bulanan per KCP di cabang ini.</p></div><label className="flex items-center gap-2 text-[14px] text-slate-500">Periode <span className="relative"><select value={period} onChange={(event) => setPeriod(event.target.value)} className="appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 pr-9 font-medium text-slate-800"><option>Oktober 2026</option><option>November 2026</option><option>Desember 2026</option></select><ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2" /></span></label></div>
@@ -62,7 +62,7 @@ function Dashboard() {
   );
 }
 
-function NavItem({ icon, label, active = false }: { icon: React.ReactNode; label: string; active?: boolean }) { return <div className={`flex items-center gap-4 border-l-4 px-8 py-4 ${active ? "border-white bg-white/10" : "border-transparent text-white/75"}`}>{icon}<span>{label}</span></div>; }
+function NavItem({ icon, label, active = false }: { icon: React.ReactNode; label: string; active?: boolean }) { return <div className={`flex items-center gap-5 border-l-4 px-10 py-5 ${active ? "border-white bg-white/10" : "border-transparent text-white/75"}`}>{icon}<span>{label}</span></div>; }
 function VisitCard({ label, value }: { label: string; value: string }) { return <div className="rounded-xl border border-slate-200 bg-white p-5"><p className="text-[14px] text-slate-500">{label}</p><p className="mt-3 text-[20px] font-semibold text-amber-700">{value}</p><p className="mt-1 text-[13px] text-slate-400">Atur melalui menu konfigurasi visit KACAB.</p></div>; }
 function EditModal({ edit, setEdit, onSave }: { edit: EditTarget; setEdit: (value: EditTarget | null) => void; onSave: () => void }) { return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-5"><div className="w-full max-w-[500px] rounded-2xl bg-white p-7 shadow-2xl"><div className="flex items-start justify-between"><div><h2 className="text-[22px] font-bold">Edit Target Aktivitas</h2><p className="mt-1 text-[14px] text-slate-500">{edit.unit} · target bulanan</p></div><button onClick={() => setEdit(null)} aria-label="Tutup"><X className="h-5 w-5 text-slate-500" /></button></div><div className="mt-6 grid gap-4"><Input label="Total Activity Bulanan" value={edit.total} onChange={(value) => setEdit({ ...edit, total: value })} /><Input label="Weekly Activity" value={edit.weekly} onChange={(value) => setEdit({ ...edit, weekly: value })} /><Input label="Daily Activity" value={edit.daily} onChange={(value) => setEdit({ ...edit, daily: value })} /></div><div className="mt-7 flex justify-end gap-3"><button onClick={() => setEdit(null)} className="rounded-lg border border-slate-200 px-5 py-2.5 text-[14px]">Batal</button><button onClick={onSave} className="rounded-lg bg-[#199900] px-5 py-2.5 text-[14px] font-semibold text-white">Simpan Setting</button></div></div></div>; }
 function Input({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) { return <label className="block text-[14px] font-medium text-slate-700">{label}<input type="number" min="0" value={value} onChange={(event) => onChange(event.target.value)} className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-[15px] outline-none focus:border-[#199900]" /></label>; }
