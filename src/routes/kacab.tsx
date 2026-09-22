@@ -29,7 +29,7 @@ const KCP_DATA = [
     visit: { today: [0, 1], week: [3, 7], month: [7, 7] },
     waskat: { today: 0, week: 4, month: 10 },
     marketing: {
-      kepala: { today: [0, 1], week: [3, 6], month: [24, 24] },
+      kepala: { today: [0, 0], week: [3, 6], month: [24, 24] },
       ro: { today: [0, 5], week: [12, 30], month: [120, 120] },
       ovd: { today: [0, 5], week: [12, 30], month: [120, 120] },
       leads: { today: [0, 5], week: [18, 30], month: [120, 120] },
@@ -41,7 +41,7 @@ const KCP_DATA = [
     visit: { today: [1, 2], week: [5, 8], month: [18, 24] },
     waskat: { today: 1, week: 6, month: 14 },
     marketing: {
-      kepala: { today: [1, 1], week: [4, 6], month: [18, 24] },
+      kepala: { today: [0, 0], week: [4, 6], month: [18, 24] },
       ro: { today: [3, 5], week: [18, 30], month: [96, 120] },
       ovd: { today: [2, 5], week: [14, 30], month: [88, 120] },
       leads: { today: [4, 5], week: [22, 30], month: [108, 120] },
@@ -165,7 +165,7 @@ function MetricRow({ icon, label, value }: { icon: React.ReactNode; label: strin
     <div className="rounded-xl border border-slate-200 px-3 py-3">
       <p className="flex items-center gap-2 text-[14px] text-[#292667]"><span className="text-[#2953A4]">{icon}</span>{label}</p>
       <p className="mt-2 text-[20px] font-bold text-slate-900">{value[0]}<span className="font-normal text-slate-400">/{value[1]}</span></p>
-      <div className="mt-2.5 flex items-center gap-2"><div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#edf3fb]"><div className="h-full rounded-full bg-[#2953A4]" style={{ width: `${percent}%` }} /></div><span className="text-[12px] font-medium text-slate-600">{percent}%</span></div>
+      {value[1] > 0 && <div className="mt-2.5 flex items-center gap-2"><div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#edf3fb]"><div className="h-full rounded-full bg-[#2953A4]" style={{ width: `${percent}%` }} /></div><span className="text-[12px] font-medium text-slate-600">{percent}%</span></div>}
     </div>
   );
 }
