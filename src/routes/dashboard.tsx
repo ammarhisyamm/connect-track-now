@@ -66,7 +66,7 @@ function Dashboard() {
         </nav>
       </aside>
 
-      <main className={`min-h-screen lg:ml-[344px] ${tab === "Sales Officer" ? "sales-view" : ""}`}>
+      <main className={`min-h-screen lg:ml-[344px] ${tab === "Sales Officer" ? "sales-view" : ""} ${tab !== "Kepala KCP" ? "non-kcp-view" : ""}`}>
         <div className="mx-auto max-w-[1600px] px-6 py-8 lg:px-12 lg:py-12">
           <div className="flex items-center gap-4 text-[16px] text-slate-500"><span>Home</span><span>/</span><strong className="text-slate-900">Pencapaian Tim</strong></div>
           <div className="mt-5"><h1 className="text-[32px] font-bold tracking-tight">Target Aktivitas</h1></div>
