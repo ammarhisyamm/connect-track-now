@@ -221,3 +221,9 @@
 .sales-view > section tbody tr {
   min-height: 76px;
 }
+
+.target-period-locked table button {
+  cursor: not-allowed;
+  opacity: 0.45;
+  pointer-events: none;
+}
