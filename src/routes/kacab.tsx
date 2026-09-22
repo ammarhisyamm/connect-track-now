@@ -135,7 +135,7 @@ function KacabHome() {
             <span className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-slate-100 text-[#62738f]"><ClipboardList className="h-12 w-12" /></span>
             <p className="mt-4 text-[17px] font-bold text-slate-900">Belum Ada Aktivitas Marketing</p>
             <p className="mt-1 text-[13px] text-slate-500">Aktivitas yang tersedia akan muncul disini</p>
-            <Link to="/kacab-aktivitas/buat" className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-[#2953A4] bg-white px-4 py-2.5 text-[14px] font-medium text-[#2953A4]"><Plus className="h-4 w-4" /> Tambah Aktivitas</Link>
+            <a href="/kacab-aktivitas/buat" className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-[#2953A4] bg-white px-4 py-2.5 text-[14px] font-medium text-[#2953A4]"><Plus className="h-4 w-4" /> Tambah Aktivitas</a>
           </div>
         </section>
       </main>
