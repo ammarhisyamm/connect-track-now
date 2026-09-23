@@ -70,7 +70,8 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#17182d]">
        <aside className="fixed inset-y-0 left-0 z-20 hidden w-[256px] border-t-2 border-[#199900] bg-[#292663] text-white lg:block">
-        <nav className="pt-0 text-[14px]">
+         <div className="flex h-[120px] items-center gap-4 bg-[#199900] px-6"><span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-8 w-8" /></span><div className="min-w-0"><p className="whitespace-nowrap text-[23px] font-medium">Rawamangun</p><p className="mt-2 whitespace-nowrap text-[18px] text-white/75">Kepala Cabang</p></div></div>
+         <nav className="pt-0 text-[14px]">
            <NavItem icon={<LayoutGrid />} label="Dashboard" />
            <button type="button" onClick={() => setTargetMenuOpen((open) => !open)} className="flex h-12 w-full items-center gap-4 border-l-4 border-white bg-[#3d35d9] px-8 text-left text-white transition-colors hover:bg-[#4840e0]">
              <FileText className="h-6 w-6 shrink-0" />
