@@ -69,7 +69,7 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#17182d]">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-[256px] bg-[#292663] text-white lg:block">
-        <div className="flex h-[90px] items-center gap-4 bg-[#199900] px-6"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-6 w-6" /></span><div className="min-w-0"><p className="whitespace-nowrap text-[18px] font-medium">MAS MANGGALEWA</p><p className="mt-1 whitespace-nowrap text-[16px] text-white/70">Kepala Cabang</p></div></div>
+        <div className="flex h-[90px] items-center gap-4 bg-[#199900] px-6"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-4 w-4" /></span><div className="min-w-0"><p className="whitespace-nowrap text-[16px] font-medium">MAS MANGGALEWA</p><p className="mt-1 whitespace-nowrap text-[14px] text-white/70">Kepala Cabang</p></div></div>
         <nav className="pt-0 text-[14px]">
           <NavItem icon={<FileText />} label="Report" active end={<ChevronDown className="h-4 w-4" />} />
           <NavItem icon={<FileText />} label="Pencapaian Sales" end={<ChevronDown className="h-4 w-4" />} />
