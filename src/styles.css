@@ -206,7 +206,8 @@
 }
 
 .sales-view > section > div.overflow-x-auto {
-  padding-inline: 20px;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .sales-view > section table {
