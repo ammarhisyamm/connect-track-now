@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Building2, ChevronLeft, ChevronRight, ClipboardCheck, FileText, LayoutGrid, LogOut, Pencil, Settings2, ShieldCheck, Target, UsersRound, X } from "lucide-react";
+import { Building2, ChevronDown, ChevronLeft, ChevronRight, ClipboardCheck, FileText, LayoutGrid, LogOut, Pencil, Settings2, ShieldCheck, Target, UsersRound, X } from "lucide-react";
 import { TargetFilters } from "../components/target-filters";
 import { formatRupiah } from "../lib/mock-data";
 
@@ -47,6 +47,7 @@ function Dashboard() {
   const [salesTargets, setSalesTargets] = useState(INITIAL_SALES_TARGETS);
   const [edit, setEdit] = useState<EditTarget | null>(null);
   const [successUnit, setSuccessUnit] = useState<string | null>(null);
+  const [salesMenuOpen, setSalesMenuOpen] = useState(true);
   const visible = useMemo(() => unit === "Semua Unit" ? targets : targets.filter((item) => item.unit === unit), [unit, targets]);
   const configured = targets.filter((item) => item.configured).length;
   const canEditTarget = isEditableTargetPeriod(period);
@@ -69,13 +70,21 @@ function Dashboard() {
     <div className="min-h-screen bg-[#f6f7fb] text-[#17182d]">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-[256px] bg-[#292663] text-white lg:block">
         <div className="flex h-[176px] items-center gap-4 bg-[#199900] px-8"><span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-8 w-8" /></span><div><p className="text-[21px] font-medium">Rawamangun</p><p className="mt-1.5 text-[16px] text-white/70">Kepala Cabang</p></div></div>
-        <nav className="pt-0 text-[18px]">
+        <nav className="pt-0 text-[14px]">
+          <NavItem icon={<FileText />} label="Report" active end={<ChevronDown className="h-4 w-4" />} />
+          <button type="button" onClick={() => setSalesMenuOpen((open) => !open)} className="flex h-12 w-full items-center gap-4 border-l-4 border-transparent px-8 text-left text-white/75 transition-colors hover:bg-white/10">
+            <FileText className="h-6 w-6 shrink-0" />
+            <span className="flex-1">Pencapaian Sales</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${salesMenuOpen ? "rotate-180" : ""}`} />
+          </button>
+          {salesMenuOpen && <div className="bg-[#211f58] py-1 text-white/90"><SidebarSubItem label="Pencapaian Kepala KCP" /><SidebarSubItem label="Pencapaian Sales Officer" /><SidebarSubItem label="Pencapaian Sales Agent" /></div>}
           <NavItem icon={<LayoutGrid />} label="Dashboard" />
-          <NavItem icon={<FileText />} label="Pencapaian Tim" active />
-          <div className="border-l-4 border-transparent py-4 pl-[104px] text-white/90">Target Aktivitas <span className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-white" /></div>
-          <div className="space-y-7 px-8 pb-8 pl-[104px] text-[17px] text-white/70"><p className="text-white">Pencapaian Kepala KCP</p><p>Pencapaian Penaksir</p><p>Pencapaian Sales Officer</p><p>Pencapaian Sales Agent</p></div>
-          <NavItem icon={<ClipboardCheck />} label="Pengajuan Event" /><NavItem icon={<FileText />} label="Realisasi Event" /><NavItem icon={<LogOut />} label="Pengembalian Realisasi" /><NavItem icon={<FileText />} label="Riwayat Event" />
-          <div className="mt-12"><NavItem icon={<Settings2 />} label="Ubah Kata Sandi" /><NavItem icon={<LogOut />} label="Keluar" /></div>
+          <NavItem icon={<ClipboardCheck />} label="Pengajuan Event" />
+          <NavItem icon={<FileText />} label="Realisasi Event" />
+          <NavItem icon={<LogOut />} label="Pengembalian Realisasi" />
+          <NavItem icon={<UsersRound />} label="Manajemen Sales" />
+          <NavItem icon={<UsersRound />} label="Manajemen Sales Mitra" />
+          <div className="mt-12"><NavItem icon={<LayoutGrid />} label="Ubah Kata Sandi" /><NavItem icon={<FileText />} label="Keluar" /></div>
         </nav>
       </aside>
 
@@ -133,7 +142,8 @@ function LegacyPenaksirTable({ targets, unit, onEdit }: { targets: PenaksirTarge
   return <div className="overflow-x-auto"><table className="w-full min-w-[850px] border-collapse text-left"><thead className="border-y border-slate-200 text-[14px] text-slate-400"><tr><th className="px-7 py-5 font-medium">No</th><th className="px-5 py-5 font-medium">Unit</th><th className="px-5 py-5 font-medium">Grade</th><th className="px-5 py-5 font-medium">Total Activity</th><th className="px-5 py-5 font-medium">Weekly Activity</th><th className="px-5 py-5 font-medium">Daily Activity</th><th className="px-7 py-5 text-right font-medium">Aksi</th></tr></thead><tbody>{visible.map((item, index) => <tr key={item.unit} className="border-b border-slate-100 last:border-0"><td className="px-7 py-6">{index + 1}</td><td className="px-5 py-6 font-medium">{item.unit}</td><td className="px-5 py-6">{item.grade}</td><td className="px-5 py-6 font-semibold">{item.total}</td><td className="px-5 py-6">{item.weekly}</td><td className="px-5 py-6">{item.daily}</td><td className="px-7 py-6 text-right"><button onClick={() => onEdit(item)} className="rounded-lg border border-[#292663] px-5 py-2.5 text-[14px] font-medium text-[#292663]">Edit</button></td></tr>)}</tbody></table><div className="flex items-center justify-end gap-5 px-7 py-6 text-[14px] text-slate-400"><span>Rows per page: <strong className="ml-2 text-slate-600">10</strong></span><button disabled className="rounded-lg border border-slate-200 p-2"><ChevronLeft className="h-5 w-5" /></button><span className="rounded-lg bg-green-600 px-3 py-2 font-semibold text-white">1</span><button className="rounded-lg border border-slate-200 p-2"><ChevronRight className="h-5 w-5" /></button></div></div>;
 }
 
-function NavItem({ icon, label, active = false }: { icon: React.ReactNode; label: string; active?: boolean }) { return <div className={`flex items-center gap-5 border-l-4 px-10 py-5 ${active ? "border-white bg-white/10" : "border-transparent text-white/75"}`}>{icon}<span>{label}</span></div>; }
+function NavItem({ icon, label, active = false, end }: { icon: React.ReactNode; label: string; active?: boolean; end?: React.ReactNode }) { return <div className={`flex h-12 items-center gap-4 border-l-4 px-8 ${active ? "border-white bg-[#3d35d9] text-white" : "border-transparent text-white/75"}`}>{icon}<span className="flex-1 whitespace-nowrap">{label}</span>{end}</div>; }
+function SidebarSubItem({ label }: { label: string }) { return <div className="flex h-12 items-center pl-16 pr-8 text-[14px] whitespace-nowrap">{label}</div>; }
 function VisitCard({ label, value }: { label: string; value: string }) { return <div className="rounded-xl border border-slate-200 bg-white p-5"><p className="text-[14px] text-slate-500">{label}</p><p className="mt-3 text-[20px] font-semibold text-amber-700">{value}</p><p className="mt-1 text-[13px] text-slate-400">Atur melalui menu konfigurasi visit KACAB.</p></div>; }
 function SalesEditModalFlow({ edit, setEdit, onSave }: { edit: EditTarget; setEdit: (value: EditTarget | null) => void; onSave: () => void }) {
   const [step, setStep] = useState<"form" | "confirm">("form");
