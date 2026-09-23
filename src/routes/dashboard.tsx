@@ -67,7 +67,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#17182d]">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[344px] bg-[#292663] text-white lg:block">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[256px] bg-[#292663] text-white lg:block">
         <div className="flex h-[176px] items-center gap-4 bg-[#199900] px-8"><span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-8 w-8" /></span><div><p className="text-[21px] font-medium">Rawamangun</p><p className="mt-1.5 text-[16px] text-white/70">Kepala Cabang</p></div></div>
         <nav className="pt-0 text-[18px]">
           <NavItem icon={<LayoutGrid />} label="Dashboard" />
@@ -79,7 +79,7 @@ function Dashboard() {
         </nav>
       </aside>
 
-      <main className={`flex min-h-screen flex-col lg:ml-[344px] ${tab === "Sales Officer" ? "sales-view" : ""} ${tab !== "Kepala KCP" ? "non-kcp-view" : ""} ${canEditTarget ? "" : "target-period-locked"}`}>
+      <main className={`flex min-h-screen flex-col lg:ml-[256px] ${tab === "Sales Officer" ? "sales-view" : ""} ${tab !== "Kepala KCP" ? "non-kcp-view" : ""} ${canEditTarget ? "" : "target-period-locked"}`}>
         <div className="flex-1 mx-auto w-full max-w-[1600px] px-6 py-8 lg:px-12 lg:py-12">
           <div className="flex items-center gap-4 text-[16px] text-slate-500"><span>Home</span><span>/</span><strong className="text-slate-900">Pencapaian Tim</strong></div>
           <div className="mt-5"><h1 className="text-[32px] font-bold tracking-tight">Target Aktivitas</h1></div>
