@@ -21,9 +21,12 @@ type TargetFiltersProps = {
   unit: string;
   units: string[];
   onUnitChange: (unit: string) => void;
+  grade?: string;
+  grades?: string[];
+  onGradeChange?: (grade: string) => void;
 };
 
-export function TargetFilters({ period, onPeriodChange, unit, units, onUnitChange }: TargetFiltersProps) {
+export function TargetFilters({ period, onPeriodChange, unit, units, onUnitChange, grade, grades = [], onGradeChange }: TargetFiltersProps) {
   return (
     <div className="flex flex-wrap gap-3">
       <label className="relative">
@@ -32,6 +35,13 @@ export function TargetFilters({ period, onPeriodChange, unit, units, onUnitChang
         </select>
         <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" />
       </label>
+      {onGradeChange && <label className="relative">
+        <select value={grade} onChange={(event) => onGradeChange(event.target.value)} className="appearance-none rounded-xl border border-slate-300 bg-white px-4 py-3 pr-11 text-[15px] font-medium">
+          <option>Semua Grade</option>
+          {grades.map((item) => <option key={item}>{item}</option>)}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" />
+      </label>}
       <label className="relative">
         <select value={unit} onChange={(event) => onUnitChange(event.target.value)} className="appearance-none rounded-xl border border-slate-300 bg-white px-4 py-3 pl-11 pr-11 text-[15px] font-medium">
           <option>Semua Unit</option>

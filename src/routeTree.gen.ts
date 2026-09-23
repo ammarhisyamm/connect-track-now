@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AktivitasRouteImport } from './routes/aktivitas'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DashboardBisnisRouteImport } from './routes/dashboard-bisnis'
 import { Route as KacabRouteImport } from './routes/kacab'
 import { Route as KacabAktivitasRouteImport } from './routes/kacab-aktivitas'
 import { Route as KacabProfileRouteImport } from './routes/kacab-profile'
@@ -41,6 +42,11 @@ const AktivitasRoute = AktivitasRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardBisnisRoute = DashboardBisnisRouteImport.update({
+  id: '/dashboard-bisnis',
+  path: '/dashboard-bisnis',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KacabRoute = KacabRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
   '/dashboard': typeof DashboardRoute
+  '/dashboard-bisnis': typeof DashboardBisnisRoute
   '/kacab': typeof KacabRoute
   '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
   '/kacab-profile': typeof KacabProfileRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/dashboard-bisnis': typeof DashboardBisnisRoute
   '/kacab': typeof KacabRoute
   '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
   '/kacab-profile': typeof KacabProfileRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/aktivitas': typeof AktivitasRouteWithChildren
   '/dashboard': typeof DashboardRoute
+  '/dashboard-bisnis': typeof DashboardBisnisRoute
   '/kacab': typeof KacabRoute
   '/kacab-aktivitas': typeof KacabAktivitasRouteWithChildren
   '/kacab-profile': typeof KacabProfileRoute
@@ -185,6 +194,7 @@ export interface FileRouteTypes {
     | '/'
     | '/aktivitas'
     | '/dashboard'
+    | '/dashboard-bisnis'
     | '/kacab'
     | '/kacab-aktivitas'
     | '/kacab-profile'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/dashboard-bisnis'
     | '/kacab'
     | '/kacab-aktivitas'
     | '/kacab-profile'
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
     | '/'
     | '/aktivitas'
     | '/dashboard'
+    | '/dashboard-bisnis'
     | '/kacab'
     | '/kacab-aktivitas'
     | '/kacab-profile'
@@ -245,6 +257,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AktivitasRoute: typeof AktivitasRouteWithChildren
   DashboardRoute: typeof DashboardRoute
+  DashboardBisnisRoute: typeof DashboardBisnisRoute
   KacabRoute: typeof KacabRoute
   KacabAktivitasRoute: typeof KacabAktivitasRouteWithChildren
   KacabProfileRoute: typeof KacabProfileRoute
@@ -279,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard-bisnis': {
+      id: '/dashboard-bisnis'
+      path: '/dashboard-bisnis'
+      fullPath: '/dashboard-bisnis'
+      preLoaderRoute: typeof DashboardBisnisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kacab': {
@@ -421,6 +441,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AktivitasRoute: AktivitasRouteWithChildren,
   DashboardRoute: DashboardRoute,
+  DashboardBisnisRoute: DashboardBisnisRoute,
   KacabRoute: KacabRoute,
   KacabAktivitasRoute: KacabAktivitasRouteWithChildren,
   KacabProfileRoute: KacabProfileRoute,
