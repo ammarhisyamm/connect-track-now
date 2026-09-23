@@ -69,24 +69,20 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#17182d]">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[256px] bg-[#292663] text-white lg:block">
-        <div className="flex h-[90px] items-center gap-4 bg-[#199900] px-6"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-4 w-4" /></span><div className="min-w-0"><p className="whitespace-nowrap text-[16px] font-medium">MAS MANGGALEWA</p><p className="mt-1 whitespace-nowrap text-[14px] text-white/70">Kepala Cabang</p></div></div>
+       <aside className="fixed inset-y-0 left-0 z-20 hidden w-[256px] border-t-2 border-[#199900] bg-[#292663] text-white lg:block">
         <nav className="pt-0 text-[14px]">
-          <NavItem icon={<FileText />} label="Report" active end={<ChevronDown className="h-4 w-4" />} />
-          <NavItem icon={<FileText />} label="Pencapaian Sales" end={<ChevronDown className="h-4 w-4" />} />
-          <button type="button" onClick={() => setTargetMenuOpen((open) => !open)} className="flex h-12 w-full items-center gap-4 border-l-4 border-transparent px-8 text-left text-white/75 transition-colors hover:bg-white/10">
-            <Target className="h-6 w-6 shrink-0" />
-            <span className="flex-1 whitespace-nowrap">Target Aktivitas</span>
-            <ChevronDown className={`h-4 w-4 transition-transform ${targetMenuOpen ? "rotate-180" : ""}`} />
-          </button>
-          {targetMenuOpen && <div className="bg-[#211f58] py-1 text-white/90"><SidebarSubItem label="KCP" /><SidebarSubItem label="Penaksir" /><SidebarSubItem label="Sales Officer" /></div>}
-          <NavItem icon={<LayoutGrid />} label="Dashboard" />
-          <NavItem icon={<ClipboardCheck />} label="Pengajuan Event" />
-          <NavItem icon={<FileText />} label="Realisasi Event" />
-          <NavItem icon={<LogOut />} label="Pengembalian Realisasi" />
-          <NavItem icon={<UsersRound />} label="Manajemen Sales" />
-          <NavItem icon={<UsersRound />} label="Manajemen Sales Mitra" />
-          <div className="mt-12"><NavItem icon={<LayoutGrid />} label="Ubah Kata Sandi" /><NavItem icon={<FileText />} label="Keluar" /></div>
+           <NavItem icon={<LayoutGrid />} label="Dashboard" />
+           <button type="button" onClick={() => setTargetMenuOpen((open) => !open)} className="flex h-12 w-full items-center gap-4 border-l-4 border-white bg-[#3d35d9] px-8 text-left text-white transition-colors hover:bg-[#4840e0]">
+             <FileText className="h-6 w-6 shrink-0" />
+             <span className="flex-1 whitespace-nowrap">Pencapaian Tim</span>
+             <ChevronDown className={`h-4 w-4 transition-transform ${targetMenuOpen ? "rotate-180" : ""}`} />
+           </button>
+           {targetMenuOpen && <div className="bg-[#211f58] py-1 text-white/90"><SidebarSubItem label="Target Aktivitas" active /><SidebarSubItem label="Pencapaian Kepala KCP" /><SidebarSubItem label="Pencapaian Penaksir" muted /><SidebarSubItem label="Pencapaian Sales Officer" muted /><SidebarSubItem label="Pencapaian Sales Agent" muted /></div>}
+           <NavItem icon={<ClipboardCheck />} label="Pengajuan Event" />
+           <NavItem icon={<FileText />} label="Realisasi Event" />
+           <NavItem icon={<LogOut />} label="Pengembalian Realisasi" />
+           <NavItem icon={<FileText />} label="Riwayat Event" />
+           <div className="mt-12"><NavItem icon={<LayoutGrid />} label="Ubah Kata Sandi" /><NavItem icon={<FileText />} label="Keluar" /></div>
         </nav>
       </aside>
 
@@ -150,7 +146,7 @@ function LegacyPenaksirTable({ targets, unit, onEdit }: { targets: PenaksirTarge
 }
 
 function NavItem({ icon, label, active = false, end }: { icon: React.ReactNode; label: string; active?: boolean; end?: React.ReactNode }) { return <div className={`flex h-12 items-center gap-4 border-l-4 px-8 ${active ? "border-white bg-[#3d35d9] text-white" : "border-transparent text-white/75"}`}>{icon}<span className="flex-1 whitespace-nowrap">{label}</span>{end}</div>; }
-function SidebarSubItem({ label }: { label: string }) { return <div className="flex h-12 items-center pl-16 pr-8 text-[14px] whitespace-nowrap">{label}</div>; }
+function SidebarSubItem({ label, active = false, muted = false }: { label: string; active?: boolean; muted?: boolean }) { return <div className={`relative flex h-12 items-center pl-16 pr-8 text-[14px] whitespace-nowrap ${muted ? "text-white/60" : ""}`}>{active && <span className="absolute left-10 h-3 w-3 rounded-full bg-white" />}{label}</div>; }
 function VisitCard({ label, value }: { label: string; value: string }) { return <div className="rounded-xl border border-slate-200 bg-white p-5"><p className="text-[14px] text-slate-500">{label}</p><p className="mt-3 text-[20px] font-semibold text-amber-700">{value}</p><p className="mt-1 text-[13px] text-slate-400">Atur melalui menu konfigurasi visit KACAB.</p></div>; }
 function SalesEditModalFlowKacabNoGram({ edit, setEdit, onSave }: { edit: EditTarget; setEdit: (value: EditTarget | null) => void; onSave: () => void }) { const [step, setStep] = useState<"form" | "confirm">("form"); if (step === "confirm") return <ConfirmTargetModal onCancel={() => setStep("form")} onConfirm={onSave} />; return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4"><div className="relative max-h-[calc(100vh-32px)] w-full max-w-[620px] overflow-hidden rounded-xl bg-white shadow-2xl"><div className="flex items-center justify-between border-b border-slate-200 px-8 py-5"><h2 className="text-[24px] font-bold">Edit Target Sales Officer</h2><button onClick={() => setEdit(null)} aria-label="Tutup"><X className="h-6 w-6 text-slate-500" /></button></div><div className="space-y-4 px-8 py-6"><div className="grid gap-4 md:grid-cols-2"><Input label="Total Activity" required value={edit.total} onChange={(value) => setEdit({ ...edit, total: value })} /><Input label="Weekly Activity" required value={edit.weekly} onChange={(value) => setEdit({ ...edit, weekly: value })} /><Input label="Daily Activity" required value={edit.daily} onChange={(value) => setEdit({ ...edit, daily: value })} /></div><StatusFields active={edit.active} onChange={(active) => setEdit({ ...edit, active })} /></div><div className="flex justify-end gap-3 border-t border-slate-200 px-8 py-4"><button onClick={() => setEdit(null)} className="rounded-lg border-2 border-[#199900] px-5 py-2.5 text-[14px] font-medium text-[#199900]">Batalkan</button><button onClick={() => setStep("confirm")} className="rounded-lg bg-[#199900] px-6 py-2.5 text-[14px] font-semibold text-white">Simpan</button></div></div></div>; }
 function SalesEditModalFlowKacab({ edit, setEdit, onSave }: { edit: EditTarget; setEdit: (value: EditTarget | null) => void; onSave: () => void }) { const [step, setStep] = useState<"form" | "confirm">("form"); if (step === "confirm") return <ConfirmTargetModal onCancel={() => setStep("form")} onConfirm={onSave} />; return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4"><div className="relative max-h-[calc(100vh-32px)] w-full max-w-[620px] overflow-hidden rounded-xl bg-white shadow-2xl"><div className="flex items-center justify-between border-b border-slate-200 px-8 py-5"><h2 className="text-[24px] font-bold">Edit Target Sales Officer</h2><button onClick={() => setEdit(null)} aria-label="Tutup"><X className="h-6 w-6 text-slate-500" /></button></div><div className="space-y-4 px-8 py-6"><div className="grid gap-4 md:grid-cols-2"><Input label="Total Activity" required value={edit.total} onChange={(value) => setEdit({ ...edit, total: value })} /><Input label="Gram (New CIF)" required value={edit.gram ?? ""} onChange={(value) => setEdit({ ...edit, gram: value })} /><Input label="Weekly Activity" required value={edit.weekly} onChange={(value) => setEdit({ ...edit, weekly: value })} /><Input label="Daily Activity" required value={edit.daily} onChange={(value) => setEdit({ ...edit, daily: value })} /></div><StatusFields active={edit.active} onChange={(active) => setEdit({ ...edit, active })} /></div><div className="flex justify-end gap-3 border-t border-slate-200 px-8 py-4"><button onClick={() => setEdit(null)} className="rounded-lg border-2 border-[#199900] px-5 py-2.5 text-[14px] font-medium text-[#199900]">Batalkan</button><button onClick={() => setStep("confirm")} className="rounded-lg bg-[#199900] px-6 py-2.5 text-[14px] font-semibold text-white">Simpan</button></div></div></div>; }
