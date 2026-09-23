@@ -29,7 +29,7 @@ const INITIAL_TARGETS: BusinessSalesTarget[] = [
   { salesName: "Dewi Lestari", grade: "Platinum", unit: "Rawamangun", total: 40, weekly: 10, daily: 5, ado: 10000, booking: 32000000, gram: 5, active: false },
 ];
 
-type BusinessEdit = { key: string; ado: string; booking: string };
+type BusinessEdit = { key: string; ado: string; booking: string; gram?: string };
 
 function DashboardBisnis() {
   const [period, setPeriod] = useState("September 2026");
@@ -42,7 +42,7 @@ function DashboardBisnis() {
 
   const save = () => {
     if (!edit) return;
-    setTargets((items) => items.map((item) => `${item.unit}::${item.grade}` === edit.key ? { ...item, ado: parseAmount(edit.ado), booking: parseAmount(edit.booking) } : item));
+    setTargets((items) => items.map((item) => `${item.unit}::${item.grade}` === edit.key ? { ...item, ado: parseAmount(edit.ado), booking: parseAmount(edit.booking), ...(edit.gram === undefined ? {} : { gram: parseAmount(edit.gram) }) } : item));
     setEdit(null);
   };
 
