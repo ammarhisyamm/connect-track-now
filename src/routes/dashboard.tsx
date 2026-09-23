@@ -47,7 +47,7 @@ function Dashboard() {
   const [salesTargets, setSalesTargets] = useState(INITIAL_SALES_TARGETS);
   const [edit, setEdit] = useState<EditTarget | null>(null);
   const [successUnit, setSuccessUnit] = useState<string | null>(null);
-  const [salesMenuOpen, setSalesMenuOpen] = useState(true);
+  const [targetMenuOpen, setTargetMenuOpen] = useState(true);
   const visible = useMemo(() => unit === "Semua Unit" ? targets : targets.filter((item) => item.unit === unit), [unit, targets]);
   const configured = targets.filter((item) => item.configured).length;
   const canEditTarget = isEditableTargetPeriod(period);
@@ -69,15 +69,16 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#17182d]">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-[256px] bg-[#292663] text-white lg:block">
-        <div className="flex h-[176px] items-center gap-4 bg-[#199900] px-8"><span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-8 w-8" /></span><div><p className="text-[21px] font-medium">Rawamangun</p><p className="mt-1.5 text-[16px] text-white/70">Kepala Cabang</p></div></div>
+        <div className="flex h-[90px] items-center gap-4 bg-[#199900] px-6"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-[#199900]"><Building2 className="h-6 w-6" /></span><div className="min-w-0"><p className="whitespace-nowrap text-[18px] font-medium">MAS MANGGALEWA</p><p className="mt-1 whitespace-nowrap text-[16px] text-white/70">Kepala Cabang</p></div></div>
         <nav className="pt-0 text-[14px]">
           <NavItem icon={<FileText />} label="Report" active end={<ChevronDown className="h-4 w-4" />} />
-          <button type="button" onClick={() => setSalesMenuOpen((open) => !open)} className="flex h-12 w-full items-center gap-4 border-l-4 border-transparent px-8 text-left text-white/75 transition-colors hover:bg-white/10">
-            <FileText className="h-6 w-6 shrink-0" />
-            <span className="flex-1">Pencapaian Sales</span>
-            <ChevronDown className={`h-4 w-4 transition-transform ${salesMenuOpen ? "rotate-180" : ""}`} />
+          <NavItem icon={<FileText />} label="Pencapaian Sales" end={<ChevronDown className="h-4 w-4" />} />
+          <button type="button" onClick={() => setTargetMenuOpen((open) => !open)} className="flex h-12 w-full items-center gap-4 border-l-4 border-transparent px-8 text-left text-white/75 transition-colors hover:bg-white/10">
+            <Target className="h-6 w-6 shrink-0" />
+            <span className="flex-1 whitespace-nowrap">Target Aktivitas</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${targetMenuOpen ? "rotate-180" : ""}`} />
           </button>
-          {salesMenuOpen && <div className="bg-[#211f58] py-1 text-white/90"><SidebarSubItem label="Pencapaian Kepala KCP" /><SidebarSubItem label="Pencapaian Sales Officer" /><SidebarSubItem label="Pencapaian Sales Agent" /></div>}
+          {targetMenuOpen && <div className="bg-[#211f58] py-1 text-white/90"><SidebarSubItem label="KCP" /><SidebarSubItem label="Penaksir" /><SidebarSubItem label="Sales Officer" /></div>}
           <NavItem icon={<LayoutGrid />} label="Dashboard" />
           <NavItem icon={<ClipboardCheck />} label="Pengajuan Event" />
           <NavItem icon={<FileText />} label="Realisasi Event" />
