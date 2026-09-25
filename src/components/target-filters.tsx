@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Building2, ChevronDown } from "lucide-react";
+import { Building2, Calendar, CalendarDays, ChevronDown, Star } from "lucide-react";
 
 const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 const YEARS = ["2025", "2026", "2027"];
@@ -20,9 +20,9 @@ export function TargetFilters({ period, onPeriodChange, unit, units, onUnitChang
   const [month, year] = period.split(" ");
   return (
     <div className="flex flex-wrap gap-3">
-      <FilterSelect value={month} options={MONTHS} onChange={(value) => onPeriodChange(`${value} ${year || YEARS[1]}`)} />
-      <FilterSelect value={year || YEARS[1]} options={YEARS} onChange={(value) => onPeriodChange(`${month || MONTHS[0]} ${value}`)} />
-      {onGradeChange && <FilterSelect value={grade ?? "Semua Grade"} options={["Semua Grade", ...grades]} onChange={onGradeChange} />}
+      {onGradeChange && <FilterSelect value={grade ?? "Semua Grade"} options={["Semua Grade", ...grades]} onChange={onGradeChange} icon={<Star className="h-5 w-5 text-[#292663]" />} />}
+      <FilterSelect value={month} options={MONTHS} onChange={(value) => onPeriodChange(`${value} ${year || YEARS[1]}`)} icon={<CalendarDays className="h-5 w-5 text-[#292663]" />} />
+      <FilterSelect value={year || YEARS[1]} options={YEARS} onChange={(value) => onPeriodChange(`${month || MONTHS[0]} ${value}`)} icon={<Calendar className="h-5 w-5 text-[#292663]" />} />
       {showUnit && <FilterSelect value={unit} options={["Semua Unit", ...units]} onChange={onUnitChange} icon={<Building2 className="h-5 w-5 text-[#292663]" />} />}
     </div>
   );

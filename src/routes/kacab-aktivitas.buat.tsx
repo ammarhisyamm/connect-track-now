@@ -299,7 +299,6 @@ function CreateKacabActivity() {
           }
           onPriority={(value) => {
             setPriority(value);
-            setPicker(null);
           }}
           onDate={() => {
             setDate(`${dateYear}-${dateMonth}-${dateDay}`);
@@ -504,26 +503,44 @@ function PickerOverlay({
                   onClick={() => onActivity(item)}
                 />
               ))}
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={!selectedTypes.length}
-                className="mt-4 w-full rounded-xl bg-[#2953A4] py-3 text-[14px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
-              >
-                Selesai
-              </button>
+              {picker === "activity" && (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  disabled={!selectedTypes.length}
+                  className="mt-4 w-full rounded-xl bg-[#2953A4] py-3 text-[14px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
+                >
+                  Pilih Kegiatan
+                </button>
+              )}
             {picker === "priority" &&
               PRIORITIES.map((item) => (
                 <PickerRow
                   key={item}
                   label={item}
                   selected={priority === item}
-                  onClick={() => {
-                    onPriority(item);
-                    onClose();
-                  }}
+                  onClick={() => onPriority(item)}
                 />
               ))}
+            {picker === "priority" && (
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={!priority}
+                className="mt-4 w-full rounded-xl bg-[#2953A4] py-3 text-[14px] font-semibold text-white disabled:bg-slate-100 disabled:text-slate-400"
+              >
+                Pilih Priority
+              </button>
+            )}
+            {picker === "date" && (
+              <button
+                type="button"
+                onClick={onDate}
+                className="mt-4 w-full rounded-xl bg-[#2953A4] py-3 text-[14px] font-semibold text-white"
+              >
+                Pilih Tanggal Pelaksanaan
+              </button>
+            )}
             {picker === "kelurahan" &&
               KELURAHAN_OPTIONS.filter((item) =>
                 item.toLowerCase().includes(search.toLowerCase()),
@@ -537,15 +554,6 @@ function PickerOverlay({
                 />
               ))}
           </div>
-          {(picker === "date" || picker === "kelurahan") && (
-            <button
-              type="button"
-              onClick={picker === "date" ? onDate : onClose}
-              className="mt-4 w-full rounded-xl bg-[#315bac] py-3 text-[14px] font-semibold text-white"
-            >
-              {picker === "date" ? "Pilih Tanggal Pelaksanaan" : "Pilih Kelurahan"}
-            </button>
-          )}
         </div>
       </div>
     </OverlayPortal>
