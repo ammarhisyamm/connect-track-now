@@ -1,20 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Building2, ChevronDown } from "lucide-react";
 
-const MONTHS = [
-  "Januari 2026",
-  "Februari 2026",
-  "Maret 2026",
-  "April 2026",
-  "Mei 2026",
-  "Juni 2026",
-  "Juli 2026",
-  "Agustus 2026",
-  "September 2026",
-  "Oktober 2026",
-  "November 2026",
-  "Desember 2026",
-];
+const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+const YEARS = ["2025", "2026", "2027"];
 
 type TargetFiltersProps = {
   period: string;
@@ -25,14 +13,17 @@ type TargetFiltersProps = {
   grade?: string;
   grades?: string[];
   onGradeChange?: (grade: string) => void;
+  showUnit?: boolean;
 };
 
-export function TargetFilters({ period, onPeriodChange, unit, units, onUnitChange, grade, grades = [], onGradeChange }: TargetFiltersProps) {
+export function TargetFilters({ period, onPeriodChange, unit, units, onUnitChange, grade, grades = [], onGradeChange, showUnit = true }: TargetFiltersProps) {
+  const [month, year] = period.split(" ");
   return (
     <div className="flex flex-wrap gap-3">
-      <FilterSelect value={period} options={MONTHS} onChange={onPeriodChange} />
+      <FilterSelect value={month} options={MONTHS} onChange={(value) => onPeriodChange(`${value} ${year || YEARS[1]}`)} />
+      <FilterSelect value={year || YEARS[1]} options={YEARS} onChange={(value) => onPeriodChange(`${month || MONTHS[0]} ${value}`)} />
       {onGradeChange && <FilterSelect value={grade ?? "Semua Grade"} options={["Semua Grade", ...grades]} onChange={onGradeChange} />}
-      <FilterSelect value={unit} options={["Semua Unit", ...units]} onChange={onUnitChange} icon={<Building2 className="h-5 w-5 text-[#292663]" />} />
+      {showUnit && <FilterSelect value={unit} options={["Semua Unit", ...units]} onChange={onUnitChange} icon={<Building2 className="h-5 w-5 text-[#292663]" />} />}
     </div>
   );
 }
