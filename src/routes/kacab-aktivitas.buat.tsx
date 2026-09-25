@@ -404,13 +404,13 @@ function PickerOverlay({
         onClick={onClose}
       >
         <div
-          className="motion-backdrop-in w-full max-w-[440px] rounded-t-2xl bg-white px-5 pb-6 pt-5"
+          className={`motion-backdrop-in w-full bg-white ${picker === "date" ? "max-w-[880px] rounded-t-[28px] px-10 pb-12 pt-10" : "max-w-[440px] rounded-t-2xl px-5 pb-6 pt-5"}`}
           onClick={(event) => event.stopPropagation()}
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-[17px] font-bold text-slate-900">{title}</h2>
+            <h2 className={`${picker === "date" ? "text-[24px]" : "text-[17px]"} font-bold text-slate-900`}>{title}</h2>
             <button type="button" onClick={onClose} aria-label="Tutup">
-              <X className="h-5 w-5 text-slate-500" />
+              <X className={`${picker === "date" ? "h-8 w-8" : "h-5 w-5"} text-slate-500`} />
             </button>
           </div>
           {picker === "kelurahan" && (
@@ -426,11 +426,11 @@ function PickerOverlay({
             </div>
           )}
           {picker === "date" && (
-            <div className="mt-6 grid grid-cols-3 gap-2">
+            <div className="mt-12 grid grid-cols-3 gap-4">
               <select
                 value={dateDay}
                 onChange={(event) => setDateDay(event.target.value)}
-                className="rounded-xl border border-slate-200 px-3 py-3 text-center text-[16px]"
+                className="h-24 rounded-[28px] border-2 border-[#dfe7f3] bg-white px-3 py-3 text-center text-[22px] text-slate-900 outline-none"
               >
                 <option value="01">01</option>
                 <option value="02">02</option>
@@ -467,7 +467,7 @@ function PickerOverlay({
               <select
                 value={dateMonth}
                 onChange={(event) => setDateMonth(event.target.value)}
-                className="rounded-xl border border-slate-200 px-3 py-3 text-center text-[16px]"
+                className="h-24 rounded-[28px] border-2 border-[#dfe7f3] bg-white px-3 py-3 text-center text-[22px] text-slate-900 outline-none"
               >
                 <option value="01">Januari</option>
                 <option value="02">Februari</option>
@@ -485,7 +485,7 @@ function PickerOverlay({
               <select
                 value={dateYear}
                 onChange={(event) => setDateYear(event.target.value)}
-                className="rounded-xl border border-slate-200 px-3 py-3 text-center text-[16px]"
+                className="h-24 rounded-[28px] border-2 border-[#dfe7f3] bg-white px-3 py-3 text-center text-[22px] text-slate-900 outline-none"
               >
                 <option>2026</option>
                 <option>2027</option>
@@ -536,7 +536,7 @@ function PickerOverlay({
               <button
                 type="button"
                 onClick={onDate}
-                className="mt-4 w-full rounded-xl bg-[#2953A4] py-3 text-[14px] font-semibold text-white"
+                className="mt-14 h-[90px] w-full rounded-[28px] bg-[#315bac] text-[20px] font-semibold text-white"
               >
                 Pilih Tanggal Pelaksanaan
               </button>
